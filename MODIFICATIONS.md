@@ -41,6 +41,11 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | `data/ingest.py` | HF parquet → inventory + 22.05 kHz wav/.lab (Kaggle) | Kaggle job `fs2-01-ingest` |
 | `data/select_split.py` | Deterministic, duration-targeted train/val split with leakage checks | `tests/test_split.py` |
 | `utils/config.py`, `English/config.yaml`, `Telugu/config.yaml` | One config file per language (preprocess / model / train sections, paths relative to a data root); injects `text_language` into the model config; `max_seq_len` 1500 because clips reach 15 s (1292 frames) | Loaded for both languages locally |
+| `train.py`, `preprocess.py`, `evaluate.py` (CLI) | Training loop from the reference `train.py` with one config per language, fixed seeds, CSV loss log (`losses.csv`), `--max_minutes` clean stop + checkpoint, `--restore_step latest`, atomic checkpoint writes; `evaluate()` can return the loss means | `tests/test_model_smoke.py` (Kaggle), job 03 smoke run |
+| `text/english_frontend.py` | English inference frontend: time/number normalisation, g2p_en homograph rule, reference lexicon, g2p_en for OOV words; trace of every word | `tests/test_english_frontend.py` |
+| `inference.py`, `plotting.py` | Test-sentence synthesis, variance export (JSON/NPZ), duration/pitch/energy plots, loss plots, runtime consistency checks | `tests/test_model_smoke.py` (Kaggle) |
+| `copy_synthesis.py` | HiFi-GAN copy-synthesis distortion per speaker (test-voice choice for Telugu) | Kaggle job `fs2-03-features` |
+| `English/*.py`, `Telugu/*.py` | Thin wrappers that run the shared scripts with the folder's `config.yaml` | — |
 | `tools/build_test_manifest.py` | Canonical test sentences from the assignment PDF text layer | `tests/test_test_manifest.py` |
 | `kaggle/*/run.py`, `kernel-metadata.json` | Kaggle job definitions; each job clones this repository and records the commit in `code_commit.txt` | — |
 

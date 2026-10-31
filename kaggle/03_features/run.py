@@ -87,11 +87,14 @@ def main():
     status = {"code_commit": commit, "languages": {}}
 
     # Gate: full test suite, including the preprocessor test that is skipped on machines without torch.
-    t = subprocess.run([sys.executable, "-m", "pytest", "-q", "-rs", f"{repo}/tests"], cwd=repo, env=env,
-                       capture_output=True, text=True)
+    t = subprocess.run([sys.executable, "-m", "pytest", "-q", "-rs", "-m", "not observation", f"{repo}/tests"],
+                       cwd=repo, env=env, capture_output=True, text=True)
+    obs = subprocess.run([sys.executable, "-m", "pytest", "-q", "-rA", "-m", "observation", f"{repo}/tests"],
+                         cwd=repo, env=env, capture_output=True, text=True)
     with open(f"{OUT}/pytest.txt", "w") as f:
-        f.write(t.stdout + t.stderr)
-    status["pytest"] = {"returncode": t.returncode, "tail": t.stdout.strip().splitlines()[-1:]}
+        f.write(t.stdout + t.stderr + "\n\n==== observations (not a gate) ====\n" + obs.stdout + obs.stderr)
+    status["pytest"] = {"returncode": t.returncode, "tail": t.stdout.strip().splitlines()[-1:],
+                        "observations_tail": obs.stdout.strip().splitlines()[-1:]}
     if t.returncode != 0:
         status["error"] = "tests failed; see pytest.txt"
         json.dump(status, open(f"{OUT}/status.json", "w"), indent=1)
