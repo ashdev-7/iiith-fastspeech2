@@ -102,3 +102,16 @@ def test_plots_render(tmp_path):
     csv_path.write_text("split,step,lr,total,mel,mel_postnet,pitch,energy,duration,time_s\n"
                         "train,100,1e-4,3,1,1,0.5,0.3,0.2,10\nval,100,1e-4,3.2,1,1,0.6,0.4,0.2,12\n")
     assert os.path.getsize(plot_losses([str(csv_path)], str(tmp_path / "loss.png"), "t")) > 1000
+
+
+def test_to_device_casts_float64_features():
+    """Normalised pitch/energy .npy files are float64 (divided by float64 stats); the reference
+    to_device left energy as double, which made backward() fail ("Found dtype Double")."""
+    from utils.tools import to_device
+    B, T, L = 2, 5, 9
+    data = (["a", "b"], ["", ""], np.array([0, 1]), np.ones((B, T), dtype=np.int64), np.array([T, T]), T,
+            np.zeros((B, L, 80), dtype=np.float32), np.array([L, L]), L,
+            np.zeros((B, T), dtype=np.float64), np.zeros((B, T), dtype=np.float64), np.ones((B, T), dtype=np.int64))
+    out = to_device(data, torch.device("cpu"))
+    assert out[9].dtype == out[10].dtype == torch.float32
+    assert out[11].dtype == torch.int64

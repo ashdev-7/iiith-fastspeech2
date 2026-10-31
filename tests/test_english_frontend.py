@@ -33,9 +33,10 @@ def test_pronunciations(test_items):
     _, a = text_to_phones(items["E2a"], LEXICON)
     _, b = text_to_phones(items["E2b"], LEXICON)
     conduct = lambda tr: next(w for w in tr["words"] if w["token"].lower() == "conduct")  # noqa: E731
-    # noun (stress on 1st syllable) vs verb (stress on 2nd)
-    assert conduct(a)["phones"][:3] == ["K", "AA1", "N"], conduct(a)
-    assert conduct(b)["phones"][:3] == ["K", "AH0", "N"], conduct(b)
+    # noun: primary stress on the 1st syllable; verb: on the 2nd (vowels carry the stress digit)
+    stress = lambda tr: [p[-1] for p in conduct(tr)["phones"] if p[-1] in "012"]  # noqa: E731
+    assert stress(a) == ["1", "0"], conduct(a)
+    assert stress(b) == ["0", "1"], conduct(b)
     phones, e3 = text_to_phones(items["E3"], LEXICON)
     assert [w["token"] for w in e3["words"]][:3] == ["The", "rhyth", "m"]
     assert all(p != "sp" for p in phones[:6])  # no pause invented inside the sentence start
