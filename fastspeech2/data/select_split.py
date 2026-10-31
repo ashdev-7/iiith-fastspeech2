@@ -11,6 +11,10 @@ Rule (plan.txt 5.2, R2.3, R1.5):
     touches, else to train if it fits the train quotas, else it is left "not_selected";
   * leakage checks: utterance ids, groups, normalised transcripts and PCM hashes must be
     disjoint between train and val (duplicate audio within the inventory is excluded).
+Limitation: the fill is greedy. A multi-speaker group (same sentence read by several speakers)
+that no longer fits one speaker's quota is skipped, even if another speaker is still short.
+This matters only when most groups are shared; the achieved hours per speaker are reported in
+split_summary.json and must be checked.
 
 Usage:
   python -m data.select_split --manifest_dir /kaggle/working/manifests/te --train_hours 5 --val_hours 1

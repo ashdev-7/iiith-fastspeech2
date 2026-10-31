@@ -35,9 +35,11 @@ def test_same_sentence_stays_in_one_split():
 
 
 def test_equal_balance_with_unequal_speakers():
-    rows = _rows() + [{"utt_id": f"extra_{i}", "speaker": "te_male", "group": "", "duration": "6.0",
-                       "model_text": f"extra {i}", "pcm_sha1": f"x{i}", "status": "candidate", "reason": ""}
-                      for i in range(800)]
+    """Mostly distinct sentences per speaker (as in IndicTTS Telugu, where only 93 transcripts
+    repeat); the male speaker has 3x more candidate audio."""
+    rows = [{"utt_id": f"{spk}_{i}", "speaker": spk, "group": "", "duration": "6.0",
+             "model_text": f"{spk} sentence {i}", "pcm_sha1": f"{spk}{i}", "status": "candidate", "reason": ""}
+            for spk, n in (("te_female", 400), ("te_male", 1200)) for i in range(n)]
     out, _ = select(copy.deepcopy(rows), train_hours=0.5, val_hours=0.1, seed=3, balance="equal")
     for spk in ("te_female", "te_male"):
         got = sum(r["duration"] for r in out if r["split"] == "train" and r["speaker"] == spk) / 3600
