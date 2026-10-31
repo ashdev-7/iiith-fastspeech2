@@ -5,6 +5,18 @@ import torch
 import numpy as np
 
 import hifigan
+
+HIFIGAN_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "hifigan")
+
+
+def _hifigan_ckpt(name):
+    """Path of a HiFi-GAN generator checkpoint; unpacks the shipped .zip on first use."""
+    path = os.path.join(HIFIGAN_DIR, name)
+    if not os.path.exists(path) and os.path.exists(path + ".zip"):
+        import zipfile
+        with zipfile.ZipFile(path + ".zip") as z:
+            z.extract(name, HIFIGAN_DIR)
+    return path
 from model import FastSpeech2, ScheduledOptim
 
 
@@ -17,7 +29,7 @@ def get_model(args, configs, device, train=False):
             train_config["path"]["ckpt_path"],
             "{}.pth.tar".format(args.restore_step),
         )
-        ckpt = torch.load(ckpt_path)
+        ckpt = torch.load(ckpt_path, map_location=device, weights_only=True)
         model.load_state_dict(ckpt["model"])
 
     if train:
@@ -55,14 +67,14 @@ def get_vocoder(config, device):
         vocoder.mel2wav.eval()
         vocoder.mel2wav.to(device)
     elif name == "HiFi-GAN":
-        with open("hifigan/config.json", "r") as f:
+        with open(os.path.join(HIFIGAN_DIR, "config.json"), "r") as f:
             config = json.load(f)
         config = hifigan.AttrDict(config)
         vocoder = hifigan.Generator(config)
         if speaker == "LJSpeech":
-            ckpt = torch.load("hifigan/generator_LJSpeech.pth.tar")
+            ckpt = torch.load(_hifigan_ckpt("generator_LJSpeech.pth.tar"), map_location=device, weights_only=True)
         elif speaker == "universal":
-            ckpt = torch.load("hifigan/generator_universal.pth.tar")
+            ckpt = torch.load(_hifigan_ckpt("generator_universal.pth.tar"), map_location=device, weights_only=True)
         vocoder.load_state_dict(ckpt["generator"])
         vocoder.eval()
         vocoder.remove_weight_norm()

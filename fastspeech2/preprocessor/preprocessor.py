@@ -1,5 +1,5 @@
+import csv
 import os
-import random
 import json
 
 import tgt
@@ -18,7 +18,9 @@ class Preprocessor:
         self.config = config
         self.in_dir = config["path"]["raw_path"]
         self.out_dir = config["path"]["preprocessed_path"]
-        self.val_size = config["preprocessing"]["val_size"]
+        # Train/val membership comes from the deterministic manifests written by
+        # data/select_split.py (train.tsv / val.tsv), not from a random shuffle.
+        self.split_dir = config["path"]["split_path"]
         self.sampling_rate = config["preprocessing"]["audio"]["sampling_rate"]
         self.hop_length = config["preprocessing"]["stft"]["hop_length"]
 
@@ -57,37 +59,39 @@ class Preprocessor:
         os.makedirs((os.path.join(self.out_dir, "duration")), exist_ok=True)
 
         print("Processing Data ...")
-        out = list()
         n_frames = 0
         pitch_scaler = StandardScaler()
         energy_scaler = StandardScaler()
 
-        # Compute pitch, energy, duration, and mel-spectrogram
-        speakers = {}
-        for i, speaker in enumerate(tqdm(os.listdir(self.in_dir))):
-            speakers[speaker] = i
-            for wav_name in os.listdir(os.path.join(self.in_dir, speaker)):
-                if ".wav" not in wav_name:
-                    continue
-
-                basename = wav_name.split(".")[0]
-                tg_path = os.path.join(
-                    self.out_dir, "TextGrid", speaker, "{}.TextGrid".format(basename)
-                )
-                if os.path.exists(tg_path):
-                    ret = self.process_utterance(speaker, basename)
-                    if ret is None:
-                        continue
-                    else:
-                        info, pitch, energy, n = ret
-                    out.append(info)
-
-                if len(pitch) > 0:
-                    pitch_scaler.partial_fit(pitch.reshape((-1, 1)))
-                if len(energy) > 0:
-                    energy_scaler.partial_fit(energy.reshape((-1, 1)))
-
-                n_frames += n
+        # Compute pitch, energy, duration, and mel-spectrogram for the manifest utterances.
+        # Speaker ids are assigned in sorted order so they do not depend on directory order.
+        split_of = {}
+        for split in ("train", "val"):
+            with open(os.path.join(self.split_dir, "{}.tsv".format(split)), encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f, delimiter="\t"):
+                    split_of[(row["speaker"], row["utt_id"])] = split
+        speakers = {s: i for i, s in enumerate(sorted({spk for spk, _ in split_of}))}
+        out = {"train": [], "val": []}
+        skipped = {"no_textgrid": [], "rejected": []}
+        for speaker, basename in tqdm(sorted(split_of)):
+            tg_path = os.path.join(
+                self.out_dir, "TextGrid", speaker, "{}.TextGrid".format(basename)
+            )
+            if not os.path.exists(tg_path):
+                skipped["no_textgrid"].append(basename)
+                continue
+            ret = self.process_utterance(speaker, basename)
+            if ret is None:
+                skipped["rejected"].append(basename)
+                continue
+            info, pitch, energy, n = ret
+            out[split_of[(speaker, basename)]].append(info)
+            # Statistics come from both splits, as in the reference implementation.
+            if len(pitch) > 0:
+                pitch_scaler.partial_fit(pitch.reshape((-1, 1)))
+            if len(energy) > 0:
+                energy_scaler.partial_fit(energy.reshape((-1, 1)))
+            n_frames += n
 
         print("Computing statistic quantities ...")
         # Perform normalization if necessary
@@ -113,7 +117,7 @@ class Preprocessor:
         )
 
         # Save files
-        with open(os.path.join(self.out_dir, "speakers.json"), "w") as f:
+        with open(os.path.join(self.out_dir, "speakers.json"), "w", encoding="utf-8") as f:
             f.write(json.dumps(speakers))
 
         with open(os.path.join(self.out_dir, "stats.json"), "w") as f:
@@ -139,16 +143,21 @@ class Preprocessor:
             )
         )
 
-        random.shuffle(out)
-        out = [r for r in out if r is not None]
-
-        # Write metadata
-        with open(os.path.join(self.out_dir, "train.txt"), "w", encoding="utf-8") as f:
-            for m in out[self.val_size :]:
-                f.write(m + "\n")
-        with open(os.path.join(self.out_dir, "val.txt"), "w", encoding="utf-8") as f:
-            for m in out[: self.val_size]:
-                f.write(m + "\n")
+        # Write metadata (splits fixed by the manifests; order sorted for reproducibility)
+        for split in ("train", "val"):
+            with open(os.path.join(self.out_dir, "{}.txt".format(split)), "w", encoding="utf-8") as f:
+                for m in out[split]:
+                    f.write(m + "\n")
+        summary = {
+            "frames": int(n_frames),
+            "hours": n_frames * self.hop_length / self.sampling_rate / 3600,
+            "utterances": {s: len(v) for s, v in out.items()},
+            "skipped_counts": {k: len(v) for k, v in skipped.items()},
+            "skipped": skipped,
+        }
+        with open(os.path.join(self.out_dir, "preprocess_summary.json"), "w", encoding="utf-8") as f:
+            json.dump(summary, f, indent=1)
+        print(json.dumps({k: v for k, v in summary.items() if k != "skipped"}))
 
         return out
 
@@ -160,7 +169,9 @@ class Preprocessor:
         )
 
         # Get alignments
-        textgrid = tgt.io.read_textgrid(tg_path)
+        # MFA >= 2 writes silences as empty intervals; tgt drops those by default, which
+        # would make the phone durations skip the pauses. Keep them (mapped to "sp").
+        textgrid = tgt.io.read_textgrid(tg_path, include_empty_intervals=True)
         phone, duration, start, end = self.get_alignment(
             textgrid.get_tier_by_name("phones")
         )
@@ -169,13 +180,13 @@ class Preprocessor:
             return None
 
         # Read and trim wav files
-        wav, _ = librosa.load(wav_path)
+        wav, _ = librosa.load(wav_path, sr=self.sampling_rate)
         wav = wav[
             int(self.sampling_rate * start) : int(self.sampling_rate * end)
         ].astype(np.float32)
 
         # Read raw text
-        with open(text_path, "r") as f:
+        with open(text_path, "r", encoding="utf-8") as f:
             raw_text = f.readline().strip("\n")
 
         # Compute fundamental frequency
@@ -260,6 +271,8 @@ class Preprocessor:
         end_idx = 0
         for t in tier._objects:
             s, e, p = t.start_time, t.end_time, t.text
+            if p == "":
+                p = "sp"
 
             # Trim leading silences
             if phones == []:

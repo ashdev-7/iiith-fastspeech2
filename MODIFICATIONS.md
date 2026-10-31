@@ -19,6 +19,10 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | M2 | `audio/stft.py` (`STFT.transform`) | `input.cuda()` … `.cpu()` hard-coded | Crashes on CPU-only machines (feature extraction runs in a Kaggle CPU job) | Uses the device of `forward_basis` | both | Pending: feature-extraction job |
 | M3 | `audio/stft.py`, `audio/audio_processing.py` | `librosa_mel_fn(sr, n_fft, …)`, `pad_center(x, n)` positional | librosa ≥ 0.10 accepts these only as keyword arguments | Keyword arguments | both | Pending: feature-extraction job |
 | M4 | `dataset.py` | `speakers.json` opened without `encoding` | Windows default code page is not UTF-8 | `encoding="utf-8"` | both | Code review |
+| M5 | `preprocessor/preprocessor.py` (`build_from_path`) | Utterances without a TextGrid still added the *previous* utterance's pitch/energy to the scalers and frame count (variables left over from the last loop iteration) | Bug: biased normalisation statistics | Statistics are updated only for utterances that were processed | both | `tests/test_preprocessor.py` (Kaggle) |
+| M6 | `preprocessor/preprocessor.py` (`process_utterance`, `get_alignment`) | `tgt.io.read_textgrid(path)` drops empty intervals | MFA ≥ 2 writes silences as empty intervals, so inter-word pauses vanished from the phone sequence and durations | `include_empty_intervals=True`; empty labels mapped to `sp` (leading/trailing silence is still trimmed) | both | `tests/test_preprocessor.py` (Kaggle) |
+| M7 | `preprocessor/preprocessor.py` | `librosa.load(path)` (implicit 22050 Hz), `.lab` opened without `encoding`, `os.listdir` order for speaker ids | Explicit rate from config; Telugu text on non-UTF-8 platforms; reproducible speaker ids | `sr=sampling_rate`, `encoding="utf-8"`, speakers sorted | both | `tests/test_preprocessor.py` (Kaggle) |
+| M8 | `utils/model.py` | `torch.load` without `map_location`; HiFi-GAN paths relative to the working directory; checkpoint must be unzipped by hand | CPU inference; scripts run from `English/`, `Telugu/`; torch ≥ 2.6 `weights_only` default | `map_location=device, weights_only=True`; paths resolved from the package; `.zip` extracted on first use | both | Pending: copy-synthesis job |
 
 ## Language support
 
@@ -36,6 +40,7 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | `text/telugu/phones.py`, `g2p.py`, `normalize.py` | Rule-based Telugu normalisation (numbers, ordinals, times) and grapheme-to-phone conversion; raises on any unconvertible character | `tests/test_telugu_frontend.py` |
 | `data/ingest.py` | HF parquet → inventory + 22.05 kHz wav/.lab (Kaggle) | Kaggle job `fs2-01-ingest` |
 | `data/select_split.py` | Deterministic, duration-targeted train/val split with leakage checks | `tests/test_split.py` |
+| `utils/config.py`, `English/config.yaml`, `Telugu/config.yaml` | One config file per language (preprocess / model / train sections, paths relative to a data root); injects `text_language` into the model config; `max_seq_len` 1500 because clips reach 15 s (1292 frames) | Loaded for both languages locally |
 | `tools/build_test_manifest.py` | Canonical test sentences from the assignment PDF text layer | `tests/test_test_manifest.py` |
 | `kaggle/*/run.py`, `kernel-metadata.json` | Kaggle job definitions; each job clones this repository and records the commit in `code_commit.txt` | — |
 
@@ -44,4 +49,4 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | Item | Reference | This project | Reason |
 |------|-----------|--------------|--------|
 | Peak normalisation in `prepare_align` | `wav / max|wav| * 32768.0` | `* 32767.0` (in `data/ingest.py`) | 32768 overflows int16 at the peak sample |
-| Train/val split | `random.shuffle` without seed, fixed `val_size` count | Manifest-based, seeded, duration-targeted (`data/select_split.py`) | Reproducibility; the assignment's 5 h / 1 h targets; no overlap |
+| Train/val split | `random.shuffle` without seed, fixed `val_size` count | Manifest-based, seeded, duration-targeted (`data/select_split.py`); `preprocessor.py` reads `path.split_path`/{train,val}.tsv and only processes listed utterances | Reproducibility; the assignment's 5 h / 1 h targets; no overlap |
