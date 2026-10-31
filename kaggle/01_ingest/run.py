@@ -3,31 +3,27 @@
 Outputs (/kaggle/working): raw_data/{en,te}/<speaker>/<utt>.wav|.lab and
 manifests/{en,te}/{inventory,train,val,not_selected}.tsv, split_summary.json, ingest_info.json.
 """
-import glob
 import os
-import shutil
 import subprocess
 import sys
 
 OUT = "/kaggle/working"
 CACHE = "/kaggle/temp/hf"
+REPO = "https://github.com/ashdev-7/iiith-fastspeech2.git"
+REPO_REF = os.environ.get("FS2_REF", "main")  # pin a commit for exact reproduction
 
 
 def code_root():
-    """Locate the fs2-code dataset (mounted as a folder, or as project.zip) under /kaggle/input."""
-    marker = "fastspeech2/data/ingest.py"
-    hits = glob.glob(f"/kaggle/input/**/{marker}", recursive=True)
-    if not hits:
-        zips = glob.glob("/kaggle/input/**/project.zip", recursive=True)
-        if zips:
-            shutil.unpack_archive(zips[0], "/kaggle/temp/code")
-            hits = glob.glob(f"/kaggle/temp/code/**/{marker}", recursive=True)
-    hits = [h[: -len(marker)] + "fastspeech2" for h in hits]
-    if not hits:
-        listing = subprocess.run(["find", "/kaggle/input", "-maxdepth", "4"], capture_output=True, text=True).stdout
-        raise SystemExit(f"fs2-code not found under /kaggle/input. Contents:\n{listing}")
-    print("code root:", hits[0], flush=True)
-    return hits[0]
+    """Clone the project repo and record the exact commit used by this run."""
+    dst = "/kaggle/temp/repo"
+    subprocess.run(["git", "clone", "-q", REPO, dst], check=True)
+    subprocess.run(["git", "-C", dst, "checkout", "-q", REPO_REF], check=True)
+    commit = subprocess.run(["git", "-C", dst, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    os.makedirs(OUT, exist_ok=True)
+    with open(f"{OUT}/code_commit.txt", "w") as f:
+        f.write(commit + "\n")
+    print("code commit:", commit, flush=True)
+    return f"{dst}/fastspeech2"
 
 
 def run(args, env):

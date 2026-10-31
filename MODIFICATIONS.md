@@ -37,7 +37,7 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | `data/ingest.py` | HF parquet → inventory + 22.05 kHz wav/.lab (Kaggle) | Kaggle job `fs2-01-ingest` |
 | `data/select_split.py` | Deterministic, duration-targeted train/val split with leakage checks | `tests/test_split.py` |
 | `tools/build_test_manifest.py` | Canonical test sentences from the assignment PDF text layer | `tests/test_test_manifest.py` |
-| `tools/stage_kaggle_code.py`, `kaggle/*` | Kaggle code dataset and job definitions | — |
+| `kaggle/*/run.py`, `kernel-metadata.json` | Kaggle job definitions; each job clones this repository and records the commit in `code_commit.txt` | — |
 
 ## Deliberate deviations from the reference conventions
 

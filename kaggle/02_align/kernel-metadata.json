@@ -5,10 +5,10 @@
   "language": "python",
   "kernel_type": "script",
   "is_private": true,
-  "enable_gpu": false,
+  "enable_gpu": true,
   "enable_tpu": false,
   "enable_internet": true,
-  "dataset_sources": ["ashdev07/fs2-code"],
+  "dataset_sources": [],
   "competition_sources": [],
   "kernel_sources": ["ashdev07/fs2-01-ingest"]
 }

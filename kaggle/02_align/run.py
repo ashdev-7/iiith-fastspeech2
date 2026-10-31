@@ -15,6 +15,8 @@ import sys
 
 OUT = "/kaggle/working"
 TMP = "/kaggle/temp"
+REPO = "https://github.com/ashdev-7/iiith-fastspeech2.git"
+REPO_REF = os.environ.get("FS2_REF", "main")  # pin a commit for exact reproduction
 MAMBA = f"{TMP}/bin/micromamba"
 MFA_ENV = f"{TMP}/mfa_env"
 JOBS = str(os.cpu_count() or 4)
@@ -54,9 +56,20 @@ def summarise(lang, corpus, tg_dir):
     print(json.dumps({k: v for k, v in summary.items() if k != "missing"}), flush=True)
 
 
+def clone_code():
+    """Clone the project repo and record the exact commit used by this run."""
+    dst = f"{TMP}/repo"
+    run(["git", "clone", "-q", REPO, dst])
+    run(["git", "-C", dst, "checkout", "-q", REPO_REF])
+    commit = subprocess.run(["git", "-C", dst, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    with open(f"{OUT}/code_commit.txt", "w") as f:
+        f.write(commit + "\n")
+    print("code commit:", commit, flush=True)
+    return f"{dst}/fastspeech2"
+
+
 def main():
-    src = find_one("/kaggle/input/**/fastspeech2/data/mfa_prepare.py", "fs2-code")
-    src = src[: -len("/data/mfa_prepare.py")]
+    src = clone_code()
     ingest = os.path.dirname(os.path.dirname(os.path.dirname(
         find_one("/kaggle/input/**/manifests/te/train.tsv", "fs2-01-ingest output"))))
     print("code:", src, "ingest:", ingest, flush=True)
