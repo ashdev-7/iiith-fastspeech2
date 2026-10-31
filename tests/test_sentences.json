@@ -1,0 +1,195 @@
+{
+  "source": "FastSpeech2_Assignment.pdf text layer (PyMuPDF); see plan.txt REVISION 1",
+  "items": [
+    {
+      "id": "E1",
+      "lang": "en",
+      "canonical": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+      "canonical_sha256": "c78c6eb0bc0a905d36e4373f0bf9c4adbd35b813932a30008e7b85c3ebe1fc18",
+      "canonical_codepoints": "0054 0068 0065 0020 0061 006E 0074 0069 0064 0069 0073 0065 0073 0074 0061 0062 006C 0069 0073 0068 006D 0065 006E 0074 0061 0072 0069 0061 006E 0069 0073 006D 0020 006D 006F 0076 0065 006D 0065 006E 0074 0020 0067 0061 0069 006E 0065 0064 0020 0063 006F 006E 0073 0069 0064 0065 0072 0061 0062 006C 0065 0020 006D 006F 006D 0065 006E 0074 0075 006D 0020 0064 0075 0072 0069 006E 0067 0020 0074 0068 0065 0020 0070 0061 0072 006C 0069 0061 006D 0065 006E 0074 0061 0072 0079 0020 0070 0072 006F 0063 0065 0065 0064 0069 006E 0067 0073 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 602.1,
+          "x": 100.1,
+          "text": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary "
+        },
+        {
+          "y": 614.4,
+          "x": 100.1,
+          "text": "proceedings. "
+        }
+      ],
+      "docx_text": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary  proceedings.",
+      "docx_matches_canonical": false,
+      "layout_note": "soft-wrapped across lines in the PDF table cell"
+    },
+    {
+      "id": "E2a",
+      "lang": "en",
+      "canonical": "The orchestra's conduct during the ceremony was praised by the audience.",
+      "canonical_sha256": "be499d0c9738f9532be28640d8b615674cdccdc4825ce042bb95944eca3bb250",
+      "canonical_codepoints": "0054 0068 0065 0020 006F 0072 0063 0068 0065 0073 0074 0072 0061 0027 0073 0020 0063 006F 006E 0064 0075 0063 0074 0020 0064 0075 0072 0069 006E 0067 0020 0074 0068 0065 0020 0063 0065 0072 0065 006D 006F 006E 0079 0020 0077 0061 0073 0020 0070 0072 0061 0069 0073 0065 0064 0020 0062 0079 0020 0074 0068 0065 0020 0061 0075 0064 0069 0065 006E 0063 0065 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 635.7,
+          "x": 118.1,
+          "text": "a) The orchestra's conduct during the ceremony was praised by the audience.  "
+        }
+      ],
+      "docx_text": "The orchestra's conduct during the ceremony was praised by the audience.",
+      "docx_matches_canonical": true,
+      "layout_note": ""
+    },
+    {
+      "id": "E2b",
+      "lang": "en",
+      "canonical": "The researchers will conduct an experiment to evaluate the proposed method.",
+      "canonical_sha256": "7593b7f84b56ee7b7d72365dc2da4a9d0b6d805731fa5b3eeeca6fce85cfd0ce",
+      "canonical_codepoints": "0054 0068 0065 0020 0072 0065 0073 0065 0061 0072 0063 0068 0065 0072 0073 0020 0077 0069 006C 006C 0020 0063 006F 006E 0064 0075 0063 0074 0020 0061 006E 0020 0065 0078 0070 0065 0072 0069 006D 0065 006E 0074 0020 0074 006F 0020 0065 0076 0061 006C 0075 0061 0074 0065 0020 0074 0068 0065 0020 0070 0072 006F 0070 006F 0073 0065 0064 0020 006D 0065 0074 0068 006F 0064 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 648.5,
+          "x": 118.1,
+          "text": "b) The researchers will conduct an experiment to evaluate the proposed method. "
+        }
+      ],
+      "docx_text": "The researchers will conduct an experiment to evaluate the proposed method.",
+      "docx_matches_canonical": true,
+      "layout_note": ""
+    },
+    {
+      "id": "E3",
+      "lang": "en",
+      "canonical": "The rhyth  m of the orchestra changed unexpectedly.",
+      "canonical_sha256": "c3be31733e67e3a0a674e3dcdfb139ae4ef41c2e28b9400a7e55962cf065011c",
+      "canonical_codepoints": "0054 0068 0065 0020 0072 0068 0079 0074 0068 0020 0020 006D 0020 006F 0066 0020 0074 0068 0065 0020 006F 0072 0063 0068 0065 0073 0074 0072 0061 0020 0063 0068 0061 006E 0067 0065 0064 0020 0075 006E 0065 0078 0070 0065 0063 0074 0065 0064 006C 0079 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 669.9,
+          "x": 100.1,
+          "text": "The rhyth  m of the orchestra changed unexpectedly. "
+        }
+      ],
+      "docx_text": "The rhyth m of the orchestra changed unexpectedly.",
+      "docx_matches_canonical": false,
+      "layout_note": ""
+    },
+    {
+      "id": "E4",
+      "lang": "en",
+      "canonical": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.",
+      "canonical_sha256": "28ec99efbebe0e561153cb9236dcdc4ee5730fb8fb24049cdfb7b19e869f462a",
+      "canonical_codepoints": "0054 0068 0065 0020 006D 0065 0065 0074 0069 006E 0067 0020 0077 0069 006C 006C 0020 0073 0074 0061 0072 0074 0020 0061 0074 0020 0031 0030 003A 0034 0035 0020 0041 004D 0020 006F 006E 0020 0031 0032 0020 004E 006F 0076 0065 006D 0062 0065 0072 0020 0032 0030 0032 0036 002C 0020 0073 006F 0020 0061 006E 0064 0061 0072 006F 006F 0020 0073 0068 006F 0075 006C 0064 0020 0061 0072 0072 0069 0076 0065 0020 006F 006E 0020 0074 0069 006D 0065 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 691.3,
+          "x": 100.1,
+          "text": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time. "
+        }
+      ],
+      "docx_text": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.",
+      "docx_matches_canonical": true,
+      "layout_note": ""
+    },
+    {
+      "id": "T1",
+      "lang": "te",
+      "canonical": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+      "canonical_sha256": "08eeef71d6d6ef69707f45333bc3e71cdb0174da6333c6ff0bc04288161fa3fc",
+      "canonical_codepoints": "0C28 0C4D 0C2F 0C42 0C30 0C4B 0C2B 0C3E 0C30 0C4D 0C2E 0C15 0C4B 0C32 0C3E 0C1C 0C3F 0C15 0C32 0C4D 0020 0C2A 0C30 0C3F 0C36 0C4B 0C27 0C28 0C32 0C4B 0020 0C28 0C42 0C24 0C28 0020 0C14 0C37 0C27 0C3E 0C32 0020 0C2A 0C4D 0C30 0C2D 0C3E 0C35 0C3E 0C28 0C4D 0C28 0C3F 0020 0C35 0C3F 0C36 0C4D 0C32 0C47 0C37 0C3F 0C02 0C1A 0C3E 0C30 0C41 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 97.9,
+          "x": 100.1,
+          "text": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు. "
+        }
+      ],
+      "docx_text": "న్యూ రోఫార్మ కోలాజికల్ పరిశోధనలోనూతన ఔషధాల ప్రభావాన్ని విశ్లషే ించారు.",
+      "docx_matches_canonical": false,
+      "layout_note": ""
+    },
+    {
+      "id": "T2a",
+      "lang": "te",
+      "canonical": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+      "canonical_sha256": "02d42fd8929c5048f26ee3520053b7e1bd488bba7b87193df3d7bb473ec8aed1",
+      "canonical_codepoints": "0C24 0C3E 0C21 0C41 0C2A 0C48 0020 0C05 0C24 0C28 0C3F 0020 0C2A 0C1F 0C4D 0C1F 0C41 0020 0C1A 0C3E 0C32 0C3E 0020 0C2C 0C32 0C02 0C17 0C3E 0020 0C09 0C02 0C26 0C3F 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 121.3,
+          "x": 118.1,
+          "text": "a) తాడుపై అతని పట్టు చాలా బలంగా ఉంది. "
+        }
+      ],
+      "docx_text": "తాడుపై అతని పట్టుచాలా బలంగా ఉంది.",
+      "docx_matches_canonical": false,
+      "layout_note": ""
+    },
+    {
+      "id": "T2b",
+      "lang": "te",
+      "canonical": "ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+      "canonical_sha256": "da6b66bf7599b5bf0ac67ede66a6da6c15b747155ab00ff5be1f3888f5b899a0",
+      "canonical_codepoints": "0C06 0C2E 0C46 0020 0C2A 0C1F 0C4D 0C1F 0C41 0020 0C1A 0C40 0C30 0C28 0C41 0020 0C27 0C30 0C3F 0C02 0C1A 0C3F 0020 0C35 0C47 0C21 0C41 0C15 0C15 0C41 0020 0C35 0C1A 0C4D 0C1A 0C3F 0C02 0C26 0C3F 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 136.0,
+          "x": 118.1,
+          "text": "b) ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చిం"
+        },
+        {
+          "y": 136.8,
+          "x": 331.0,
+          "text": "ది. "
+        }
+      ],
+      "docx_text": "ఆమె పట్టుచీరను ధరించి వేడుకకు వచ్చ ింది.",
+      "docx_matches_canonical": false,
+      "layout_note": "soft-wrapped across lines in the PDF table cell"
+    },
+    {
+      "id": "T3",
+      "lang": "te",
+      "canonical": "పులి అడ  విలో నిశ్శబ్దంగా నడిచింది.",
+      "canonical_sha256": "703f53072bcd69224a8883e9fad03fef5007625da7b21099574122c7a8df14fc",
+      "canonical_codepoints": "0C2A 0C41 0C32 0C3F 0020 0C05 0C21 0020 0020 0C35 0C3F 0C32 0C4B 0020 0C28 0C3F 0C36 0C4D 0C36 0C2C 0C4D 0C26 0C02 0C17 0C3E 0020 0C28 0C21 0C3F 0C1A 0C3F 0C02 0C26 0C3F 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 159.4,
+          "x": 100.1,
+          "text": "పులి అడ  విలో నిశ్శబ్దంగా నడిచింది. "
+        }
+      ],
+      "docx_text": "పులి అడ విలో నిశ్శబ్ంద గా నడిచింది.",
+      "docx_matches_canonical": false,
+      "layout_note": ""
+    },
+    {
+      "id": "T4",
+      "lang": "te",
+      "canonical": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ధంగా ఉంచండి.",
+      "canonical_sha256": "7583279404392bfe849397fcae9a92b6a050c859eff899c606f4ab6ecd40c6ae",
+      "canonical_codepoints": "0C08 0020 0C38 0C2E 0C3E 0C35 0C47 0C36 0C02 0020 0032 0030 0032 0036 0020 0C28 0C35 0C02 0C2C 0C30 0C4D 0020 0031 0032 0C35 0020 0C24 0C47 0C26 0C40 0020 0C09 0C26 0C2F 0C02 0020 0031 0030 003A 0034 0035 0020 0C17 0C02 0C1F 0C32 0C15 0C41 0020 0C2A 0C4D 0C30 0C3E 0C30 0C02 0C2D 0C2E 0C35 0C41 0C24 0C41 0C02 0C26 0C3F 002C 0020 0C38 0C2E 0C2F 0C3E 0C28 0C3F 0C15 0C3F 0020 0C38 0C3F 0C26 0C4D 0C27 0C02 0C17 0C3E 0020 0C09 0C02 0C1A 0C02 0C21 0C3F 002E",
+      "pdf_pymupdf_raw": [
+        {
+          "y": 183.6,
+          "x": 100.1,
+          "text": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రా"
+        },
+        {
+          "y": 183.6,
+          "x": 409.4,
+          "text": "రంభమవుతుంది, సమయానికి "
+        },
+        {
+          "y": 197.4,
+          "x": 100.1,
+          "text": "సిద్ధంగా ఉంచండి. "
+        }
+      ],
+      "docx_text": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ంధ గా ఉంచండి.",
+      "docx_matches_canonical": false,
+      "layout_note": "soft-wrapped across lines in the PDF table cell"
+    }
+  ]
+}

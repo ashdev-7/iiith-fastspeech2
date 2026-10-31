@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Datasets and derived data are never committed (dataset licenses, size); they live on Kaggle.
+raw_data/
+preprocessed_data/
+data_raw/
+*.parquet
+TextGrid/
+
+# Training outputs (released checkpoints are added explicitly, see README)
+output/
+*/checkpoints/*.pth.tar
+*/checkpoints/*.pt
+
+# Secrets
+kaggle.json
+access_token
+.env
