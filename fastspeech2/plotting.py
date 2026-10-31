@@ -141,6 +141,11 @@ def plot_losses(csv_paths, out_path, title):
                         marker=None if split == "train" else "o", ms=2.5, label=split)
         ax.set_title(name + " loss")
         ax.set_yscale("log")
+        from matplotlib.ticker import FuncFormatter, LogLocator
+        fmt = FuncFormatter(lambda v, _: "{:g}".format(v))  # plain numbers instead of 3x10^0
+        ax.yaxis.set_major_formatter(fmt)
+        ax.yaxis.set_minor_locator(LogLocator(subs=(2, 3, 5)))
+        ax.yaxis.set_minor_formatter(fmt)
         ax.grid(alpha=0.3)
     for ax in axes[1]:
         ax.set_xlabel("step")
