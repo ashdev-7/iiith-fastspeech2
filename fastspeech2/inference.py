@@ -22,7 +22,7 @@ import torch
 from scipy.io import wavfile
 
 from model import FastSpeech2
-from plotting import find_font, plot_variances
+from plotting import TITLE_RENDERING, find_font, plot_variances
 from text import text_to_sequence
 from text.symbols import get_symbols
 from utils.config import load_configs
@@ -150,6 +150,7 @@ def main(args):
                                     "plots": {k: os.path.relpath(v, out) for k, v in plots.items()}}
         print(item_id, json.dumps(checks), flush=True)
 
+    report["title_rendering"] = TITLE_RENDERING["mode"] or "Latin text only"
     with open(os.path.join(out, "frontend_trace.json"), "w", encoding="utf-8") as f:
         json.dump(traces, f, ensure_ascii=False, indent=1)
     with open(os.path.join(out, "inference_report.json"), "w", encoding="utf-8") as f:

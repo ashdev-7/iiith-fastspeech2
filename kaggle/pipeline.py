@@ -357,7 +357,7 @@ def train(lang, root, repo, rec, config, max_minutes, restore="latest", extra=()
     runs = sorted(glob.glob(f"{log_dir}/run_*.json"), key=os.path.getmtime)
     info = json.load(open(runs[-1]))
     rec.update({k: info[k] for k in ("start_step", "end_step", "stop_reason", "minutes", "gpus", "num_params")})
-    rows = read_csv_rows(f"{log_dir}/losses.csv")
+    rows = [r for r in read_csv_rows(f"{log_dir}/losses.csv") if int(r["step"]) > rec["start_step"]]  # this run only
     tr = [r for r in rows if r["split"] == "train"]
     if len(tr) >= 2:
         a, b = tr[0], tr[-1]
@@ -387,6 +387,7 @@ def inference(lang, root, repo, rec, checkpoint, speaker, out_dir, font_dir):
     wavs = glob.glob(f"{out_dir}/test_generated_audios/*.wav")
     pngs = glob.glob(f"{out_dir}/*/*.png")
     rec.update({"wavs": len(wavs), "plots": len(pngs), "telugu_font": rep["telugu_font"],
+                "title_rendering": rep.get("title_rendering"),
                 "seconds": {k: v["seconds"] for k, v in rep["items"].items()},
                 "zero_duration_phones": {k: v["checks"]["zero_duration_phones"] for k, v in rep["items"].items()}})
     if len(wavs) != 5 or len(pngs) != 15:

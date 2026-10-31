@@ -98,6 +98,14 @@ def test_plots_render(tmp_path):
            "generated_f0_period_ms": 256 / 22.05}
     paths = plot_variances(rec, str(tmp_path), telugu_font=None)
     assert all(os.path.getsize(p) > 1000 for p in paths.values())
+    # With a font name: exercises the shaped-image path (Pillow raqm) or the fallback path.
+    from plotting import TITLE_RENDERING, shaped_text_image
+    img = shaped_text_image("పులి అడ  విలో", "DejaVu Sans")
+    assert img is None or (img.ndim == 3 and img.shape[2] == 4)
+    paths = plot_variances(rec, str(tmp_path / "named"), telugu_font="DejaVu Sans")
+    assert all(os.path.getsize(p) > 1000 for p in paths.values())
+    assert TITLE_RENDERING["mode"].startswith(("Pillow raqm", "matplotlib text"))
+    print("title rendering:", TITLE_RENDERING["mode"])
     csv_path = tmp_path / "losses.csv"
     csv_path.write_text("split,step,lr,total,mel,mel_postnet,pitch,energy,duration,time_s\n"
                         "train,100,1e-4,3,1,1,0.5,0.3,0.2,10\nval,100,1e-4,3.2,1,1,0.6,0.4,0.2,12\n")

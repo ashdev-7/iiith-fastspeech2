@@ -29,18 +29,52 @@ def find_font(names=TELUGU_FONTS, extra_dirs=()):
     return None
 
 
-def _title_font(text, telugu_font):
-    if any("ఀ" <= ch <= "౿" for ch in text):
-        return {"fontfamily": telugu_font} if telugu_font else None
-    return {}
+def _is_telugu(text):
+    return any("ఀ" <= ch <= "౿" for ch in text)
+
+
+def shaped_text_image(text, font_name, size_px=30):
+    """Render text with Pillow's raqm layout (HarfBuzz shaping: Telugu conjuncts and vowel signs
+    are composed correctly; matplotlib's own text engine does not shape Indic scripts).
+    Returns an RGBA array, or None when raqm or the font file is unavailable."""
+    try:
+        from PIL import Image, ImageDraw, ImageFont, features
+        if not features.check("raqm"):
+            return None
+        path = font_manager.findfont(font_manager.FontProperties(family=font_name), fallback_to_default=False)
+        font = ImageFont.truetype(path, size_px, layout_engine=ImageFont.Layout.RAQM)
+        left, top, right, bottom = font.getbbox(text)
+        img = Image.new("RGBA", (right - left + 8, bottom - top + 8), (255, 255, 255, 0))
+        ImageDraw.Draw(img).text((4 - left, 4 - top), text, font=font, fill=(0, 0, 0, 255))
+        return np.asarray(img)
+    except Exception:  # noqa: BLE001  (any failure -> caller falls back to matplotlib text)
+        return None
+
+
+TITLE_RENDERING = {"mode": None}  # recorded in inference_report.json
 
 
 def _set_title(ax, item_id, text, what, telugu_font):
-    kw = _title_font(text, telugu_font)
-    if kw is None:  # no Telugu font: never render tofu boxes
+    """Line 1 (Latin) in the default font; line 2 = the original sentence. Telugu sentences are
+    drawn as a shaped image when possible, else as text with per-glyph font fallback."""
+    if not _is_telugu(text):
+        ax.set_title("{} - {}\n{}".format(item_id, what, text), fontsize=10)
+        return
+    if telugu_font is None:  # no Telugu font: never render tofu boxes
+        TITLE_RENDERING["mode"] = "no Telugu font: sentence omitted from plot titles"
         ax.set_title("{} - {} (sentence text: see variance_raw/{}.json)".format(item_id, what, item_id), fontsize=10)
+        return
+    img = shaped_text_image(text, telugu_font)
+    if img is not None:
+        from matplotlib.offsetbox import AnnotationBbox, OffsetImage
+        TITLE_RENDERING["mode"] = "Pillow raqm (shaped) + " + telugu_font
+        ax.add_artist(AnnotationBbox(OffsetImage(img, zoom=0.5), (0.5, 1.01), xycoords="axes fraction",
+                                     box_alignment=(0.5, 0.0), frameon=False))
+        ax.set_title("{} - {}".format(item_id, what), fontsize=10, pad=8 + img.shape[0] * 0.5 * 0.72)
     else:
-        ax.set_title("{} - {}\n{}".format(item_id, what, text), fontsize=10, **kw)
+        TITLE_RENDERING["mode"] = "matplotlib text with font fallback (Indic shaping not available)"
+        ax.set_title("{} - {}\n{}".format(item_id, what, text), fontsize=10,
+                     fontfamily=["DejaVu Sans", telugu_font])
 
 
 def _phone_axis(ax, phones, starts, durs, frame_ms):
@@ -118,7 +152,7 @@ def _save(fig, out_dir, kind, item_id):
     os.makedirs(os.path.join(out_dir, kind), exist_ok=True)
     path = os.path.join(out_dir, kind, "{}_{}.png".format(item_id, kind))
     fig.tight_layout()
-    fig.savefig(path, dpi=150)
+    fig.savefig(path, dpi=150, bbox_inches="tight")  # "tight" also keeps the title image inside
     plt.close(fig)
     return path
 

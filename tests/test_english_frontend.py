@@ -8,7 +8,7 @@ from text.english_frontend import normalize
 
 def test_e4_time_date_year():
     out, rules = normalize("The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.")
-    assert out == ("The meeting will start at ten forty five A M on twelve November twenty twenty six, "
+    assert out == ("The meeting will start at ten forty five AM on twelve November twenty twenty six, "
                    "so andaroo should arrive on time.")
     assert rules == ["time", "numbers", "hyphen"]
 
@@ -17,7 +17,7 @@ def test_split_token_is_not_merged():
     assert normalize("The rhyth  m of the orchestra")[0] == "The rhyth m of the orchestra"
 
 
-@pytest.mark.parametrize("src,expected", [("9:05 pm", "nine oh five P M"), ("12:00", "twelve o'clock")])
+@pytest.mark.parametrize("src,expected", [("9:05 pm", "nine oh five PM"), ("12:00", "twelve o'clock")])
 def test_times(src, expected):
     assert normalize(src)[0] == expected
 
@@ -40,3 +40,13 @@ def test_pronunciations(test_items):
     phones, e3 = text_to_phones(items["E3"], LEXICON)
     assert [w["token"] for w in e3["words"]][:3] == ["The", "rhyth", "m"]
     assert all(p != "sp" for p in phones[:6])  # no pause invented inside the sentence start
+
+
+def test_am_pm_are_letter_names():
+    pytest.importorskip("g2p_en")
+    from text.english_frontend import text_to_phones
+    lex = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "fastspeech2", "lexicon", "librispeech-lexicon.txt")
+    _, tr = text_to_phones("start at 10:45 AM or 9:05 pm", lex)
+    by_token = {w["token"]: w["phones"] for w in tr["words"]}
+    assert by_token["AM"] == ["EY1", "EH1", "M"] and by_token["PM"] == ["P", "IY1", "EH1", "M"]

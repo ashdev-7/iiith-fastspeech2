@@ -2,7 +2,7 @@
 
 The original text is never modified; every step is recorded in the returned trace.
 Normalisation (model input only):
-  * times "H:MM" (optionally followed by AM/PM) -> "ten forty five A M" (minutes 01-09 -> "oh five",
+  * times "H:MM" (optionally followed by AM/PM) -> "ten forty five AM", AM/PM read as letter names (minutes 01-09 -> "oh five",
     00 -> "o'clock");
   * other numbers: the reference's inflect-based normalize_numbers (years 1000-2999 are read in
     pairs, e.g. 2026 -> "twenty twenty six"; days are cardinal, as written: "12 November" -> "twelve");
@@ -22,6 +22,10 @@ _time_re = re.compile(r"\b([01]?\d|2[0-3]):([0-5]\d)(?:\s*([AaPp])\.?\s*[Mm]\b\.
 _punct = set(",;.:!?-\"()[]")
 _token_re = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)*|[^\sA-Za-z]")
 
+# Uppercase AM/PM (as written in times, and as produced by the time rule) are read as letter names;
+# the lexicon's first entry for AM is the verb "am" (AE1 M).
+LETTER_WORDS = {"AM": ["EY1", "EH1", "M"], "PM": ["P", "IY1", "EH1", "M"]}
+
 _lexicon = None
 _g2p = None
 
@@ -40,7 +44,7 @@ def _expand_time(m):
     else:
         words.append(_number_words(minute))
     if ampm:
-        words += [ampm.upper(), "M"]
+        words.append(ampm.upper() + "M")  # "AM"/"PM", read as letter names (see LETTER_WORDS)
     return " ".join(words)
 
 
@@ -112,7 +116,9 @@ def text_to_phones(text, lexicon_path):
                 word_trace.append({"token": tok, "source": "dropped (unsupported symbol)", "phones": []})
             continue
         low = tok.lower()
-        if low in g2p.homograph2features:
+        if tok in LETTER_WORDS:
+            pron, source = LETTER_WORDS[tok], "letter names"
+        elif low in g2p.homograph2features:
             pron1, pron2, pos1 = g2p.homograph2features[low]
             pron = pron1 if tags[wi].startswith(pos1) else pron2
             source = "g2p_en homograph (POS {})".format(tags[wi])
