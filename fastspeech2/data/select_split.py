@@ -30,7 +30,10 @@ def read_inventory(path):
         return list(csv.DictReader(f, delimiter="\t"))
 
 
-def select(rows, train_hours, val_hours, seed, tolerance=0.02):
+def select(rows, train_hours, val_hours, seed, tolerance=0.02, balance="proportional"):
+    """balance="proportional": speaker quotas follow each speaker's share of candidate audio
+    (used for Svarah's ~110 speakers); "equal": every speaker gets the same quota (used for the
+    two IndicTTS Telugu speakers, whose usable audio differs a lot)."""
     cand = [r for r in rows if r["status"] == "candidate"]
     # Exclude exact duplicate audio (keep the first occurrence) before splitting.
     seen_hash, excluded = {}, {}
@@ -48,8 +51,13 @@ def select(rows, train_hours, val_hours, seed, tolerance=0.02):
     for r in cand:
         spk_total[r["speaker"]] += r["duration"]
     total = sum(spk_total.values())
-    quota = {split: {s: hours * 3600 * spk_total[s] / total * (1 + tolerance) for s in spk_total}
+    share = {s: (1 / len(spk_total) if balance == "equal" else spk_total[s] / total) for s in spk_total}
+    quota = {split: {s: hours * 3600 * share[s] * (1 + tolerance) for s in spk_total}
              for split, hours in (("train", train_hours), ("val", val_hours))}
+    short = {s: round(spk_total[s] / 3600, 3) for s in spk_total
+             if spk_total[s] < (train_hours + val_hours) * 3600 * share[s]}
+    if short:
+        print(f"WARNING: speakers with less candidate audio than their quota (hours): {short}")
     used = {"train": collections.Counter(), "val": collections.Counter()}
 
     groups = collections.defaultdict(list)
@@ -88,21 +96,25 @@ def main():
     ap.add_argument("--train_hours", type=float, default=5.0)
     ap.add_argument("--val_hours", type=float, default=1.0)
     ap.add_argument("--seed", type=int, default=1234)
+    ap.add_argument("--balance", choices=["proportional", "equal"], default="proportional")
+    ap.add_argument("--out_dir", default=None, help="where to write the split files (default: manifest_dir)")
     args = ap.parse_args()
 
     rows = read_inventory(os.path.join(args.manifest_dir, "inventory.tsv"))
-    selected, excluded = select(rows, args.train_hours, args.val_hours, args.seed)
+    selected, excluded = select(rows, args.train_hours, args.val_hours, args.seed, balance=args.balance)
+    out_dir = args.out_dir or args.manifest_dir
+    os.makedirs(out_dir, exist_ok=True)
     leak = leakage_report(selected)
     if any(leak.values()):
         raise SystemExit(f"train/val overlap detected: {leak}")
 
     for split in ("train", "val", "not_selected"):
-        with open(os.path.join(args.manifest_dir, f"{split}.tsv"), "w", encoding="utf-8", newline="") as f:
+        with open(os.path.join(out_dir, f"{split}.tsv"), "w", encoding="utf-8", newline="") as f:
             w = csv.DictWriter(f, fieldnames=FIELDS_OUT, delimiter="\t", lineterminator="\n", extrasaction="ignore")
             w.writeheader()
             w.writerows(sorted((r for r in selected if r["split"] == split), key=lambda r: r["utt_id"]))
 
-    summary = {"seed": args.seed, "targets_hours": {"train": args.train_hours, "val": args.val_hours},
+    summary = {"seed": args.seed, "balance": args.balance, "targets_hours": {"train": args.train_hours, "val": args.val_hours},
                "inventory_rows": len(rows),
                "rejected": collections.Counter(r["reason"].split(":")[0] for r in rows if r["status"] == "rejected"),
                "duplicate_audio_excluded": len(excluded), "leakage": leak, "splits": {}}
@@ -116,7 +128,7 @@ def main():
             "speakers": len(per_spk),
             "hours_per_speaker_min_max": [round(min(per_spk.values(), default=0) / 3600, 4),
                                           round(max(per_spk.values(), default=0) / 3600, 4)]}
-    with open(os.path.join(args.manifest_dir, "split_summary.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(out_dir, "split_summary.json"), "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=1, ensure_ascii=False)
     print(json.dumps(summary, indent=1, ensure_ascii=False))
 

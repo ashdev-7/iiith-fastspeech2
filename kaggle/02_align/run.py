@@ -2,7 +2,7 @@
 
   en: pretrained english_us_arpa acoustic model + reference lexicon (+ g2p_en for OOV words)
   te: `mfa train` on the Telugu corpus with the rule-based G2P dictionary
-Outputs (/kaggle/working): TextGrid/<lang>/<speaker>/<utt>.TextGrid, mfa/<lang>/dictionary.txt,
+Outputs (/kaggle/working): TextGrid_<lang>.tar (<lang>/<speaker>/<utt>.TextGrid), mfa/<lang>/dictionary.txt,
 dictionary_info.json, alignment_summary.json, MFA logs.
 MFA is installed with micromamba (conda-forge) so the job does not depend on the image's Python.
 """
@@ -68,19 +68,28 @@ def clone_code():
     return f"{dst}/fastspeech2"
 
 
+def unpack_ingest(lang):
+    """Rebuild <TMP>/ingest/{raw_data,manifests}/<lang> from the fs2-01-ingest output files."""
+    ingest = f"{TMP}/ingest"
+    tar = find_one(f"/kaggle/input/**/raw_data_{lang}.tar", f"fs2-01-ingest raw_data_{lang}.tar")
+    os.makedirs(f"{ingest}/raw_data", exist_ok=True)
+    run(["tar", "-xf", tar, "-C", f"{ingest}/raw_data"])
+    manifests = os.path.dirname(find_one(f"/kaggle/input/**/manifests/{lang}/train.tsv", f"{lang} manifests"))
+    shutil.copytree(manifests, f"{ingest}/manifests/{lang}", dirs_exist_ok=True)
+    return ingest
+
+
 def main():
     src = clone_code()
-    ingest = os.path.dirname(os.path.dirname(os.path.dirname(
-        find_one("/kaggle/input/**/manifests/te/train.tsv", "fs2-01-ingest output"))))
-    print("code:", src, "ingest:", ingest, flush=True)
     run([sys.executable, "-m", "pip", "install", "-q", "g2p_en", "unidecode", "inflect"])
     install_mfa()
     env = dict(os.environ, PYTHONPATH=src, PYTHONIOENCODING="utf-8")
 
     for lang in ("te", "en"):
         corpus, dict_path = f"{TMP}/corpus_{lang}", f"{OUT}/mfa/{lang}/dictionary.txt"
-        tg_dir = f"{OUT}/TextGrid/{lang}"
+        tg_dir = f"{TMP}/TextGrid/{lang}"
         try:
+            ingest = unpack_ingest(lang)
             run([sys.executable, f"{src}/data/mfa_prepare.py", "--lang", lang, "--ingest_dir", ingest,
                  "--corpus", corpus, "--dict_out", dict_path], env=env)
             common = ["--clean", "--overwrite", "-j", JOBS, "--temporary_directory", f"{TMP}/mfa_tmp_{lang}"]
@@ -92,7 +101,8 @@ def main():
                 mfa("train", corpus, dict_path, f"{OUT}/mfa/te/telugu_acoustic_model.zip",
                     "--output_directory", tg_dir, *common)
             summarise(lang, corpus, tg_dir)
-        except subprocess.CalledProcessError as e:
+            run(["tar", "-cf", f"{OUT}/TextGrid_{lang}.tar", "-C", f"{TMP}/TextGrid", lang])
+        except (subprocess.CalledProcessError, SystemExit) as e:
             print(f"!! {lang} failed: {e}", flush=True)
         finally:
             for log in glob.glob(f"{TMP}/mfa_tmp_{lang}/**/*.log", recursive=True)[:50]:
