@@ -116,6 +116,8 @@ def main(args):
             output[1], output[2], output[3], output[4], output[5], output[9])
         durs = d_rounded[0, : len(seq)].cpu().numpy().astype(int)
         mel_len = int(mel_lens[0].item())
+        if mel_len == 0:
+            raise SystemExit("{}: the model predicted zero frames for every phone".format(item_id))
         mel = postnet_mel[0, :mel_len].transpose(0, 1).unsqueeze(0)
         wav = vocoder_infer(mel, vocoder, model_config, preprocess_config)[0]
         wav_path = os.path.join(out, "test_generated_audios", "{}_{}.wav".format(item_id, lang))

@@ -1,0 +1,21 @@
+# Kaggle jobs
+
+All compute runs as Kaggle script kernels pushed with the Kaggle CLI. Each job clones this repository,
+records the commit in `code_commit.txt`, and calls the shared stage functions in `pipeline.py`.
+
+| Job | Accelerator | Input | Does |
+|-----|-------------|-------|------|
+| `01_ingest` (`fs2-01-ingest`) | none needed | HF datasets (needs the `HF_TOKEN` Kaggle secret) | inventory, 22.05 kHz wav/.lab, train/val split |
+| `00_rehearsal` (`fs2-00-rehearsal`) | CPU | 01 | every later stage end to end on a small subset (tests, MFA, features, copy-synthesis, train + resume, inference, plots) |
+| `02_data` (`fs2-02-data`) | CPU | 01 | full MFA alignment, features, copy-synthesis, test-voice choice |
+| training / inference | GPU T4 (`--accelerator NvidiaTeslaT4`) | 02 | (added after the rehearsal sizes them) |
+
+Failure-mode guards: the test suite runs first in every job (`pytest_gate`); CUDA is exercised at start-up
+on GPU jobs; each stage is timed and its error recorded in `status.json`, which is rewritten after every
+stage; non-fatal stages let the other language continue; training stops on non-finite loss and
+checkpoints before the session limit (`--max_minutes`), resuming with `--restore_step latest`.
+
+API budget (Kaggle rate limits): a job leaves only a handful of files in `/kaggle/working`
+(tars + small JSON), so listing its output is one cheap call. Per job: 1 push, status polls no more
+often than every 5 minutes, then one fetch of `status.json` (and at most one small tar). Big tars are
+never downloaded; later jobs read them through `kernel_sources`.
