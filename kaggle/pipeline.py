@@ -86,10 +86,20 @@ def run(args, env=None, cwd=None, log=None):
     return out
 
 
+def optional_output(args):
+    """Output of a diagnostic/optional command, or a note if the tool is missing or fails.
+    Never raises (e.g. nvidia-smi does not exist on CPU machines)."""
+    try:
+        p = subprocess.run(list(map(str, args)), capture_output=True, text=True, timeout=600)
+        return p.stdout if p.returncode == 0 else f"[{args[0]} exited {p.returncode}] {p.stderr[-500:]}"
+    except (OSError, subprocess.SubprocessError) as e:
+        return f"[{args[0]} unavailable: {type(e).__name__}: {e}]"
+
+
 def find_one(pattern, what):
     hits = sorted(glob.glob(pattern, recursive=True))
     if not hits:
-        listing = subprocess.run(["find", "/kaggle/input", "-maxdepth", "4"], capture_output=True, text=True).stdout
+        listing = optional_output(["find", "/kaggle/input", "-maxdepth", "4"])
         raise FileNotFoundError(f"{what} not found ({pattern}). /kaggle/input:\n{listing[:2500]}")
     return hits[0]
 
@@ -128,7 +138,7 @@ def setup_python(status):
             rec["cuda_arch_list"] = torch.cuda.get_arch_list()
         with open(f"{OUT}/environment.txt", "w") as f:
             f.write(sys.version + "\n" + json.dumps(rec) + "\n")
-            f.write(subprocess.run(["nvidia-smi"], capture_output=True, text=True).stdout)
+            f.write(optional_output(["nvidia-smi"]))
             f.write(subprocess.run([sys.executable, "-m", "pip", "freeze"], capture_output=True, text=True).stdout)
 
 
@@ -152,9 +162,10 @@ def fetch_telugu_font(dst=f"{TMP}/fonts"):
     os.makedirs(dst, exist_ok=True)
     for url in FONT_URLS:
         path = os.path.join(dst, "NotoSansTelugu.ttf")
-        if subprocess.run(["curl", "-fsSL", "-o", path, url]).returncode == 0 and os.path.getsize(path) > 50000:
+        optional_output(["curl", "-fsSL", "-o", path, url])
+        if os.path.exists(path) and os.path.getsize(path) > 50000:
             return dst
-    if subprocess.run(["bash", "-c", "apt-get install -y -q fonts-noto-core >/dev/null 2>&1"]).returncode == 0:
+    if not optional_output(["bash", "-c", "apt-get install -y -q fonts-noto-core >/dev/null 2>&1"]).startswith("["):
         hits = glob.glob("/usr/share/fonts/**/NotoSansTelugu*", recursive=True)
         if hits:
             return os.path.dirname(hits[0])
@@ -224,16 +235,40 @@ def install_mfa(status):
             run(["bash", "-c", f"cd {TMP} && curl -fLs https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xj bin/micromamba"])
         if not os.path.isdir(MFA_ENV):
             run([MAMBA, "create", "-y", "-q", "-p", MFA_ENV, "-c", "conda-forge", "montreal-forced-aligner"])
-        rec["version"] = run([MAMBA, "run", "-p", MFA_ENV, "mfa", "version"]).strip()[-200:]
+        rec["version"] = mfa("version").strip()[-200:]
+        rec["runs_as"] = MFA_USER if _as_root() else "current user"
         # Keep the CLI help so flag errors can be diagnosed from the status alone.
         for cmd in ("align", "train"):
-            h = run([MAMBA, "run", "-p", MFA_ENV, "mfa", cmd, "--help"])
+            h = mfa(cmd, "--help")
             with open(f"{OUT}/mfa_{cmd}_help.txt", "w") as f:
                 f.write(h)
 
 
+MFA_USER = "mfa"
+MFA_HOME = f"/home/{MFA_USER}"
+
+
+def _as_root():
+    return hasattr(os, "geteuid") and os.geteuid() == 0
+
+
+def mfa_writable(*dirs):
+    """MFA runs as a non-root user (PostgreSQL, which MFA 3 uses, refuses to run as root;
+    the official MFA Docker image also runs as a non-root user). Make its output dirs writable."""
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
+        if _as_root():
+            run(["chmod", "-R", "a+rwX", d])
+
+
 def mfa(*args, log=None):
-    return run([MAMBA, "run", "-p", MFA_ENV, "mfa", *args], log=log)
+    cmd = [MAMBA, "run", "-p", MFA_ENV, "mfa", *args]
+    if _as_root():
+        if subprocess.run(["id", MFA_USER], capture_output=True).returncode != 0:
+            run(["useradd", "-m", "-d", MFA_HOME, MFA_USER])
+        cmd = ["runuser", "-u", MFA_USER, "--", "env", f"HOME={MFA_HOME}", f"MFA_ROOT_DIR={MFA_HOME}/MFA",
+               f"MAMBA_ROOT_PREFIX={MFA_HOME}/.mamba"] + cmd
+    return run(cmd, log=log)
 
 
 def align(lang, root, repo, rec, jobs=None):
@@ -250,6 +285,7 @@ def align(lang, root, repo, rec, jobs=None):
     info = json.load(open(f"{OUT}/mfa_{lang}/dictionary_info.json", encoding="utf-8"))
     rec["dictionary_words"] = info["dictionary_words"]
     rec["words_without_pronunciation"] = len(info["words_without_pronunciation"])
+    mfa_writable(os.path.dirname(tg), f"{TMP}/mfa_tmp_{lang}", f"{OUT}/mfa_{lang}")
     common = ["--clean", "-j", jobs, "--temporary_directory", f"{TMP}/mfa_tmp_{lang}"]
     if lang == "en":
         mfa("model", "download", "acoustic", "english_us_arpa", log=log)

@@ -73,3 +73,9 @@ def test_finalize_bundles_loose_files(tmp_path, monkeypatch):
     os.makedirs(tmp_path / "logs" / "deep")
     (tmp_path / "logs" / "deep" / "x.log").write_text("x")
     assert P.finalize() == ["big.tar", "details.tar", "status.json"]
+
+
+def test_optional_output_never_raises():
+    assert P.optional_output(["definitely-not-a-real-tool-xyz"]).startswith("[definitely-not-a-real-tool-xyz unavailable")
+    assert "hi" in P.optional_output([sys.executable, "-c", "print('hi')"])
+    assert P.optional_output([sys.executable, "-c", "import sys; sys.exit(3)"]).startswith("[")

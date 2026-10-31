@@ -67,6 +67,15 @@ class LossLog:
         self.f.flush()
 
 
+def write_diagnostics(path, step, diag):
+    new = not os.path.exists(path)
+    with open(path, "a", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        if new:
+            w.writerow(["step"] + sorted(diag))
+        w.writerow([step] + ["{:.6f}".format(diag[k]) for k in sorted(diag)])
+
+
 def main(args):
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
@@ -167,8 +176,13 @@ def main(args):
 
                 if step % val_step == 0:
                     model.eval()
-                    message, val_means = evaluate(model, step, configs, val_logger, vocoder, return_losses=True)
+                    diag = {}
+                    message, val_means = evaluate(model, step, configs, val_logger, vocoder, return_losses=True,
+                                                  diagnostics=diag)
                     loss_log.write("val", step, lr, val_means, time.time() - t0)
+                    write_diagnostics(os.path.join(log_path, "val_diagnostics.csv"), step, diag)
+                    message += ", Duration MAE {:.3f} frames, total-length rel. error {:.3f}".format(
+                        diag["duration_mae_frames"], diag["total_length_rel_error"])
                     outer_bar.write(message)
                     model.train()
 

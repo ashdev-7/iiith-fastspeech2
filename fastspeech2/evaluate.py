@@ -15,7 +15,9 @@ from dataset import Dataset
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(model, step, configs, logger=None, vocoder=None, return_losses=False):
+def evaluate(model, step, configs, logger=None, vocoder=None, return_losses=False, diagnostics=None):
+    """diagnostics: optional dict, filled with duration-predictor metrics on the validation set
+    (rounded predicted vs. MFA durations, per valid phone; total-length error per utterance)."""
     preprocess_config, model_config, train_config = configs
 
     # Get dataset
@@ -35,6 +37,7 @@ def evaluate(model, step, configs, logger=None, vocoder=None, return_losses=Fals
 
     # Evaluation
     loss_sums = [0 for _ in range(6)]
+    dur_abs_err, n_phones, rel_len_err, n_utts = 0.0, 0, 0.0, 0
     for batchs in loader:
         for batch in batchs:
             batch = to_device(batch, device)
@@ -48,7 +51,20 @@ def evaluate(model, step, configs, logger=None, vocoder=None, return_losses=Fals
                 for i in range(len(losses)):
                     loss_sums[i] += losses[i].item() * len(batch[0])
 
+                # Duration diagnostics (reference conversion: clamp(round(exp(log_d) - 1), 0)).
+                valid = ~output[6]
+                pred_d = torch.clamp(torch.round(torch.exp(output[4]) - 1), min=0) * valid
+                true_d = batch[11].float() * valid
+                dur_abs_err += (pred_d - true_d).abs().sum().item()
+                n_phones += int(valid.sum().item())
+                tot_true = true_d.sum(1).clamp(min=1)
+                rel_len_err += ((pred_d.sum(1) - true_d.sum(1)).abs() / tot_true).sum().item()
+                n_utts += len(batch[0])
+
     loss_means = [loss_sum / len(dataset) for loss_sum in loss_sums]
+    if diagnostics is not None:
+        diagnostics["duration_mae_frames"] = dur_abs_err / max(1, n_phones)
+        diagnostics["total_length_rel_error"] = rel_len_err / max(1, n_utts)
 
     message = "Validation Step {}, Total Loss: {:.4f}, Mel Loss: {:.4f}, Mel PostNet Loss: {:.4f}, Pitch Loss: {:.4f}, Energy Loss: {:.4f}, Duration Loss: {:.4f}".format(
         *([step] + [l for l in loss_means])
