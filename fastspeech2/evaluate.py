@@ -2,10 +2,10 @@ import argparse
 import os
 
 import torch
-import yaml
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
+from utils.config import load_configs
 from utils.model import get_model, get_vocoder
 from utils.tools import to_device, log, synth_one_sample
 from model import FastSpeech2Loss
@@ -15,7 +15,7 @@ from dataset import Dataset
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(model, step, configs, logger=None, vocoder=None):
+def evaluate(model, step, configs, logger=None, vocoder=None, return_losses=False):
     preprocess_config, model_config, train_config = configs
 
     # Get dataset
@@ -83,6 +83,8 @@ def evaluate(model, step, configs, logger=None, vocoder=None):
             tag="Validation/step_{}_{}_synthesized".format(step, tag),
         )
 
+    if return_losses:
+        return message, loss_means
     return message
 
 
@@ -90,28 +92,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--restore_step", type=int, default=30000)
-    parser.add_argument(
-        "-p",
-        "--preprocess_config",
-        type=str,
-        required=True,
-        help="path to preprocess.yaml",
-    )
-    parser.add_argument(
-        "-m", "--model_config", type=str, required=True, help="path to model.yaml"
-    )
-    parser.add_argument(
-        "-t", "--train_config", type=str, required=True, help="path to train.yaml"
-    )
+    parser.add_argument("--config", type=str, required=True, help="English/config.yaml or Telugu/config.yaml")
+    parser.add_argument("--data_root", type=str, default=None)
     args = parser.parse_args()
 
     # Read Config
-    preprocess_config = yaml.load(
-        open(args.preprocess_config, "r"), Loader=yaml.FullLoader
-    )
-    model_config = yaml.load(open(args.model_config, "r"), Loader=yaml.FullLoader)
-    train_config = yaml.load(open(args.train_config, "r"), Loader=yaml.FullLoader)
-    configs = (preprocess_config, model_config, train_config)
+    configs = load_configs(args.config, args.data_root)
 
     # Get model
     model = get_model(args, configs, device, train=False).to(device)
