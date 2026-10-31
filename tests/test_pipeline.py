@@ -79,3 +79,29 @@ def test_optional_output_never_raises():
     assert P.optional_output(["definitely-not-a-real-tool-xyz"]).startswith("[definitely-not-a-real-tool-xyz unavailable")
     assert "hi" in P.optional_output([sys.executable, "-c", "print('hi')"])
     assert P.optional_output([sys.executable, "-c", "import sys; sys.exit(3)"]).startswith("[")
+
+
+def test_size_training_from_throughput():
+    plan = P.size_training(steps_per_s=4.0, budget_minutes=600)    # 4 steps/s * 10 h * 0.95 = 136.8k
+    assert plan["total_step"] == 136000
+    assert plan["anneal_steps"] == [45000, 60000, 75000]
+    assert plan["anneal_steps"][-1] < plan["total_step"]
+    assert P.size_training(50.0, 600)["total_step"] == 160000      # cap
+    assert P.size_training(0.1, 600)["total_step"] == 20000        # floor
+
+
+def test_data_job_test_voice(tmp_path):
+    d = tmp_path / "fs2-02-data"
+    d.mkdir()
+    (d / "status.json").write_text(json.dumps({"stages": {"te_test_voice": {"ok": True, "speaker": "te_female"}}}))
+    assert P.data_job_test_voice("te", str(tmp_path) + "/**/fs2-02-data/**/status.json") == "te_female"
+
+
+def test_generated_train_jobs_match_template():
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import make_train_jobs as M
+    for lang in ("te", "en"):
+        d = os.path.join(ROOT, "kaggle", f"03_train_{lang}")
+        assert open(os.path.join(d, "run.py"), encoding="utf-8").read() == M.render(lang), "run tools/make_train_jobs.py"
+        assert json.load(open(os.path.join(d, "kernel-metadata.json"))) == M.metadata(lang)
+        assert f'LANG = "{lang}"' in M.render(lang)

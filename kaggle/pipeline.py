@@ -415,3 +415,39 @@ def finalize(keep=("status.json", "pytest.txt", "environment.txt", "code_commit.
             p = f"{OUT}/{n}"
             shutil.rmtree(p) if os.path.isdir(p) and not os.path.islink(p) else os.remove(p)
     return sorted(os.listdir(OUT))
+
+
+# ----------------------------------------------------------------------------- GPU training
+def unpack_preprocessed(lang, root):
+    """<root>/preprocessed/<lang>/{mel,pitch,energy,duration,train.txt,val.txt,stats.json,speakers.json}"""
+    dst = f"{root}/preprocessed/{lang}"
+    os.makedirs(dst, exist_ok=True)
+    run(["tar", "-xf", find_one(f"/kaggle/input/**/preprocessed_{lang}.tar", f"preprocessed_{lang}.tar"), "-C", dst])
+    for f in ("train.txt", "val.txt", "stats.json", "speakers.json"):
+        if not os.path.exists(f"{dst}/{f}"):
+            raise FileNotFoundError(f"{dst}/{f} missing after unpacking")
+    return dst
+
+
+def data_job_test_voice(lang, status_glob="/kaggle/input/**/fs2-02-data/**/status.json"):
+    """Test voice chosen by fs2-02-data with the pre-registered rule, read from its status.json."""
+    st = json.load(open(find_one(status_glob, "fs2-02-data status.json"), encoding="utf-8"))
+    return st["stages"][f"{lang}_test_voice"]["speaker"]
+
+
+def size_training(steps_per_s, budget_minutes, cap=160000, floor=20000):
+    """total_step from the measured throughput (5 % margin); learning-rate decay at the reference's
+    proportions (300k/400k/500k of 900k)."""
+    total = int(steps_per_s * budget_minutes * 60 * 0.95) // 1000 * 1000
+    total = max(floor, min(cap, total))
+    anneal = [int(total * f) // 1000 * 1000 for f in (300 / 900, 400 / 900, 500 / 900)]
+    return {"total_step": total, "anneal_steps": anneal,
+            "val_step": max(1000, total // 50 // 1000 * 1000), "save_step": 10000, "log_step": 100}
+
+
+def model_only_checkpoint(full_ckpt, dst):
+    """Release checkpoint: model weights + step, without the optimizer state."""
+    import torch
+    ck = torch.load(full_ckpt, map_location="cpu", weights_only=True)
+    torch.save({"model": ck["model"], "step": ck.get("step")}, dst)
+    return dst
