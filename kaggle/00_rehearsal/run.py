@@ -34,9 +34,11 @@ try:
         rec["font_dir"] = font_dir
     for lang in ("te", "en"):
         root = f"{TMP}/data"
-        with status.stage(f"{lang}_stage_inputs") as rec:
+        with status.stage(f"{lang}_stage_inputs", fatal=False) as rec:  # e.g. ingest output missing a language
             P.unpack_ingest(lang, root)
             rec.update(P.subset_manifests(root, lang, **SUBSET[lang]))
+        if not status.ok(f"{lang}_stage_inputs"):
+            continue
         with status.stage(f"{lang}_align", fatal=False) as rec:
             P.align(lang, root, repo, rec)
         P.save_mfa_logs(lang)
