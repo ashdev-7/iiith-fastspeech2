@@ -47,8 +47,8 @@ def read_reference_lexicon():
 def english_dictionary(words):
     lex = read_reference_lexicon()
     oov = sorted(w for w in words if w not in lex)
-    from g2p_en import G2p
-    g2p = G2p()
+    from text.english_frontend import _get_g2p  # also fetches the nltk resources g2p_en needs
+    g2p = _get_g2p()
     entries, g2p_words = {}, {}
     for w in sorted(words):
         if w in lex:

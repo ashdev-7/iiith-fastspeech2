@@ -100,8 +100,22 @@ def code_env(repo):
 
 # ----------------------------------------------------------------------------- environment
 def setup_python(status):
-    with status.stage("pip_install"):
-        run([sys.executable, "-m", "pip", "install", "-q", *PIP])
+    with status.stage("pip_install") as rec:
+        failed = []
+        for pkg in PIP:  # one by one, so a failure names the package
+            try:
+                run([sys.executable, "-m", "pip", "install", "-q", pkg])
+            except RuntimeError:
+                try:  # e.g. pyworld: build against the installed numpy/Cython instead of an isolated env
+                    run([sys.executable, "-m", "pip", "install", "-q", "cython", "setuptools", "wheel"])
+                    run([sys.executable, "-m", "pip", "install", "-q", "--no-build-isolation", pkg])
+                    rec.setdefault("fallback_used", []).append(pkg)
+                except RuntimeError:
+                    failed.append(pkg)
+        if failed:
+            raise RuntimeError(f"could not install {failed}")
+        # Import check now, not hours later.
+        run([sys.executable, "-c", "import tgt, pyworld, g2p_en, librosa, sklearn, soundfile, scipy, matplotlib, yaml"])
     with status.stage("environment") as rec:
         import torch
         rec["python"] = sys.version.split()[0]
