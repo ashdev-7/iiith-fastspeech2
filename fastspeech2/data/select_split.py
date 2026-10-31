@@ -9,6 +9,8 @@ Rule (plan.txt 5.2, R2.3, R1.5):
   * each speaker gets train/val quotas proportional to its share of candidate audio
     (train_hours, val_hours in total); a group goes to val if it fits every val quota it
     touches, else to train if it fits the train quotas, else it is left "not_selected";
+  * groups that share a normalised transcript are merged first (union-find), so a sentence read in
+    two recordings cannot end up in both splits;
   * leakage checks: utterance ids, groups, normalised transcripts and PCM hashes must be
     disjoint between train and val (duplicate audio within the inventory is excluded).
 Limitation: the fill is greedy. A multi-speaker group (same sentence read by several speakers)
@@ -34,6 +36,34 @@ def read_inventory(path):
         return list(csv.DictReader(f, delimiter="\t"))
 
 
+def merge_groups_sharing_text(rows):
+    """Union-find: groups (e.g. two Svarah recordings) that contain the same normalised transcript
+    become one group, so no transcript can appear in both train and val. Sets r["group"] to the
+    component's representative (the smallest original group id) and returns component sizes."""
+    parent = {}
+
+    def find(x):
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[max(ra, rb)] = min(ra, rb)
+
+    first_group_of_text = {}
+    for r in rows:
+        find(r["group"])
+        g0 = first_group_of_text.setdefault(r["model_text"], r["group"])
+        union(g0, r["group"])
+    for r in rows:
+        r["group"] = find(r["group"])
+    return collections.Counter(r["group"] for r in rows)
+
+
 def select(rows, train_hours, val_hours, seed, tolerance=0.02, balance="proportional"):
     """balance="proportional": speaker quotas follow each speaker's share of candidate audio
     (used for Svarah's ~110 speakers); "equal": every speaker gets the same quota (used for the
@@ -50,6 +80,7 @@ def select(rows, train_hours, val_hours, seed, tolerance=0.02, balance="proporti
     for r in cand:
         r["duration"] = float(r["duration"])
         r["group"] = r["group"] or "text:" + hashlib.sha1(r["model_text"].encode("utf-8")).hexdigest()[:16]
+    merge_groups_sharing_text(cand)
 
     spk_total = collections.Counter()
     for r in cand:
@@ -122,6 +153,12 @@ def main():
                "inventory_rows": len(rows),
                "rejected": collections.Counter(r["reason"].split(":")[0] for r in rows if r["status"] == "rejected"),
                "duplicate_audio_excluded": len(excluded), "leakage": leak, "splits": {}}
+    group_hours = collections.Counter()
+    for r in selected:
+        group_hours[r["group"]] += r["duration"] / 3600
+    summary["groups"] = {"count": len(group_hours),
+                         "largest_hours": round(max(group_hours.values(), default=0), 4),
+                         "groups_over_0.1h": sum(1 for v in group_hours.values() if v > 0.1)}
     for split in ("train", "val", "not_selected"):
         part = [r for r in selected if r["split"] == split]
         per_spk = collections.Counter()

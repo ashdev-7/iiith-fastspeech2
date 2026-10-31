@@ -52,3 +52,19 @@ def test_quotas_respected_per_speaker():
         for spk in ("te_female", "te_male"):
             got = sum(r["duration"] for r in rows if r["split"] == split and r["speaker"] == spk) / 3600
             assert hours / 2 * 0.9 <= got <= hours / 2 * 1.02 + 1e-9
+
+
+def test_recordings_sharing_a_sentence_never_cross_the_split():
+    """Svarah: different recordings (groups) can contain the same prompt; the 2026-10-31 ingest found
+    49 such transcripts in both train and val before groups sharing text were merged."""
+    rows = []
+    for g in range(300):
+        for c in range(3):
+            text = "can you name five states" if c == 0 and g % 10 == 0 else f"recording {g} chunk {c}"
+            rows.append({"utt_id": f"{g}_{c}", "speaker": f"spk{g % 7}", "group": f"rec{g}", "duration": "5.0",
+                         "model_text": text, "pcm_sha1": f"{g}_{c}", "status": "candidate", "reason": ""})
+    out, _ = select(copy.deepcopy(rows), train_hours=0.6, val_hours=0.15, seed=11)
+    assert leakage_report(out)["model_text_overlap"] == 0
+    shared = {r["split"] for r in out if r["model_text"] == "can you name five states"}
+    assert len(shared) == 1
+    assert len({r["group"] for r in out if r["model_text"] == "can you name five states"}) == 1
