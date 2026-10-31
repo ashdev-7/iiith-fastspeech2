@@ -45,7 +45,9 @@ class ScheduledOptim:
     def _update_learning_rate(self):
         """ Learning rate scheduling per step """
         self.current_step += 1
-        lr = self.init_lr * self._get_lr_scale()
+        # float(): a numpy scalar here would be pickled into the checkpoint and rejected by
+        # torch.load(weights_only=True) (torch >= 2.6).
+        lr = float(self.init_lr * self._get_lr_scale())
 
         for param_group in self._optimizer.param_groups:
             param_group["lr"] = lr

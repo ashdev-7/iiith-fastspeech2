@@ -115,3 +115,21 @@ def test_to_device_casts_float64_features():
     out = to_device(data, torch.device("cpu"))
     assert out[9].dtype == out[10].dtype == torch.float32
     assert out[11].dtype == torch.int64
+
+
+def test_train_checkpoint_loads_with_weights_only(tmp_path):
+    """Checkpoint written by train.save_checkpoint after a real optimizer step must load with
+    weights_only=True (the reference stored a numpy-scalar learning rate, which torch rejects)."""
+    import torch.nn as nn
+    from model import ScheduledOptim
+    from train import save_checkpoint
+    preprocess_config, model_config, train_config = _configs("te", tmp_path)
+    model = nn.DataParallel(FastSpeech2(preprocess_config, model_config).to(device))
+    opt = ScheduledOptim(model, train_config, model_config, 0)
+    sum(p.sum() for p in model.parameters() if p.requires_grad).backward()
+    opt.step_and_update_lr()
+    path = save_checkpoint(model, opt, 7, str(tmp_path))
+    ckpt = torch.load(path, map_location=device, weights_only=True)
+    assert ckpt["step"] == 7 and isinstance(ckpt["optimizer"]["param_groups"][0]["lr"], float)
+    resumed = ScheduledOptim(model, train_config, model_config, 7)
+    resumed.load_state_dict(ckpt["optimizer"])
