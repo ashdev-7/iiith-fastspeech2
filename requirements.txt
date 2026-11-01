@@ -21,6 +21,9 @@ unidecode>=1.3           # reference English cleaners
 huggingface_hub>=0.23
 pyarrow>=14
 pymupdf>=1.23            # tools/build_test_manifest.py (reads the assignment PDF)
-# Forced alignment: Montreal Forced Aligner 3.x from conda-forge (see kaggle/02_align/run.py)
+# Evaluation only (fastspeech2/evaluate_val.py): Whisper ASR for intelligibility
+transformers>=4.40
+# Forced alignment: Montreal Forced Aligner 3.4 from conda-forge, via micromamba
+# (see kaggle/pipeline.py install_mfa / align)
 # Tests
 pytest>=7

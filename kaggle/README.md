@@ -8,7 +8,12 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `01_ingest` (`fs2-01-ingest`) | none needed | HF datasets (needs the `HF_TOKEN` Kaggle secret) | inventory, 22.05 kHz wav/.lab, train/val split |
 | `00_rehearsal` (`fs2-00-rehearsal`) | CPU | 01 | every later stage end to end on a small subset (tests, MFA, features, copy-synthesis, train + resume, inference, plots) |
 | `02_data` (`fs2-02-data`) | CPU | 01 | full MFA alignment, features, copy-synthesis, test-voice choice |
-| training / inference | GPU T4 (`--accelerator NvidiaTeslaT4`) | 02 | (added after the rehearsal sizes them) |
+| `03_train_te`, `03_train_en` (`fs2-03-train-<lang>`) | GPU T4 (`--accelerator NvidiaTeslaT4`) | 02 | tests, 300-step throughput probe, dry run of loss plots + inference on the probe checkpoint (fail fast), training sized to an 8 h budget, checkpoints, `training_loss.png` / `validation_loss.png`, test-sentence synthesis + variance plots with RTF timing |
+| `04_eval_smoke` (`fs2-04-eval-smoke`) | CPU | 02 | the evaluation code on a 150-step model, 20 utterances, Whisper tiny: finds bugs before the GPU run (numbers meaningless) |
+| `04_eval_full` (`fs2-04-eval`) | GPU T4 | 02, 03 te, 03 en | `fastspeech2/evaluate_val.py` for both languages: validation-set metrics, Whisper intelligibility, stress sentences, control check, GPU/CPU RTF |
+
+`03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
+by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.
 
 Failure-mode guards: the test suite runs first in every job (`pytest_gate`); CUDA is exercised at start-up
 on GPU jobs; each stage is timed and its error recorded in `status.json`, which is rewritten after every
