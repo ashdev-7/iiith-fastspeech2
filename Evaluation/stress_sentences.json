@@ -1,0 +1,21 @@
+{
+  "purpose": "Extra stress tests, beyond the assignment's ten test sentences. Each sentence probes one frontend or prosody case; failures are reported, not hidden. Written for this project (no dataset text). Telugu glosses in 'gloss'.",
+  "items": [
+    {"id": "SE01", "lang": "en", "category": "time and numbers", "text": "The train leaves at 7:30 PM from platform 3."},
+    {"id": "SE02", "lang": "en", "category": "question intonation", "text": "Did you remember to bring the documents for tomorrow's interview?"},
+    {"id": "SE03", "lang": "en", "category": "homograph (wind: noun / verb)", "text": "The wind was strong, so we had to wind the rope tightly."},
+    {"id": "SE04", "lang": "en", "category": "Indian names and places", "text": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend."},
+    {"id": "SE05", "lang": "en", "category": "rare technical words", "text": "The cryptographic protocol relies on elliptic curve signatures."},
+    {"id": "SE06", "lang": "en", "category": "abbreviations (known gap: no abbreviation expansion)", "text": "Dr. Rao presented the results at IIIT Hyderabad."},
+    {"id": "SE07", "lang": "en", "category": "long sentence", "text": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring."},
+    {"id": "SE08", "lang": "en", "category": "exclamation, very short", "text": "What a wonderful surprise!"},
+    {"id": "ST01", "lang": "te", "category": "question intonation", "text": "మీరు రేపు ఉదయం ఆఫీసుకు వస్తారా?", "gloss": "Will you come to the office tomorrow morning?"},
+    {"id": "ST02", "lang": "te", "category": "numbers", "text": "ఈ పుస్తకం ధర 250 రూపాయలు.", "gloss": "The price of this book is 250 rupees."},
+    {"id": "ST03", "lang": "te", "category": "time", "text": "రైలు సాయంత్రం 6:30 కి బయలుదేరుతుంది.", "gloss": "The train departs at 6:30 in the evening."},
+    {"id": "ST04", "lang": "te", "category": "consonant clusters (conjuncts)", "text": "స్త్రీ శక్తి రాష్ట్ర అభివృద్ధికి ముఖ్యం.", "gloss": "Women's strength is important for the state's development."},
+    {"id": "ST05", "lang": "te", "category": "English loanwords in Telugu script (with ZWNJ)", "text": "నా లాప్‌టాప్ బ్యాటరీ త్వరగా అయిపోతోంది.", "gloss": "My laptop battery is draining quickly."},
+    {"id": "ST06", "lang": "te", "category": "Latin-script word inside Telugu (code-mixing)", "text": "నేను నిన్న కొత్త iPhone కొన్నాను.", "gloss": "I bought a new iPhone yesterday."},
+    {"id": "ST07", "lang": "te", "category": "long sentence", "text": "హైదరాబాద్ నగరంలో ప్రతి సంవత్సరం జరిగే పుస్తక ప్రదర్శనకు వేలాది మంది పాఠకులు, రచయితలు మరియు విద్యార్థులు ఉత్సాహంగా హాజరవుతారు.", "gloss": "Thousands of readers, writers and students enthusiastically attend the book fair held every year in Hyderabad."},
+    {"id": "ST08", "lang": "te", "category": "exclamation, very short", "text": "ఎంత అందమైన దృశ్యం!", "gloss": "What a beautiful sight!"}
+  ]
+}

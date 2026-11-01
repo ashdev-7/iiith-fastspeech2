@@ -7,7 +7,8 @@ Telugu orthography is close to phonemic, so each akshara maps to phones determin
   * visarga becomes /h/; candrabindu, nukta and avagraha produce no phone.
 Every Telugu code point must be consumed by exactly one rule. Anything else (a vowel sign
 or virama without a preceding consonant, or an unknown character) raises G2PError, so
-characters are never dropped silently.
+characters are never dropped silently. Runs of Latin letters (English words inside Telugu
+text) go through text/telugu/latin.py instead.
 """
 import re
 import unicodedata
@@ -17,6 +18,8 @@ from .normalize import normalize
 
 PUNCTUATION = set(".,!?;:-\"'()[]{}।॥…–—“”‘’")
 _SPLIT_RE = re.compile(r"(\s+|[" + re.escape("".join(sorted(PUNCTUATION))) + r"])")
+_SCRIPT_RUN_RE = re.compile(r"[A-Za-z]+|[^A-Za-z]+")
+_LATIN_RE = re.compile(r"[A-Za-z]+")  # English words in Latin script: see latin.py
 
 
 class G2PError(ValueError):
@@ -89,7 +92,13 @@ def sentence_to_phones(text, do_normalize=True):
                 phones.append("sp")
             trace.append((token, ["sp"]))
             continue
-        word_phones = word_to_phones(token)
+        word_phones = []
+        for run in _SCRIPT_RUN_RE.findall(token):  # "iPhoneకి" -> "iPhone", "కి"
+            if _LATIN_RE.fullmatch(run):
+                from .latin import latin_word_to_phones
+                word_phones.extend(latin_word_to_phones(run))
+            else:
+                word_phones.extend(word_to_phones(run))
         phones.extend(word_phones)
         trace.append((token, word_phones))
     while phones and phones[-1] == "sp":

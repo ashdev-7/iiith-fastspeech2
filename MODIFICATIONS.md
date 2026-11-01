@@ -25,6 +25,7 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | M8 | `utils/model.py` | `torch.load` without `map_location`; HiFi-GAN paths relative to the working directory; checkpoint must be unzipped by hand | CPU inference; scripts run from `English/`, `Telugu/`; torch ≥ 2.6 `weights_only` default | `map_location=device, weights_only=True`; paths resolved from the package; `.zip` extracted on first use | both | Pending: copy-synthesis job |
 | M9 | `utils/tools.py` (`to_device`) | Energy targets moved to the device without a dtype cast | Normalised energy `.npy` files are float64 (divided by float64 statistics), so the energy MSE was double vs float and `backward()` failed ("Found dtype Double but expected Float", found by the Kaggle rehearsal) | `.float()`, as already done for pitch | both | `tests/test_model_smoke.py::test_to_device_casts_float64_features` |
 | M10 | `model/optimizer.py` (`ScheduledOptim._update_learning_rate`) | Learning rate computed with `np.power` stored as a numpy scalar in the optimizer state | The numpy scalar is pickled into checkpoints; torch >= 2.6 `torch.load(weights_only=True)` rejects it, so resume and inference failed (found by the Kaggle rehearsal) | `float(...)` | both | `tests/test_model_smoke.py::test_train_checkpoint_loads_with_weights_only` |
+| M11 | `utils/tools.py` (`get_mask_from_lengths`), `model/modules.py` (`LengthRegulator.LR`) | Masks and mel lengths created on the module-level global `device` (CUDA whenever a GPU exists) | A model copy on the CPU fails on a GPU machine (device mismatch), which the CPU speed measurement needs | Use the device of the input tensor; identical behaviour on a single device | both | Kaggle job `fs2-04-eval-smoke` / `fs2-04-eval` |
 
 ## Language support
 
@@ -50,6 +51,8 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | `English/*.py`, `Telugu/*.py` | Thin wrappers that run the shared scripts with the folder's `config.yaml` | — |
 | `tools/build_test_manifest.py` | Canonical test sentences from the assignment PDF text layer | `tests/test_test_manifest.py` |
 | `kaggle/*/run.py`, `kernel-metadata.json` | Kaggle job definitions; each job clones this repository and records the commit in `code_commit.txt` | — |
+| `text/telugu/latin.py` | English words in Latin script inside Telugu text (code-mixing): English pronunciation → ARPAbet → nearest Telugu phones (only phones already in the Telugu symbol table; training data contains no Latin script, so features and test sentences are unchanged). Before: G2PError | `tests/test_telugu_frontend.py` |
+| `evaluate_val.py`, `eval_metrics.py` | Objective evaluation beyond the required outputs: validation-set duration/pitch/energy errors, mel-cepstral distortion (oracle vs predicted variances), Whisper intelligibility vs a copy-synthesis ceiling, stress sentences (`Evaluation/stress_sentences.json`), control-factor check, GPU/CPU real-time factor | `tests/test_eval_metrics.py`; Kaggle job `fs2-04-eval-smoke` |
 
 ## Deliberate deviations from the reference conventions
 

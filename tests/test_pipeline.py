@@ -105,3 +105,8 @@ def test_generated_train_jobs_match_template():
         assert open(os.path.join(d, "run.py"), encoding="utf-8").read() == M.render(lang), "run tools/make_train_jobs.py"
         assert json.load(open(os.path.join(d, "kernel-metadata.json"))) == M.metadata(lang)
         assert f'LANG = "{lang}"' in M.render(lang)
+    for mode in ("smoke", "full"):
+        d = os.path.join(ROOT, "kaggle", f"04_eval_{mode}")
+        assert open(os.path.join(d, "run.py"), encoding="utf-8").read() == M.render_eval(mode), "run tools/make_train_jobs.py"
+        assert json.load(open(os.path.join(d, "kernel-metadata.json"))) == M.metadata_eval(mode)
+        assert f'MODE = "{mode}"' in M.render_eval(mode)

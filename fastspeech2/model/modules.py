@@ -177,7 +177,7 @@ class LengthRegulator(nn.Module):
         else:
             output = pad(output)
 
-        return output, torch.LongTensor(mel_len).to(device)
+        return output, torch.LongTensor(mel_len).to(x.device)  # reference: global device (M11)
 
     def expand(self, batch, predicted):
         out = list()

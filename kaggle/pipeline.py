@@ -450,6 +450,30 @@ def size_training(steps_per_s, budget_minutes, cap=160000, floor=20000):
             "val_step": max(1000, total // 50 // 1000 * 1000), "save_step": 10000, "log_step": 100}
 
 
+def evaluate(lang, root, repo, rec, checkpoint, speaker, out_dir, extra=()):
+    """fastspeech2/evaluate_val.py -> out_dir/metrics.json; headline numbers copied into rec."""
+    run([sys.executable, f"{repo}/fastspeech2/evaluate_val.py", "--config", f"{repo}/{CONFIG[lang]}",
+         "--data_root", root, "--checkpoint", checkpoint, "--speaker", speaker, "--out_dir", out_dir, *extra],
+        env=code_env(repo))
+    m = json.load(open(f"{out_dir}/metrics.json", encoding="utf-8"))
+    rec["checkpoint_step"] = m.get("checkpoint_step")
+    rec["validation"] = {k: round(v["mean"], 4) for k, v in m["validation"]["metrics"].items() if v.get("n")}
+    rec["validation"]["utterances"] = m["validation"]["utterances"]
+    rec["zero_length_predictions"] = m["validation"]["zero_length_predictions"]
+    rec["intelligibility"] = m.get("intelligibility")
+    rec["speed_gpu"], rec["speed_cpu"] = m.get("speed_gpu"), m.get("speed_cpu")
+    rec["controls"] = [{k: c.get(k) for k in ("condition", "audio_s", "median_f0_hz", "rms", "error")}
+                       for c in m["controls"]["conditions"]]
+    rec["sentence_errors"] = {s["id"]: s["error"] for s in m["sentences"] if s.get("error")}
+    rec["sentence_cer"] = {s["id"]: round(s["asr_vs_model_input"]["cer"], 3)
+                           for s in m["sentences"] if s.get("asr_vs_model_input")}
+    return m
+
+
+def find_checkpoint(lang, kernel):
+    return find_one(f"/kaggle/input/**/{kernel}/**/{lang}_model.pth.tar", f"{lang}_model.pth.tar from {kernel}")
+
+
 def model_only_checkpoint(full_ckpt, dst):
     """Release checkpoint: model weights + step, without the optimizer state."""
     import torch

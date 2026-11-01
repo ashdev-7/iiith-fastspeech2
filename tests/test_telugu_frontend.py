@@ -34,6 +34,25 @@ def test_invalid_input_raises(bad):
         word_to_phones(bad)
 
 
+def test_latin_mapping_stays_inside_the_telugu_symbol_table():
+    from text.telugu.latin import ARPABET_TO_TELUGU, arpabet_to_telugu
+    inv = set(P.phone_inventory())
+    assert {p for seq in ARPABET_TO_TELUGU.values() for p in seq} <= inv
+    assert arpabet_to_telugu(["AY1", "F", "OW2", "N"]) == ["ai", "ph", "oo", "n"]              # iPhone
+    assert arpabet_to_telugu(["B", "AE1", "NG", "K"]) == ["b", "y", "aa", "ng", "k"]            # bank -> బ్యాంక్
+    assert arpabet_to_telugu(["AE1", "P", "AH0", "L", "sp"]) == ["aa", "p", "a", "l"]            # apple
+
+
+def test_latin_word_inside_telugu_sentence():
+    pytest.importorskip("g2p_en")
+    phones, trace = sentence_to_phones("నేను నిన్న కొత్త iPhone కొన్నాను.")
+    assert dict(trace)["iPhone"][:2] == ["ai", "ph"]
+    assert set(phones) <= set(P.phone_inventory()) | {"sp"}
+    # Latin glued to a Telugu suffix is split by script.
+    _, trace = sentence_to_phones("iPhoneకి")
+    assert dict(trace)["iPhoneకి"][-2:] == ["k", "i"]
+
+
 def test_docx_corrupted_text_is_rejected():
     with pytest.raises(G2PError):
         sentence_to_phones("ఆమె పట్టుచీరను ధరించి వేడుకకు వచ్చ ింది.")
