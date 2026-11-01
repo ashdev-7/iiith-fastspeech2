@@ -17,7 +17,11 @@ import subprocess
 import sys
 
 LANG = "te"
-TRAIN_BUDGET_MIN = 480  # training wall-clock limit (8 h of the 12 h session; 2 languages ~17 of 30 weekly GPU h)
+# Training wall-clock limit. Telugu ran 480 min (55.5k steps); its validation losses plateaued by
+# ~8-10k steps and stayed flat (no degradation), so English (rerun after a cancelled session) gets
+# 210 min (~26k steps at the probed ~2.2 steps/s): well past the plateau, less GPU quota and a
+# shorter exposure to session loss.
+TRAIN_BUDGET_MIN = {"te": 480, "en": 210}[LANG]
 REPO = "https://github.com/ashdev-7/iiith-fastspeech2.git"
 REF = os.environ.get("FS2_REF", "main")
 TMP, OUT = "/kaggle/temp", "/kaggle/working"
