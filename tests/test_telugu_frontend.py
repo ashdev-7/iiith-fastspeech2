@@ -41,6 +41,12 @@ def test_latin_mapping_stays_inside_the_telugu_symbol_table():
     assert arpabet_to_telugu(["AY1", "F", "OW2", "N"]) == ["ai", "ph", "oo", "n"]              # iPhone
     assert arpabet_to_telugu(["B", "AE1", "NG", "K"]) == ["b", "y", "aa", "ng", "k"]            # bank -> బ్యాంక్
     assert arpabet_to_telugu(["AE1", "P", "AH0", "L", "sp"]) == ["aa", "p", "a", "l"]            # apple
+    from text.telugu.latin import camel_parts
+    assert camel_parts("iPhone") == ["i", "Phone"]
+    assert camel_parts("eBay") == ["e", "Bay"]
+    assert camel_parts("YouTube") == ["You", "Tube"]
+    assert camel_parts("laptop") == ["laptop"]
+    assert camel_parts("IITHyderabad") == ["IIT", "Hyderabad"]
 
 
 def test_latin_word_inside_telugu_sentence():

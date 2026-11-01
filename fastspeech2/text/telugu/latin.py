@@ -11,6 +11,7 @@ the training data and the assignment's test sentences are unaffected. This is an
 robustness, not a verified phonetic analysis.
 """
 import os
+import re
 
 ARPABET_TO_TELUGU = {
     "AA": ["aa"], "AE": ["aa"], "AH": ["a"], "AO": ["aa"], "AW": ["au"], "AY": ["ai"], "EH": ["e"],
@@ -40,10 +41,23 @@ def arpabet_to_telugu(arpabet):
     return out
 
 
+_CAMEL_RE = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+")
+
+
+def camel_parts(word):
+    """'iPhone' -> ['i', 'Phone'], 'eBay' -> ['e', 'Bay'], 'YouTube' -> ['You', 'Tube'], 'laptop' -> ['laptop'].
+    g2p_en reads unseen brand names letter-blind ('iPhone' -> IH F OW N); a lone letter part is
+    looked up as a word, which gives its letter name (I -> AY1)."""
+    return _CAMEL_RE.findall(word) or [word]
+
+
 def english_arpabet(word):
     from text.english_frontend import text_to_phones  # lazy: needs g2p_en only when Latin appears
-    phones, _ = text_to_phones(word, LEXICON)
-    return [p for p in phones if p != "sp"]
+    out = []
+    for part in camel_parts(word):
+        phones, _ = text_to_phones(part, LEXICON)
+        out.extend(p for p in phones if p != "sp")
+    return out
 
 
 def latin_word_to_phones(word):
