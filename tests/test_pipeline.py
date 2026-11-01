@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+import time
 
 import pytest
 
@@ -88,6 +89,26 @@ def test_size_training_from_throughput():
     assert plan["anneal_steps"][-1] < plan["total_step"]
     assert P.size_training(50.0, 600)["total_step"] == 160000      # cap
     assert P.size_training(0.1, 600)["total_step"] == 20000        # floor
+
+
+def test_run_watched(tmp_path):
+    """The training watchdog: a hung train.py (first English run) must be killed, not run into
+    Kaggle's 12 h limit."""
+    import sys
+    log, prog = str(tmp_path / "x.log"), str(tmp_path / "losses.csv")
+    ok = [sys.executable, "-c", "print('hello')"]
+    assert P.run_watched(ok, None, log, hard_limit_min=1, progress_file=prog, stall_min=1, poll_s=0.1) is None
+    assert "hello" in open(log).read()
+    sleeper = [sys.executable, "-c", "import time; time.sleep(30)"]
+    t = time.time()
+    why = P.run_watched(sleeper, None, log, hard_limit_min=0.02, progress_file=prog, stall_min=10, poll_s=0.1)
+    assert why.startswith("hard time limit") and time.time() - t < 10
+    open(prog, "w").write("step\n")
+    os.utime(prog, (time.time() - 120, time.time() - 120))  # last progress 2 min ago
+    why = P.run_watched(sleeper, None, log, hard_limit_min=10, progress_file=prog, stall_min=1, poll_s=0.1)
+    assert why.startswith("no progress")
+    with pytest.raises(RuntimeError):
+        P.run_watched([sys.executable, "-c", "raise SystemExit(3)"], None, log, 1, prog + ".none", 1, poll_s=0.1)
 
 
 def test_data_job_test_voice(tmp_path):

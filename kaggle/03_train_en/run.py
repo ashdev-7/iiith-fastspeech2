@@ -22,6 +22,11 @@ LANG = "en"
 # 210 min (~26k steps at the probed ~2.2 steps/s): well past the plateau, less GPU quota and a
 # shorter exposure to session loss.
 TRAIN_BUDGET_MIN = {"te": 480, "en": 210}[LANG]
+# One GPU. The first English run (2 x T4, nn.DataParallel) hung inside training and was killed at
+# Kaggle's 12 h limit; splitting a batch of 16 over two GPUs gave little speed and adds cross-GPU
+# synchronisation. The throughput probe runs under the same setting, so the step plan matches.
+# (The Telugu model was trained with DataParallel on 2 x T4, see its status.json.)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 REPO = "https://github.com/ashdev-7/iiith-fastspeech2.git"
 REF = os.environ.get("FS2_REF", "main")
 TMP, OUT = "/kaggle/temp", "/kaggle/working"

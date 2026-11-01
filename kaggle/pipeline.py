@@ -105,7 +105,8 @@ def find_one(pattern, what):
 
 
 def code_env(repo):
-    return dict(os.environ, PYTHONPATH=f"{repo}/fastspeech2", PYTHONIOENCODING="utf-8", MPLBACKEND="Agg")
+    return dict(os.environ, PYTHONPATH=f"{repo}/fastspeech2", PYTHONIOENCODING="utf-8", MPLBACKEND="Agg",
+                PYTHONUNBUFFERED="1")
 
 
 # ----------------------------------------------------------------------------- environment
@@ -348,16 +349,57 @@ def copy_synthesis(lang, root, repo, out_dir, per_speaker, rec):
     return f"{out_dir}/copy_synthesis.json"
 
 
-def train(lang, root, repo, rec, config, max_minutes, restore="latest", extra=()):
-    run([sys.executable, f"{repo}/fastspeech2/train.py", "--config", config, "--data_root", root,
-         "--restore_step", restore, "--max_minutes", max_minutes, *extra], env=code_env(repo))
+def run_watched(args, env, log_file, hard_limit_min, progress_file, stall_min, poll_s=60):
+    """Run a command with its output streamed to log_file (on disk while it runs, so a killed
+    Kaggle session still leaves it in /kaggle/working). Kills the process if it runs longer than
+    hard_limit_min, or if progress_file (e.g. losses.csv) stops changing for stall_min after it
+    first appears. Returns None on success, or a string saying why it was killed.
+    Raises RuntimeError if the command fails by itself."""
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    print("+", " ".join(map(str, args)), f"(log: {log_file})", flush=True)
+    t0 = time.time()
+    with open(log_file, "a", encoding="utf-8") as log:
+        p = subprocess.Popen(list(map(str, args)), env=env, stdout=log, stderr=subprocess.STDOUT)
+        killed = None
+        while p.poll() is None:
+            time.sleep(poll_s)
+            now = time.time()
+            if now - t0 > hard_limit_min * 60:
+                killed = f"hard time limit ({hard_limit_min} min) exceeded"
+            elif os.path.exists(progress_file) and now - os.path.getmtime(progress_file) > stall_min * 60:
+                killed = f"no progress written to {os.path.basename(progress_file)} for {stall_min} min"
+            if killed:
+                p.kill()
+                p.wait()
+                break
+    if killed:
+        print("watchdog:", killed, flush=True)
+        return killed
+    if p.returncode != 0:
+        tail = open(log_file, encoding="utf-8", errors="replace").read()[-2500:]
+        raise RuntimeError(f"exit {p.returncode}: {' '.join(map(str, args))[:300]}\n...{tail}")
+    return None
+
+
+def train(lang, root, repo, rec, config, max_minutes, restore="latest", extra=(), log_file=None, stall_min=25):
+    """Runs train.py under a watchdog (budget + 45 min hard limit, stall detection on losses.csv).
+    If the watchdog kills it, the latest saved checkpoint is used and rec["watchdog"] says why."""
     import yaml
     paths = yaml.safe_load(open(config, encoding="utf-8"))["train"]["path"]
     log_dir, ckpt_dir = os.path.join(root, paths["log_path"]), os.path.join(root, paths["ckpt_path"])
+    killed = run_watched([sys.executable, f"{repo}/fastspeech2/train.py", "--config", config, "--data_root", root,
+                          "--restore_step", restore, "--max_minutes", max_minutes, *extra], code_env(repo),
+                         log_file or f"{OUT}/train_{lang}_{os.path.basename(config)}.log",
+                         float(max_minutes) + 45, f"{log_dir}/losses.csv", stall_min)
     runs = sorted(glob.glob(f"{log_dir}/run_*.json"), key=os.path.getmtime)
-    info = json.load(open(runs[-1]))
+    if killed:
+        rec["watchdog"] = killed
+        info = {"start_step": int(restore) if str(restore).isdigit() else None, "end_step": None,
+                "stop_reason": "killed by watchdog: " + killed, "minutes": None, "gpus": None, "num_params": None}
+    else:
+        info = json.load(open(runs[-1]))
     rec.update({k: info[k] for k in ("start_step", "end_step", "stop_reason", "minutes", "gpus", "num_params")})
-    rows = [r for r in read_csv_rows(f"{log_dir}/losses.csv") if int(r["step"]) > rec["start_step"]]  # this run only
+    rows = [r for r in read_csv_rows(f"{log_dir}/losses.csv") if int(r["step"]) > (rec["start_step"] or 0)]  # this run only
     tr = [r for r in rows if r["split"] == "train"]
     if len(tr) >= 2:
         a, b = tr[0], tr[-1]
@@ -447,7 +489,7 @@ def size_training(steps_per_s, budget_minutes, cap=160000, floor=20000):
     total = max(floor, min(cap, total))
     anneal = [int(total * f) // 1000 * 1000 for f in (300 / 900, 400 / 900, 500 / 900)]
     return {"total_step": total, "anneal_steps": anneal,
-            "val_step": max(1000, total // 50 // 1000 * 1000), "save_step": 10000, "log_step": 100}
+            "val_step": max(1000, total // 50 // 1000 * 1000), "save_step": 5000, "log_step": 100}
 
 
 def evaluate(lang, root, repo, rec, checkpoint, speaker, out_dir, extra=()):
