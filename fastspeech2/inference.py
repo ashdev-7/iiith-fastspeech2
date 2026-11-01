@@ -7,7 +7,8 @@ For every test item of the language in tests/test_sentences.json:
   energy    = pred * std + mean   (frame L2 STFT magnitude, arbitrary units)
   postnet mel -> HiFi-GAN universal -> 22050 Hz 16-bit wav
 Writes <out_dir>/test_generated_audios/<ID>_<lang>.wav, variance_raw/<ID>.json (+ .npz),
-duration|pitch|energy/<ID>_<kind>.png, frontend_trace.json and inference_report.json.
+variance_adaptor_plots/{duration,pitch,energy}/<ID>_<kind>.png, frontend_trace.json and
+inference_report.json (with per-item timing: acoustic model and vocoder seconds, real-time factor).
 
   python inference.py --config ../Telugu/config.yaml --data_root D --checkpoint D/output/te/ckpt/60000.pth.tar \
       --speaker te_female --out_dir ../Results/Telugu
@@ -58,6 +59,14 @@ def load_model(configs, checkpoint):
     return model, ckpt.get("step")
 
 
+def _now(dev):
+    """Wall clock after all queued GPU work has finished (CUDA calls are asynchronous)."""
+    import time
+    if dev.type == "cuda":
+        torch.cuda.synchronize()
+    return time.perf_counter()
+
+
 def generated_f0(wav, sr, period_ms):
     import pyworld as pw
     x = wav.astype(np.float64) / 32768.0
@@ -97,6 +106,8 @@ def main(args):
                                                        "duration": args.duration_control},
               "items": {}}
     traces = {}
+    warmed_up = False
+    report["device"] = str(device) + (" ({})".format(torch.cuda.get_device_name(0)) if device.type == "cuda" else "")
     for it in items:
         item_id, text = it["id"], it["canonical"]
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != it["canonical_sha256"]:
@@ -109,9 +120,18 @@ def main(args):
         texts = torch.from_numpy(np.array([seq])).long().to(device)
         src_lens = torch.tensor([len(seq)], device=device)
         spk = torch.tensor([speakers[args.speaker]], device=device).long()
-        with torch.no_grad():
-            output = model(spk, texts, src_lens, len(seq), p_control=args.pitch_control,
-                           e_control=args.energy_control, d_control=args.duration_control)
+
+        def acoustic():
+            with torch.no_grad():
+                return model(spk, texts, src_lens, len(seq), p_control=args.pitch_control,
+                             e_control=args.energy_control, d_control=args.duration_control)
+
+        if not warmed_up:  # first call pays CUDA/cuDNN initialisation; keep it out of the timings
+            acoustic()
+            warmed_up = True
+        t0 = _now(device)
+        output = acoustic()
+        t_acoustic = _now(device) - t0
         postnet_mel, p_pred, e_pred, log_d, d_rounded, mel_lens = (
             output[1], output[2], output[3], output[4], output[5], output[9])
         durs = d_rounded[0, : len(seq)].cpu().numpy().astype(int)
@@ -119,7 +139,13 @@ def main(args):
         if mel_len == 0:
             raise SystemExit("{}: the model predicted zero frames for every phone".format(item_id))
         mel = postnet_mel[0, :mel_len].transpose(0, 1).unsqueeze(0)
+        t0 = _now(device)
         wav = vocoder_infer(mel, vocoder, model_config, preprocess_config)[0]
+        t_vocoder = _now(device) - t0
+        audio_s = len(wav) / sr
+        timing = {"acoustic_s": round(t_acoustic, 5), "vocoder_s": round(t_vocoder, 5), "audio_s": round(audio_s, 3),
+                  "rtf_acoustic": round(t_acoustic / audio_s, 5),
+                  "rtf_total": round((t_acoustic + t_vocoder) / audio_s, 5)}
         wav_path = os.path.join(out, "test_generated_audios", "{}_{}.wav".format(item_id, lang))
         wavfile.write(wav_path, sr, wav)
 
@@ -144,12 +170,20 @@ def main(args):
             json.dump(rec, f, ensure_ascii=False, indent=1)
         np.savez(os.path.join(out, "variance_raw", "{}.npz".format(item_id)), duration_frames=durs, pitch_hz=pitch_hz,
                  energy=energy, generated_f0_hz=f0, mel=mel[0].cpu().numpy())
-        plots = plot_variances(rec, out, telugu_font)
+        plots = plot_variances(rec, os.path.join(out, "variance_adaptor_plots"), telugu_font)
         report["items"][item_id] = {"wav": os.path.relpath(wav_path, out), "seconds": round(len(wav) / sr, 3),
-                                    "phones": len(phones), "checks": checks,
+                                    "phones": len(phones), "checks": checks, "timing": timing,
                                     "plots": {k: os.path.relpath(v, out) for k, v in plots.items()}}
         print(item_id, json.dumps(checks), flush=True)
 
+    tm = [r["timing"] for r in report["items"].values()]
+    if tm:
+        audio = sum(t["audio_s"] for t in tm)
+        report["timing_summary"] = {"items": len(tm), "audio_s": round(audio, 3),
+                                    "rtf_acoustic": round(sum(t["acoustic_s"] for t in tm) / audio, 5),
+                                    "rtf_total": round(sum(t["acoustic_s"] + t["vocoder_s"] for t in tm) / audio, 5),
+                                    "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, "
+                                            "wav writing and plotting"}
     report["title_rendering"] = TITLE_RENDERING["mode"] or "Latin text only"
     with open(os.path.join(out, "frontend_trace.json"), "w", encoding="utf-8") as f:
         json.dump(traces, f, ensure_ascii=False, indent=1)

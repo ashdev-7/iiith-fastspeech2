@@ -110,6 +110,13 @@ def test_plots_render(tmp_path):
     csv_path.write_text("split,step,lr,total,mel,mel_postnet,pitch,energy,duration,time_s\n"
                         "train,100,1e-4,3,1,1,0.5,0.3,0.2,10\nval,100,1e-4,3.2,1,1,0.6,0.4,0.2,12\n")
     assert os.path.getsize(plot_losses([str(csv_path)], str(tmp_path / "loss.png"), "t")) > 1000
+    # The assignment's file names: training_loss.png and validation_loss.png (+ overlay).
+    import sys
+    sys.path.insert(0, os.path.join(ROOT, "kaggle"))
+    import pipeline
+    out = pipeline.loss_plot(ROOT, [str(tmp_path)], str(tmp_path / "Results"), "t")
+    assert [os.path.basename(p) for p in out] == ["training_loss.png", "validation_loss.png", "loss_curves.png"]
+    assert all(os.path.getsize(p) > 1000 for p in out)
 
 
 def test_to_device_casts_float64_features():

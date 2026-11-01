@@ -157,8 +157,9 @@ def _save(fig, out_dir, kind, item_id):
     return path
 
 
-def plot_losses(csv_paths, out_path, title):
-    """losses.csv (from train.py; several resumed runs may be concatenated) -> train/val curves."""
+def plot_losses(csv_paths, out_path, title, splits=("train", "val")):
+    """losses.csv (from train.py; several resumed runs may be concatenated) -> curves for `splits`
+    (("train",) -> training_loss.png, ("val",) -> validation_loss.png, both -> overlay)."""
     rows = []
     for p in csv_paths:
         with open(p, encoding="utf-8") as f:
@@ -169,6 +170,8 @@ def plot_losses(csv_paths, out_path, title):
     fig, axes = plt.subplots(2, 3, figsize=(14, 7), sharex=True)
     for ax, name in zip(axes.flat, names):
         for split, color in (("train", "#3a6ea5"), ("val", "#c0392b")):
+            if split not in splits:
+                continue
             pts = sorted((s, float(r[name])) for (sp, s), r in last.items() if sp == split)
             if pts:
                 ax.plot(*zip(*pts), color=color, lw=1.2 if split == "train" else 1.8,

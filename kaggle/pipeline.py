@@ -385,20 +385,25 @@ def inference(lang, root, repo, rec, checkpoint, speaker, out_dir, font_dir):
     run(args, env=code_env(repo))
     rep = json.load(open(f"{out_dir}/inference_report.json", encoding="utf-8"))
     wavs = glob.glob(f"{out_dir}/test_generated_audios/*.wav")
-    pngs = glob.glob(f"{out_dir}/*/*.png")
+    pngs = glob.glob(f"{out_dir}/variance_adaptor_plots/*/*.png")
     rec.update({"wavs": len(wavs), "plots": len(pngs), "telugu_font": rep["telugu_font"],
-                "title_rendering": rep.get("title_rendering"),
+                "title_rendering": rep.get("title_rendering"), "device": rep.get("device"),
+                "timing_summary": rep.get("timing_summary"),
                 "seconds": {k: v["seconds"] for k, v in rep["items"].items()},
                 "zero_duration_phones": {k: v["checks"]["zero_duration_phones"] for k, v in rep["items"].items()}})
     if len(wavs) != 5 or len(pngs) != 15:
         raise RuntimeError(f"expected 5 wavs and 15 plots, got {len(wavs)} and {len(pngs)}")
 
 
-def loss_plot(repo, log_dirs, out_path, title):
+def loss_plot(repo, log_dirs, out_dir, name):
+    """Writes the assignment's training_loss.png and validation_loss.png, plus an overlay
+    (loss_curves.png) for judging over/under-fitting. Returns the three paths."""
     sys.path.insert(0, f"{repo}/fastspeech2")
     from plotting import plot_losses
     csvs = [f"{d}/losses.csv" for d in log_dirs if os.path.exists(f"{d}/losses.csv")]
-    return plot_losses(csvs, out_path, title)
+    return [plot_losses(csvs, f"{out_dir}/training_loss.png", f"{name}: training losses", ("train",)),
+            plot_losses(csvs, f"{out_dir}/validation_loss.png", f"{name}: validation losses", ("val",)),
+            plot_losses(csvs, f"{out_dir}/loss_curves.png", f"{name}: training vs validation losses")]
 
 
 def tar(dst, src_dir, *members, exclude=()):

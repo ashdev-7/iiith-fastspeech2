@@ -2,8 +2,10 @@
 Generated from kaggle/03_train/run_template.py by tools/make_train_jobs.py (only LANG differs).
 
 Stages (kaggle/pipeline.py): tests -> unpack features (fs2-02-data) -> throughput probe ->
-training sized from the probe (total_step, LR decay) with a time limit -> loss plot ->
-inference (5 wavs, 15 plots, variance JSON) with the pre-registered test voice.
+dry run of loss plots + inference on the probe checkpoint (fail fast) -> training sized from the
+probe (total_step, LR decay) with a time limit -> checkpoints saved -> training_loss.png,
+validation_loss.png -> inference (5 wavs, 15 variance plots, variance JSON, RTF timing) with the
+pre-registered test voice.
 Outputs: status.json, pytest.txt, environment.txt, code_commit.txt,
   results_<lang>.tar (Results/<Lang>: audio, plots, variance_raw, loss plot, losses.csv, configs, stats),
   <lang>_model.pth.tar (weights only, for release), <lang>_full.pth.tar (with optimizer, for resuming),
@@ -46,8 +48,16 @@ try:
             "step": {"total_step": 300, "log_step": 50, "val_step": 100000, "save_step": 100000},
             "path": {"ckpt_path": f"probe/{LANG}/ckpt", "log_path": f"probe/{LANG}/log",
                      "result_path": f"probe/{LANG}/result"}}})
-        P.train(LANG, root, repo, rec, cfg, "15", restore="0")
+        probe_ckpt, probe_log = P.train(LANG, root, repo, rec, cfg, "15", restore="0")
         plan = rec["plan"] = P.size_training(rec["steps_per_s"], TRAIN_BUDGET_MIN)
+    # Dry run of everything that happens AFTER the long training (loss plots, inference on the GPU,
+    # vocoder, fonts, plot layout) on the 300-step probe checkpoint, so a bug there fails the job in
+    # minutes instead of after 8 hours. Outputs are discarded (untrained model).
+    with status.stage("post_training_dry_run") as rec:
+        dry = f"{TMP}/dry_run"
+        P.loss_plot(repo, [probe_log], dry, "dry run")
+        P.inference(LANG, root, repo, rec, probe_ckpt, speaker, dry, font_dir)
+        shutil.rmtree(dry, ignore_errors=True)
         shutil.rmtree(f"{root}/probe", ignore_errors=True)
     with status.stage("train") as rec:
         cfg = P.derived_config(repo, LANG, "final", {"train": {
@@ -55,23 +65,23 @@ try:
             "optimizer": {"anneal_steps": plan["anneal_steps"]}}})
         ckpt, log_dir = P.train(LANG, root, repo, rec, cfg, str(TRAIN_BUDGET_MIN), restore="0")
         rec["checkpoint"] = os.path.basename(ckpt)
+    with status.stage("checkpoints") as rec:  # saved before anything else can fail
+        P.model_only_checkpoint(ckpt, f"{OUT}/{LANG}_model.pth.tar")
+        shutil.copy(ckpt, f"{OUT}/{LANG}_full.pth.tar")
     results = f"{OUT}/Results/{LANG_DIR}"
     os.makedirs(results, exist_ok=True)
     with status.stage("loss_plot", fatal=False) as rec:
         for f in ("losses.csv", "val_diagnostics.csv"):
             if os.path.exists(f"{log_dir}/{f}"):
                 shutil.copy(f"{log_dir}/{f}", results)
-        rec["png"] = P.loss_plot(repo, [log_dir], f"{results}/loss_curves.png",
-                                 f"{LANG_DIR} FastSpeech 2: training and validation losses")
-    with status.stage("inference") as rec:
+        rec["png"] = P.loss_plot(repo, [log_dir], results, f"{LANG_DIR} FastSpeech 2")
+    with status.stage("inference", fatal=False) as rec:
         rec["speaker"] = speaker
         P.inference(LANG, root, repo, rec, ckpt, speaker, results, font_dir)
     with status.stage("package") as rec:
         for f in ("stats.json", "speakers.json"):
             shutil.copy(f"{root}/preprocessed/{LANG}/{f}", results)
         shutil.copy(cfg, f"{results}/train_config_used.yaml")
-        P.model_only_checkpoint(ckpt, f"{OUT}/{LANG}_model.pth.tar")
-        shutil.copy(ckpt, f"{OUT}/{LANG}_full.pth.tar")
         P.tar(f"{OUT}/results_{LANG}.tar", OUT, "Results")
         shutil.rmtree(f"{OUT}/Results")
         rec["files"] = sorted(os.listdir(OUT))

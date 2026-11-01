@@ -63,7 +63,7 @@ try:
                 raise RuntimeError(f"resume went {rec['start_step']} -> {rec['end_step']}, expected 30 -> 40")
         if ckpt:
             with status.stage(f"{lang}_loss_plot", fatal=False) as rec:
-                rec["png"] = P.loss_plot(repo, [log_dir], f"{OUT}/results/{lang}/loss_curves.png", f"{lang} rehearsal")
+                rec["png"] = P.loss_plot(repo, [log_dir], f"{OUT}/results/{lang}", f"{lang} rehearsal")
             with status.stage(f"{lang}_inference", fatal=False) as rec:
                 speaker = P.test_voice(root, lang, cs_json)
                 rec["speaker"] = speaker
