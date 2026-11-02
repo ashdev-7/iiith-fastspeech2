@@ -169,7 +169,11 @@ def main(args):
         row["energy_rmse"] = M.rmse(en_pr[keep], en_gt[keep])
         row["energy_r"] = M.pearson(en_pr[keep], en_gt[keep])
         c_gt = M.mel_cepstra(s["mel"])
-        row["mcd_mel_oracle"] = M.mcd_aligned(M.mel_cepstra(oracle_mel(model, s)), c_gt)
+        c_or = M.mel_cepstra(oracle_mel(model, s))
+        row["mcd_mel_oracle"] = M.mcd_aligned(c_or, c_gt)
+        # DTW lowers MCD by itself (it picks the cheapest frame pairing), so the oracle is also scored
+        # with DTW: compare mcd_mel_oracle_dtw with mcd_mel_free_dtw, never mcd_mel_oracle with it.
+        row["mcd_mel_oracle_dtw"] = M.mcd_dtw(c_or, c_gt)[0]
         row["mcd_mel_free_dtw"] = M.mcd_dtw(M.mel_cepstra(r["mel"]), c_gt)[0] if r["mel_len"] else None
         row["audio_s"] = len(r["wav"]) / sr if r["wav"] is not None else 0.0
         if r["wav"] is not None:
@@ -189,7 +193,7 @@ def main(args):
         w.writeheader()
         w.writerows(rows)
     keys = ["duration_mae_frames", "duration_log_r", "length_rel_error", "pitch_rmse_hz", "pitch_r", "energy_rmse",
-            "energy_r", "mcd_mel_oracle", "mcd_mel_free_dtw"]
+            "energy_r", "mcd_mel_oracle", "mcd_mel_oracle_dtw", "mcd_mel_free_dtw"]
     report["validation"] = {"utterances": n, "speakers": len(set(ds.speaker[:n])),
                             "metrics": {k: M.summarise([r.get(k) for r in rows]) for k in keys},
                             "zero_length_predictions": sum(1 for r in rows if not r["pred_frames"])}
