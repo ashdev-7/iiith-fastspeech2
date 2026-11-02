@@ -142,6 +142,9 @@ def main(args):
     vocoder = get_vocoder(model_cfg, device)
     ds = Dataset("val.txt", pre_cfg, train_cfg, sort=False, drop_last=False)
     n = len(ds) if args.max_utts <= 0 else min(args.max_utts, len(ds))
+    if args.sentences_only:  # only parts 3/4 (+ their ASR): e.g. after a frontend change
+        n = 0
+        report["mode"] = "sentences_only"
     asr_idx = set(np.linspace(0, n - 1, min(args.asr_utts, n)).round().astype(int).tolist()) if args.asr_utts else set()
 
     # Warm-up (CUDA init kept out of the timings).
@@ -188,10 +191,11 @@ def main(args):
         rows.append(row)
         if i % 100 == 0:
             print("val {}/{} ({:.1f} min)".format(i, n, (time.time() - t_start) / 60), flush=True)
-    with open(os.path.join(out, "val_per_utterance.csv"), "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), restval="")
-        w.writeheader()
-        w.writerows(rows)
+    if rows:
+        with open(os.path.join(out, "val_per_utterance.csv"), "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), restval="")
+            w.writeheader()
+            w.writerows(rows)
     keys = ["duration_mae_frames", "duration_log_r", "length_rel_error", "pitch_rmse_hz", "pitch_r", "energy_rmse",
             "energy_r", "mcd_mel_oracle", "mcd_mel_oracle_dtw", "mcd_mel_free_dtw"]
     report["validation"] = {"utterances": n, "speakers": len(set(ds.speaker[:n])),
@@ -200,11 +204,12 @@ def main(args):
     timed = [r for r in rows if r["audio_s"]]
     audio = sum(r["audio_s"] for r in timed)
     voc = [r for r in timed if r["vocoder_s"]]
-    report["speed_gpu" if device.type == "cuda" else "speed_cpu_full"] = {
-        "utterances": len(timed), "audio_s": audio,
-        "rtf_acoustic": sum(r["acoustic_s"] for r in timed) / audio,
-        "rtf_vocoder": sum(r["vocoder_s"] for r in voc) / max(1e-9, sum(r["audio_s"] for r in voc)),
-        "note": "batch 1, warm (one untimed warm-up call), CUDA-synchronised; excludes text frontend"}
+    if timed:
+        report["speed_gpu" if device.type == "cuda" else "speed_cpu_full"] = {
+            "utterances": len(timed), "audio_s": audio,
+            "rtf_acoustic": sum(r["acoustic_s"] for r in timed) / audio,
+            "rtf_vocoder": sum(r["vocoder_s"] for r in voc) / max(1e-9, sum(r["audio_s"] for r in voc)),
+            "note": "batch 1, warm (one untimed warm-up call), CUDA-synchronised; excludes text frontend"}
     json.dump(report, open(os.path.join(out, "metrics.json"), "w", encoding="utf-8"), indent=1, ensure_ascii=False)
 
     # ---------------------------------------------------------------- 3/4. test, stress, controls
@@ -255,6 +260,8 @@ def main(args):
 
     # ---------------------------------------------------------------- 5. CPU speed
     try:
+        if not n:
+            raise RuntimeError("skipped (no validation utterances in this mode)")
         cpu = torch.device("cpu")
         m_cpu = copy.deepcopy(model).to(cpu)
         v_cpu = get_vocoder(model_cfg, cpu)
@@ -295,7 +302,7 @@ def main(args):
             for r in asr_rows:
                 w.writerow([r["id"], r["speaker"], r["reference"], r["synth_hyp"], round(r["synth"]["cer"], 4),
                             r["copy_hyp"], round(r["copy"]["cer"], 4)])
-        report["intelligibility"] = {
+        report["intelligibility"] = {} if not asr_rows else {
             "asr_model": args.asr_model, "utterances": len(asr_rows),
             "synthesis": M.corpus_rates([r["synth"] for r in asr_rows]),
             "copy_synthesis_ceiling": M.corpus_rates([r["copy"] for r in asr_rows]),
@@ -326,4 +333,6 @@ if __name__ == "__main__":
     ap.add_argument("--cpu_utts", type=int, default=20)
     ap.add_argument("--save_samples", type=int, default=6)
     ap.add_argument("--asr_model", default="openai/whisper-large-v3")
+    ap.add_argument("--sentences_only", action="store_true",
+                    help="skip the validation set and CPU timing: test/stress sentences, controls and their ASR")
     main(ap.parse_args())

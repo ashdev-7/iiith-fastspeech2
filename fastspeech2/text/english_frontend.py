@@ -7,11 +7,16 @@ Normalisation (model input only):
   * other numbers: the reference's inflect-based normalize_numbers (years 1000-2999 are read in
     pairs, e.g. 2026 -> "twenty twenty six"; days are cardinal, as written: "12 November" -> "twelve");
   * hyphens between letters -> space (inflect writes "forty-five"; the reference split it into a pause);
-  * whitespace runs collapse to one space; tokens are NOT merged ("rhyth  m" stays two words).
+  * whitespace runs collapse to one space.
 Pronunciation:
+  * split words: a fragment that is not a lexicon word, followed by a fragment, whose concatenation
+    IS a lexicon word, is pronounced as that word ("rhyth m" -> RHYTHM; first full run read it as
+    "R AY1 DH" + the letter name "EH1 M"). Recorded in the trace as rule "joined split word";
   * homographs known to g2p_en (e.g. CONDUCT) -> g2p_en's POS rule over the whole sentence;
   * other words -> the first librispeech-lexicon.txt pronunciation (the lexicon MFA used);
-  * out-of-vocabulary words -> g2p_en (CMUdict, then its neural model);
+  * out-of-vocabulary words -> g2p_en (CMUdict, then its neural model); a word-final "oo" spelling
+    is /uː/ in English (bamboo, shampoo, kangaroo), so a final OW that g2p_en guesses for it becomes UW
+    ("andaroo" -> ... R UW, not ... R OW);
   * punctuation -> "sp", as in the reference.
 """
 import re
@@ -66,6 +71,31 @@ def normalize(text):
     return t4, rules
 
 
+def join_split_words(tokens, lexicon):
+    """Join word fragments for pronunciation: tok + next is a lexicon word and tok is not one
+    ("rhyth", "m" -> "rhythm"). Returns (tokens, [rule descriptions])."""
+    out, rules, i = [], [], 0
+    while i < len(tokens):
+        tok = tokens[i]
+        nxt = tokens[i + 1] if i + 1 < len(tokens) else None
+        if (nxt is not None and tok[0].isalpha() and nxt[0].isalpha() and tok.lower() not in lexicon
+                and (tok + nxt).lower() in lexicon):
+            out.append(tok + nxt)
+            rules.append("joined split word '{} {}' -> '{}'".format(tok, nxt, tok + nxt))
+            i += 2
+            continue
+        out.append(tok)
+        i += 1
+    return out, rules
+
+
+def fix_final_oo(word, pron):
+    """English spelling: word-final "oo" is /uː/; replace a final OW guessed by g2p_en with UW."""
+    if word.lower().endswith("oo") and pron and pron[-1].rstrip("012") == "OW":
+        return pron[:-1] + ["UW" + pron[-1][2:]], True
+    return pron, False
+
+
 def load_lexicon(path):
     lex = {}
     with open(path, encoding="utf-8") as f:
@@ -97,7 +127,8 @@ def text_to_phones(text, lexicon_path):
     if _lexicon is None:
         _lexicon = load_lexicon(lexicon_path)
     model_input, rules = normalize(text)
-    tokens = _token_re.findall(model_input)
+    tokens, joined = join_split_words(_token_re.findall(model_input), _lexicon)
+    rules = rules + joined
     words = [t for t in tokens if t[0].isalpha()]
     g2p = _get_g2p()
     tags = dict()
@@ -127,6 +158,9 @@ def text_to_phones(text, lexicon_path):
         else:
             pron = [p for p in g2p(tok) if re.match(r"^[A-Z]+[012]?$", p)]
             source = "g2p_en (out of lexicon)"
+            pron, fixed = fix_final_oo(tok, pron)
+            if fixed:
+                source += ", final 'oo' -> UW"
         phones.extend(pron)
         word_trace.append({"token": tok, "source": source, "phones": list(pron)})
         wi += 1
