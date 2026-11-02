@@ -1,0 +1,1386 @@
+{
+ "E1": {
+  "original": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+  "model_input": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+  "rules": [],
+  "words": [
+   {
+    "token": "The",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "antidisestablishmentarianism",
+    "source": "g2p_en (out of lexicon)",
+    "phones": [
+     "AE2",
+     "N",
+     "T",
+     "AY0",
+     "D",
+     "IH0",
+     "S",
+     "AH0",
+     "S",
+     "T",
+     "AE2",
+     "B",
+     "L",
+     "IH0",
+     "SH",
+     "M",
+     "AH0",
+     "N",
+     "T",
+     "EH1",
+     "R",
+     "IY0",
+     "AH0",
+     "N",
+     "IH0",
+     "Z",
+     "AH0",
+     "M"
+    ]
+   },
+   {
+    "token": "movement",
+    "source": "lexicon",
+    "phones": [
+     "M",
+     "UW1",
+     "V",
+     "M",
+     "AH0",
+     "N",
+     "T"
+    ]
+   },
+   {
+    "token": "gained",
+    "source": "lexicon",
+    "phones": [
+     "G",
+     "EY1",
+     "N",
+     "D"
+    ]
+   },
+   {
+    "token": "considerable",
+    "source": "lexicon",
+    "phones": [
+     "K",
+     "AH0",
+     "N",
+     "S",
+     "IH1",
+     "D",
+     "ER0",
+     "AH0",
+     "B",
+     "AH0",
+     "L"
+    ]
+   },
+   {
+    "token": "momentum",
+    "source": "lexicon",
+    "phones": [
+     "M",
+     "OW0",
+     "M",
+     "EH1",
+     "N",
+     "T",
+     "AH0",
+     "M"
+    ]
+   },
+   {
+    "token": "during",
+    "source": "lexicon",
+    "phones": [
+     "D",
+     "ER1",
+     "IH0",
+     "NG"
+    ]
+   },
+   {
+    "token": "the",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "parliamentary",
+    "source": "lexicon",
+    "phones": [
+     "P",
+     "AA2",
+     "R",
+     "L",
+     "AH0",
+     "M",
+     "EH1",
+     "N",
+     "ER0",
+     "IY0"
+    ]
+   },
+   {
+    "token": "proceedings",
+    "source": "lexicon",
+    "phones": [
+     "P",
+     "R",
+     "AH0",
+     "S",
+     "IY1",
+     "D",
+     "IH0",
+     "NG",
+     "Z"
+    ]
+   },
+   {
+    "token": ".",
+    "source": "punctuation",
+    "phones": [
+     "sp"
+    ]
+   }
+  ],
+  "phones": [
+   "DH",
+   "AH0",
+   "AE2",
+   "N",
+   "T",
+   "AY0",
+   "D",
+   "IH0",
+   "S",
+   "AH0",
+   "S",
+   "T",
+   "AE2",
+   "B",
+   "L",
+   "IH0",
+   "SH",
+   "M",
+   "AH0",
+   "N",
+   "T",
+   "EH1",
+   "R",
+   "IY0",
+   "AH0",
+   "N",
+   "IH0",
+   "Z",
+   "AH0",
+   "M",
+   "M",
+   "UW1",
+   "V",
+   "M",
+   "AH0",
+   "N",
+   "T",
+   "G",
+   "EY1",
+   "N",
+   "D",
+   "K",
+   "AH0",
+   "N",
+   "S",
+   "IH1",
+   "D",
+   "ER0",
+   "AH0",
+   "B",
+   "AH0",
+   "L",
+   "M",
+   "OW0",
+   "M",
+   "EH1",
+   "N",
+   "T",
+   "AH0",
+   "M",
+   "D",
+   "ER1",
+   "IH0",
+   "NG",
+   "DH",
+   "AH0",
+   "P",
+   "AA2",
+   "R",
+   "L",
+   "AH0",
+   "M",
+   "EH1",
+   "N",
+   "ER0",
+   "IY0",
+   "P",
+   "R",
+   "AH0",
+   "S",
+   "IY1",
+   "D",
+   "IH0",
+   "NG",
+   "Z"
+  ],
+  "ids": [
+   91,
+   73,
+   71,
+   119,
+   133,
+   85,
+   90,
+   108,
+   131,
+   73,
+   131,
+   133,
+   71,
+   88,
+   117,
+   108,
+   132,
+   118,
+   73,
+   119,
+   133,
+   94,
+   130,
+   112,
+   73,
+   119,
+   108,
+   146,
+   73,
+   118,
+   118,
+   141,
+   143,
+   118,
+   73,
+   119,
+   133,
+   105,
+   102,
+   119,
+   90,
+   116,
+   73,
+   119,
+   131,
+   109,
+   90,
+   97,
+   73,
+   88,
+   73,
+   117,
+   118,
+   122,
+   118,
+   94,
+   119,
+   133,
+   73,
+   118,
+   90,
+   98,
+   108,
+   120,
+   91,
+   73,
+   129,
+   67,
+   130,
+   117,
+   73,
+   118,
+   94,
+   119,
+   97,
+   112,
+   129,
+   130,
+   73,
+   131,
+   113,
+   90,
+   108,
+   120,
+   146
+  ]
+ },
+ "E2a": {
+  "original": "The orchestra's conduct during the ceremony was praised by the audience.",
+  "model_input": "The orchestra's conduct during the ceremony was praised by the audience.",
+  "rules": [],
+  "words": [
+   {
+    "token": "The",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "orchestra's",
+    "source": "lexicon",
+    "phones": [
+     "AO1",
+     "R",
+     "K",
+     "AH0",
+     "S",
+     "T",
+     "R",
+     "AH0",
+     "Z"
+    ]
+   },
+   {
+    "token": "conduct",
+    "source": "g2p_en homograph (POS NN)",
+    "phones": [
+     "K",
+     "AA1",
+     "N",
+     "D",
+     "AH0",
+     "K",
+     "T"
+    ]
+   },
+   {
+    "token": "during",
+    "source": "lexicon",
+    "phones": [
+     "D",
+     "ER1",
+     "IH0",
+     "NG"
+    ]
+   },
+   {
+    "token": "the",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "ceremony",
+    "source": "lexicon",
+    "phones": [
+     "S",
+     "EH1",
+     "R",
+     "AH0",
+     "M",
+     "OW2",
+     "N",
+     "IY0"
+    ]
+   },
+   {
+    "token": "was",
+    "source": "lexicon",
+    "phones": [
+     "W",
+     "AA1",
+     "Z"
+    ]
+   },
+   {
+    "token": "praised",
+    "source": "lexicon",
+    "phones": [
+     "P",
+     "R",
+     "EY1",
+     "Z",
+     "D"
+    ]
+   },
+   {
+    "token": "by",
+    "source": "lexicon",
+    "phones": [
+     "B",
+     "AY1"
+    ]
+   },
+   {
+    "token": "the",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "audience",
+    "source": "lexicon",
+    "phones": [
+     "AA1",
+     "D",
+     "IY0",
+     "AH0",
+     "N",
+     "S"
+    ]
+   },
+   {
+    "token": ".",
+    "source": "punctuation",
+    "phones": [
+     "sp"
+    ]
+   }
+  ],
+  "phones": [
+   "DH",
+   "AH0",
+   "AO1",
+   "R",
+   "K",
+   "AH0",
+   "S",
+   "T",
+   "R",
+   "AH0",
+   "Z",
+   "K",
+   "AA1",
+   "N",
+   "D",
+   "AH0",
+   "K",
+   "T",
+   "D",
+   "ER1",
+   "IH0",
+   "NG",
+   "DH",
+   "AH0",
+   "S",
+   "EH1",
+   "R",
+   "AH0",
+   "M",
+   "OW2",
+   "N",
+   "IY0",
+   "W",
+   "AA1",
+   "Z",
+   "P",
+   "R",
+   "EY1",
+   "Z",
+   "D",
+   "B",
+   "AY1",
+   "DH",
+   "AH0",
+   "AA1",
+   "D",
+   "IY0",
+   "AH0",
+   "N",
+   "S"
+  ],
+  "ids": [
+   91,
+   73,
+   78,
+   130,
+   116,
+   73,
+   131,
+   133,
+   130,
+   73,
+   146,
+   116,
+   66,
+   119,
+   90,
+   73,
+   116,
+   133,
+   90,
+   98,
+   108,
+   120,
+   91,
+   73,
+   131,
+   94,
+   130,
+   73,
+   118,
+   124,
+   119,
+   112,
+   144,
+   66,
+   146,
+   129,
+   130,
+   102,
+   146,
+   90,
+   88,
+   86,
+   91,
+   73,
+   66,
+   90,
+   112,
+   73,
+   119,
+   131
+  ]
+ },
+ "E2b": {
+  "original": "The researchers will conduct an experiment to evaluate the proposed method.",
+  "model_input": "The researchers will conduct an experiment to evaluate the proposed method.",
+  "rules": [],
+  "words": [
+   {
+    "token": "The",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "researchers",
+    "source": "lexicon",
+    "phones": [
+     "R",
+     "IY1",
+     "S",
+     "ER0",
+     "CH",
+     "ER0",
+     "Z"
+    ]
+   },
+   {
+    "token": "will",
+    "source": "lexicon",
+    "phones": [
+     "W",
+     "AH0",
+     "L"
+    ]
+   },
+   {
+    "token": "conduct",
+    "source": "g2p_en homograph (POS VB)",
+    "phones": [
+     "K",
+     "AA0",
+     "N",
+     "D",
+     "AH1",
+     "K",
+     "T"
+    ]
+   },
+   {
+    "token": "an",
+    "source": "lexicon",
+    "phones": [
+     "AE1",
+     "N"
+    ]
+   },
+   {
+    "token": "experiment",
+    "source": "lexicon",
+    "phones": [
+     "IH0",
+     "K",
+     "S",
+     "P",
+     "EH1",
+     "R",
+     "AH0",
+     "M",
+     "AH0",
+     "N",
+     "T"
+    ]
+   },
+   {
+    "token": "to",
+    "source": "lexicon",
+    "phones": [
+     "T",
+     "AH0"
+    ]
+   },
+   {
+    "token": "evaluate",
+    "source": "lexicon",
+    "phones": [
+     "IH0",
+     "V",
+     "AE1",
+     "L",
+     "Y",
+     "UW0",
+     "EY2",
+     "T"
+    ]
+   },
+   {
+    "token": "the",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "proposed",
+    "source": "lexicon",
+    "phones": [
+     "P",
+     "R",
+     "AH0",
+     "P",
+     "OW1",
+     "Z",
+     "D"
+    ]
+   },
+   {
+    "token": "method",
+    "source": "lexicon",
+    "phones": [
+     "M",
+     "EH1",
+     "TH",
+     "AH0",
+     "D"
+    ]
+   },
+   {
+    "token": ".",
+    "source": "punctuation",
+    "phones": [
+     "sp"
+    ]
+   }
+  ],
+  "phones": [
+   "DH",
+   "AH0",
+   "R",
+   "IY1",
+   "S",
+   "ER0",
+   "CH",
+   "ER0",
+   "Z",
+   "W",
+   "AH0",
+   "L",
+   "K",
+   "AA0",
+   "N",
+   "D",
+   "AH1",
+   "K",
+   "T",
+   "AE1",
+   "N",
+   "IH0",
+   "K",
+   "S",
+   "P",
+   "EH1",
+   "R",
+   "AH0",
+   "M",
+   "AH0",
+   "N",
+   "T",
+   "T",
+   "AH0",
+   "IH0",
+   "V",
+   "AE1",
+   "L",
+   "Y",
+   "UW0",
+   "EY2",
+   "T",
+   "DH",
+   "AH0",
+   "P",
+   "R",
+   "AH0",
+   "P",
+   "OW1",
+   "Z",
+   "D",
+   "M",
+   "EH1",
+   "TH",
+   "AH0",
+   "D"
+  ],
+  "ids": [
+   91,
+   73,
+   130,
+   113,
+   131,
+   97,
+   89,
+   97,
+   146,
+   144,
+   73,
+   117,
+   116,
+   65,
+   119,
+   90,
+   74,
+   116,
+   133,
+   70,
+   119,
+   108,
+   116,
+   131,
+   129,
+   94,
+   130,
+   73,
+   118,
+   73,
+   119,
+   133,
+   133,
+   73,
+   108,
+   143,
+   70,
+   117,
+   145,
+   140,
+   103,
+   133,
+   91,
+   73,
+   129,
+   130,
+   73,
+   129,
+   123,
+   146,
+   90,
+   118,
+   94,
+   134,
+   73,
+   90
+  ]
+ },
+ "E3": {
+  "original": "The rhyth  m of the orchestra changed unexpectedly.",
+  "model_input": "The rhyth m of the orchestra changed unexpectedly.",
+  "rules": [
+   "whitespace",
+   "joined split word 'rhyth m' -> 'rhythm'"
+  ],
+  "words": [
+   {
+    "token": "The",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "rhythm",
+    "source": "lexicon",
+    "phones": [
+     "R",
+     "IH1",
+     "DH",
+     "AH0",
+     "M"
+    ]
+   },
+   {
+    "token": "of",
+    "source": "lexicon",
+    "phones": [
+     "AH0",
+     "V"
+    ]
+   },
+   {
+    "token": "the",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "orchestra",
+    "source": "lexicon",
+    "phones": [
+     "AO1",
+     "R",
+     "K",
+     "AH0",
+     "S",
+     "T",
+     "R",
+     "AH0"
+    ]
+   },
+   {
+    "token": "changed",
+    "source": "lexicon",
+    "phones": [
+     "CH",
+     "EY1",
+     "N",
+     "JH",
+     "D"
+    ]
+   },
+   {
+    "token": "unexpectedly",
+    "source": "lexicon",
+    "phones": [
+     "AH2",
+     "N",
+     "IH0",
+     "K",
+     "S",
+     "P",
+     "EH1",
+     "K",
+     "T",
+     "IH0",
+     "D",
+     "L",
+     "IY0"
+    ]
+   },
+   {
+    "token": ".",
+    "source": "punctuation",
+    "phones": [
+     "sp"
+    ]
+   }
+  ],
+  "phones": [
+   "DH",
+   "AH0",
+   "R",
+   "IH1",
+   "DH",
+   "AH0",
+   "M",
+   "AH0",
+   "V",
+   "DH",
+   "AH0",
+   "AO1",
+   "R",
+   "K",
+   "AH0",
+   "S",
+   "T",
+   "R",
+   "AH0",
+   "CH",
+   "EY1",
+   "N",
+   "JH",
+   "D",
+   "AH2",
+   "N",
+   "IH0",
+   "K",
+   "S",
+   "P",
+   "EH1",
+   "K",
+   "T",
+   "IH0",
+   "D",
+   "L",
+   "IY0"
+  ],
+  "ids": [
+   91,
+   73,
+   130,
+   109,
+   91,
+   73,
+   118,
+   73,
+   143,
+   91,
+   73,
+   78,
+   130,
+   116,
+   73,
+   131,
+   133,
+   130,
+   73,
+   89,
+   102,
+   119,
+   115,
+   90,
+   75,
+   119,
+   108,
+   116,
+   131,
+   129,
+   94,
+   116,
+   133,
+   108,
+   90,
+   117,
+   112
+  ]
+ },
+ "E4": {
+  "original": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.",
+  "model_input": "The meeting will start at ten forty five AM on twelve November twenty twenty six, so andaroo should arrive on time.",
+  "rules": [
+   "time",
+   "numbers",
+   "hyphen"
+  ],
+  "words": [
+   {
+    "token": "The",
+    "source": "lexicon",
+    "phones": [
+     "DH",
+     "AH0"
+    ]
+   },
+   {
+    "token": "meeting",
+    "source": "lexicon",
+    "phones": [
+     "M",
+     "IY1",
+     "T",
+     "IH0",
+     "NG"
+    ]
+   },
+   {
+    "token": "will",
+    "source": "lexicon",
+    "phones": [
+     "W",
+     "AH0",
+     "L"
+    ]
+   },
+   {
+    "token": "start",
+    "source": "lexicon",
+    "phones": [
+     "S",
+     "T",
+     "AA1",
+     "R",
+     "T"
+    ]
+   },
+   {
+    "token": "at",
+    "source": "lexicon",
+    "phones": [
+     "AE1",
+     "T"
+    ]
+   },
+   {
+    "token": "ten",
+    "source": "lexicon",
+    "phones": [
+     "T",
+     "EH1",
+     "N"
+    ]
+   },
+   {
+    "token": "forty",
+    "source": "lexicon",
+    "phones": [
+     "F",
+     "AO1",
+     "R",
+     "T",
+     "IY0"
+    ]
+   },
+   {
+    "token": "five",
+    "source": "lexicon",
+    "phones": [
+     "F",
+     "AY1",
+     "V"
+    ]
+   },
+   {
+    "token": "AM",
+    "source": "letter names",
+    "phones": [
+     "EY1",
+     "EH1",
+     "M"
+    ]
+   },
+   {
+    "token": "on",
+    "source": "lexicon",
+    "phones": [
+     "AA1",
+     "N"
+    ]
+   },
+   {
+    "token": "twelve",
+    "source": "lexicon",
+    "phones": [
+     "T",
+     "W",
+     "EH1",
+     "L",
+     "V"
+    ]
+   },
+   {
+    "token": "November",
+    "source": "lexicon",
+    "phones": [
+     "N",
+     "OW0",
+     "V",
+     "EH1",
+     "M",
+     "B",
+     "ER0"
+    ]
+   },
+   {
+    "token": "twenty",
+    "source": "lexicon",
+    "phones": [
+     "T",
+     "W",
+     "EH1",
+     "N",
+     "IY0"
+    ]
+   },
+   {
+    "token": "twenty",
+    "source": "lexicon",
+    "phones": [
+     "T",
+     "W",
+     "EH1",
+     "N",
+     "IY0"
+    ]
+   },
+   {
+    "token": "six",
+    "source": "lexicon",
+    "phones": [
+     "S",
+     "IH1",
+     "K",
+     "S"
+    ]
+   },
+   {
+    "token": ",",
+    "source": "punctuation",
+    "phones": [
+     "sp"
+    ]
+   },
+   {
+    "token": "so",
+    "source": "lexicon",
+    "phones": [
+     "S",
+     "OW1"
+    ]
+   },
+   {
+    "token": "andaroo",
+    "source": "g2p_en (out of lexicon), final 'oo' -> UW",
+    "phones": [
+     "AE0",
+     "N",
+     "D",
+     "AA1",
+     "R",
+     "UW0"
+    ]
+   },
+   {
+    "token": "should",
+    "source": "lexicon",
+    "phones": [
+     "SH",
+     "UH1",
+     "D"
+    ]
+   },
+   {
+    "token": "arrive",
+    "source": "lexicon",
+    "phones": [
+     "ER0",
+     "AY1",
+     "V"
+    ]
+   },
+   {
+    "token": "on",
+    "source": "lexicon",
+    "phones": [
+     "AA1",
+     "N"
+    ]
+   },
+   {
+    "token": "time",
+    "source": "lexicon",
+    "phones": [
+     "T",
+     "AY1",
+     "M"
+    ]
+   },
+   {
+    "token": ".",
+    "source": "punctuation",
+    "phones": [
+     "sp"
+    ]
+   }
+  ],
+  "phones": [
+   "DH",
+   "AH0",
+   "M",
+   "IY1",
+   "T",
+   "IH0",
+   "NG",
+   "W",
+   "AH0",
+   "L",
+   "S",
+   "T",
+   "AA1",
+   "R",
+   "T",
+   "AE1",
+   "T",
+   "T",
+   "EH1",
+   "N",
+   "F",
+   "AO1",
+   "R",
+   "T",
+   "IY0",
+   "F",
+   "AY1",
+   "V",
+   "EY1",
+   "EH1",
+   "M",
+   "AA1",
+   "N",
+   "T",
+   "W",
+   "EH1",
+   "L",
+   "V",
+   "N",
+   "OW0",
+   "V",
+   "EH1",
+   "M",
+   "B",
+   "ER0",
+   "T",
+   "W",
+   "EH1",
+   "N",
+   "IY0",
+   "T",
+   "W",
+   "EH1",
+   "N",
+   "IY0",
+   "S",
+   "IH1",
+   "K",
+   "S",
+   "sp",
+   "S",
+   "OW1",
+   "AE0",
+   "N",
+   "D",
+   "AA1",
+   "R",
+   "UW0",
+   "SH",
+   "UH1",
+   "D",
+   "ER0",
+   "AY1",
+   "V",
+   "AA1",
+   "N",
+   "T",
+   "AY1",
+   "M"
+  ],
+  "ids": [
+   91,
+   73,
+   118,
+   113,
+   133,
+   108,
+   120,
+   144,
+   73,
+   117,
+   131,
+   133,
+   66,
+   130,
+   133,
+   70,
+   133,
+   133,
+   94,
+   119,
+   104,
+   78,
+   130,
+   133,
+   112,
+   104,
+   86,
+   143,
+   102,
+   94,
+   118,
+   66,
+   119,
+   133,
+   144,
+   94,
+   117,
+   143,
+   119,
+   122,
+   143,
+   94,
+   118,
+   88,
+   97,
+   133,
+   144,
+   94,
+   119,
+   112,
+   133,
+   144,
+   94,
+   119,
+   112,
+   131,
+   109,
+   116,
+   131,
+   357,
+   131,
+   123,
+   69,
+   119,
+   90,
+   66,
+   130,
+   140,
+   132,
+   137,
+   90,
+   97,
+   86,
+   143,
+   66,
+   119,
+   133,
+   86,
+   118
+  ]
+ }
+}

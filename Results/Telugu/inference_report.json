@@ -1,0 +1,159 @@
+{
+ "checkpoint": "55524.pth.tar",
+ "step": 55524,
+ "speaker": "te_female",
+ "speaker_id": 0,
+ "symbol_table_sha256": "74f5ee60c34185049d6dc08ec65614409288a275c6ae06223fced81e9c08de42",
+ "telugu_font": "Noto Sans Telugu",
+ "controls": {
+  "pitch": 1.0,
+  "energy": 1.0,
+  "duration": 1.0
+ },
+ "items": {
+  "T1": {
+   "wav": "test_generated_audios/T1_te.wav",
+   "seconds": 5.271,
+   "phones": 66,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 116224,
+    "mel_frames_x_hop": 116224,
+    "wav_finite": true,
+    "wav_rms": 0.15244592283609104,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.03744,
+    "vocoder_s": 0.18763,
+    "audio_s": 5.271,
+    "rtf_acoustic": 0.0071,
+    "rtf_total": 0.0427
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/T1_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/T1_pitch.png",
+    "energy": "variance_adaptor_plots/energy/T1_energy.png"
+   }
+  },
+  "T2a": {
+   "wav": "test_generated_audios/T2a_te.wav",
+   "seconds": 2.461,
+   "phones": 31,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 54272,
+    "mel_frames_x_hop": 54272,
+    "wav_finite": true,
+    "wav_rms": 0.14759988586529565,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.04181,
+    "vocoder_s": 0.10123,
+    "audio_s": 2.461,
+    "rtf_acoustic": 0.01699,
+    "rtf_total": 0.05812
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/T2a_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/T2a_pitch.png",
+    "energy": "variance_adaptor_plots/energy/T2a_energy.png"
+   }
+  },
+  "T2b": {
+   "wav": "test_generated_audios/T2b_te.wav",
+   "seconds": 2.694,
+   "phones": 37,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 59392,
+    "mel_frames_x_hop": 59392,
+    "wav_finite": true,
+    "wav_rms": 0.15423898774730127,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.03198,
+    "vocoder_s": 0.07624,
+    "audio_s": 2.694,
+    "rtf_acoustic": 0.01187,
+    "rtf_total": 0.04018
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/T2b_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/T2b_pitch.png",
+    "energy": "variance_adaptor_plots/energy/T2b_energy.png"
+   }
+  },
+  "T3": {
+   "wav": "test_generated_audios/T3_te.wav",
+   "seconds": 2.136,
+   "phones": 31,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 47104,
+    "mel_frames_x_hop": 47104,
+    "wav_finite": true,
+    "wav_rms": 0.147038888560909,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.02656,
+    "vocoder_s": 0.06878,
+    "audio_s": 2.136,
+    "rtf_acoustic": 0.01243,
+    "rtf_total": 0.04463
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/T3_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/T3_pitch.png",
+    "energy": "variance_adaptor_plots/energy/T3_energy.png"
+   }
+  },
+  "T4": {
+   "wav": "test_generated_audios/T4_te.wav",
+   "seconds": 9.125,
+   "phones": 120,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 201216,
+    "mel_frames_x_hop": 201216,
+    "wav_finite": true,
+    "wav_rms": 0.13876821239246315,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.08151,
+    "vocoder_s": 0.21219,
+    "audio_s": 9.125,
+    "rtf_acoustic": 0.00893,
+    "rtf_total": 0.03219
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/T4_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/T4_pitch.png",
+    "energy": "variance_adaptor_plots/energy/T4_energy.png"
+   }
+  }
+ },
+ "device": "cuda (Tesla T4)",
+ "timing_summary": {
+  "items": 5,
+  "audio_s": 21.687,
+  "rtf_acoustic": 0.01011,
+  "rtf_total": 0.0399,
+  "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
+ },
+ "title_rendering": "Pillow raqm (shaped) + Noto Sans Telugu"
+}

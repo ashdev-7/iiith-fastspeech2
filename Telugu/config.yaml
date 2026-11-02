@@ -1,7 +1,8 @@
 # FastSpeech 2 - Telugu (IndicTTS Telugu, both speakers). Loaded by fastspeech2/utils/config.py.
 # Paths are relative to the data root (--data_root, default: this folder).
 # Architecture, audio and variance settings follow the reference LJSpeech configs (ming024/FastSpeech2).
-# train.step values are PROVISIONAL until the Kaggle throughput measurement (plan.txt G2).
+# train.step / anneal_steps: as used for the released Telugu model (Kaggle fs2-03-train-te:
+# sized from a measured 2.08 steps/s on 2 x T4 for a 480-min budget; stopped by the budget at step 55524).
 
 preprocess:
   dataset: "IndicTTS_Telugu"
@@ -71,11 +72,11 @@ train:
     grad_clip_thresh: 1.0
     grad_acc_step: 1
     warm_up_step: 4000
-    anneal_steps: [60000, 80000, 100000]    # provisional (reference: 300k/400k/500k of 900k)
+    anneal_steps: [18000, 24000, 31000]    # 1/3, 4/9, 5/9 of total_step (reference: 300k/400k/500k of 900k)
     anneal_rate: 0.3
   step:
-    total_step: 100000                      # provisional, set from measured throughput
+    total_step: 56000
     log_step: 100
     synth_step: 2000
     val_step: 1000
-    save_step: 5000
+    save_step: 10000

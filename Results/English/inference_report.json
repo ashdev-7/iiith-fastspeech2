@@ -1,0 +1,159 @@
+{
+ "checkpoint": "en_model.pth.tar",
+ "step": 17949,
+ "speaker": "svarah_71f88d2a",
+ "speaker_id": 54,
+ "symbol_table_sha256": "c46db8d7e6a7a0907431c5e7fbc39c0151b8e1dfab6eb855e48362db52b7e7ee",
+ "telugu_font": null,
+ "controls": {
+  "pitch": 1.0,
+  "energy": 1.0,
+  "duration": 1.0
+ },
+ "items": {
+  "E1": {
+   "wav": "test_generated_audios/E1_en.wav",
+   "seconds": 5.224,
+   "phones": 85,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 115200,
+    "mel_frames_x_hop": 115200,
+    "wav_finite": true,
+    "wav_rms": 0.16794923334535472,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.21097,
+    "vocoder_s": 3.08378,
+    "audio_s": 5.224,
+    "rtf_acoustic": 0.04038,
+    "rtf_total": 0.63064
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/E1_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/E1_pitch.png",
+    "energy": "variance_adaptor_plots/energy/E1_energy.png"
+   }
+  },
+  "E2a": {
+   "wav": "test_generated_audios/E2a_en.wav",
+   "seconds": 3.611,
+   "phones": 50,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 79616,
+    "mel_frames_x_hop": 79616,
+    "wav_finite": true,
+    "wav_rms": 0.14092071467877,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.15395,
+    "vocoder_s": 2.00186,
+    "audio_s": 3.611,
+    "rtf_acoustic": 0.04264,
+    "rtf_total": 0.59706
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/E2a_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/E2a_pitch.png",
+    "energy": "variance_adaptor_plots/energy/E2a_energy.png"
+   }
+  },
+  "E2b": {
+   "wav": "test_generated_audios/E2b_en.wav",
+   "seconds": 3.796,
+   "phones": 56,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 83712,
+    "mel_frames_x_hop": 83712,
+    "wav_finite": true,
+    "wav_rms": 0.14308980819593475,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.15836,
+    "vocoder_s": 2.02956,
+    "audio_s": 3.796,
+    "rtf_acoustic": 0.04171,
+    "rtf_total": 0.57631
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/E2b_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/E2b_pitch.png",
+    "energy": "variance_adaptor_plots/energy/E2b_energy.png"
+   }
+  },
+  "E3": {
+   "wav": "test_generated_audios/E3_en.wav",
+   "seconds": 2.38,
+   "phones": 37,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 52480,
+    "mel_frames_x_hop": 52480,
+    "wav_finite": true,
+    "wav_rms": 0.15412404122813436,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.11184,
+    "vocoder_s": 1.27282,
+    "audio_s": 2.38,
+    "rtf_acoustic": 0.04699,
+    "rtf_total": 0.58178
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/E3_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/E3_pitch.png",
+    "energy": "variance_adaptor_plots/energy/E3_energy.png"
+   }
+  },
+  "E4": {
+   "wav": "test_generated_audios/E4_en.wav",
+   "seconds": 6.293,
+   "phones": 79,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 138752,
+    "mel_frames_x_hop": 138752,
+    "wav_finite": true,
+    "wav_rms": 0.13385842495002276,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.25977,
+    "vocoder_s": 3.59298,
+    "audio_s": 6.293,
+    "rtf_acoustic": 0.04128,
+    "rtf_total": 0.61227
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots/duration/E4_duration.png",
+    "pitch": "variance_adaptor_plots/pitch/E4_pitch.png",
+    "energy": "variance_adaptor_plots/energy/E4_energy.png"
+   }
+  }
+ },
+ "device": "cpu",
+ "timing_summary": {
+  "items": 5,
+  "audio_s": 21.304,
+  "rtf_acoustic": 0.04201,
+  "rtf_total": 0.60439,
+  "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
+ },
+ "title_rendering": "Latin text only"
+}
