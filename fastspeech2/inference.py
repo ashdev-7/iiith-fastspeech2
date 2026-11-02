@@ -120,11 +120,16 @@ def main(args):
         texts = torch.from_numpy(np.array([seq])).long().to(device)
         src_lens = torch.tensor([len(seq)], device=device)
         spk = torch.tensor([speakers[args.speaker]], device=device).long()
+        d_control = args.duration_control
+        scales = trace.get("duration_scale")
+        if scales and any(x != 1.0 for x in scales):  # per-phone duration control (letter names)
+            assert len(scales) == len(seq), (len(scales), len(seq))
+            d_control = torch.tensor([scales], device=device, dtype=torch.float32) * args.duration_control
 
         def acoustic():
             with torch.no_grad():
                 return model(spk, texts, src_lens, len(seq), p_control=args.pitch_control,
-                             e_control=args.energy_control, d_control=args.duration_control)
+                             e_control=args.energy_control, d_control=d_control)
 
         if not warmed_up:  # first call pays CUDA/cuDNN initialisation; keep it out of the timings
             acoustic()

@@ -72,3 +72,9 @@ def test_am_pm_are_letter_names():
     _, tr = text_to_phones("start at 10:45 AM or 9:05 pm", lex)
     by_token = {w["token"]: w["phones"] for w in tr["words"]}
     assert by_token["AM"] == ["EY1", "EH1", "M"] and by_token["PM"] == ["P", "IY1", "EH1", "M"]
+    # letter names are slowed down per phone; every other phone keeps scale 1
+    phones, tr2 = text_to_phones("The meeting starts at 10:45 AM, so be on time.", lex)
+    assert len(tr2["duration_scale"]) == len(phones)
+    am = next(w for w in tr2["words"] if w["token"] == "AM")
+    assert am["duration_scale"] > 1
+    assert sum(1 for x in tr2["duration_scale"] if x != 1.0) == len(am["phones"])

@@ -139,6 +139,22 @@ def test_pitch_energy_controls_scale_physical_units(tmp_path):
     assert torch.allclose(e_up * 20.0 + 30.0, (e_base * 20.0 + 30.0) * 0.8, atol=1e-3)
 
 
+def test_per_phone_duration_control(tmp_path):
+    """A (1, L) d_control tensor scales only the chosen phones (letter names in the English frontend)."""
+    torch.manual_seed(0)
+    pre, mc, _ = _configs("en", tmp_path)
+    model = FastSpeech2(pre, mc).to(device).eval()
+    seq = torch.tensor([[5, 6, 7, 8, 9]], device=device)
+    args = (torch.tensor([0], device=device), seq, torch.tensor([5], device=device), 5)
+    scale = torch.tensor([[1.0, 1.0, 1.6, 1.6, 1.0]], device=device)
+    with torch.no_grad():
+        base, scaled = model(*args), model(*args, d_control=scale)
+    d0, d1 = base[5][0], scaled[5][0]
+    assert torch.allclose(d1[[0, 1, 4]], d0[[0, 1, 4]])
+    assert torch.allclose(d1[2:4], d0[2:4] * 1.6)
+    assert int(scaled[9][0]) == int(sum(int(x) for x in d1))  # mel length = sum of the expanded durations
+
+
 def test_to_device_casts_float64_features():
     """Normalised pitch/energy .npy files are float64 (divided by float64 stats); the reference
     to_device left energy as double, which made backward() fail ("Found dtype Double")."""

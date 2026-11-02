@@ -30,6 +30,10 @@ _token_re = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)*|[^\sA-Za-z]")
 # Uppercase AM/PM (as written in times, and as produced by the time rule) are read as letter names;
 # the lexicon's first entry for AM is the verb "am" (AE1 M).
 LETTER_WORDS = {"AM": ["EY1", "EH1", "M"], "PM": ["P", "IY1", "EH1", "M"]}
+# Letter names are spoken slowly and separately ("A. M."); the model, trained on running words, gave
+# AM 244 ms, so the two letters merged into one glide (Whisper heard "pm"). Their predicted durations
+# are scaled by this factor at inference (per-phone duration control; trace "duration_scale").
+LETTER_DURATION_SCALE = 1.6
 
 _lexicon = None
 _g2p = None
@@ -136,12 +140,13 @@ def text_to_phones(text, lexicon_path):
         from nltk import pos_tag
         tags = {i: tag for i, (_, tag) in enumerate(pos_tag(words))}
 
-    phones, word_trace, wi = [], [], 0
+    phones, scales, word_trace, wi = [], [], [], 0
     for tok in tokens:
         if not tok[0].isalpha():
             if tok in _punct or not tok.strip():
                 if phones and phones[-1] != "sp":
                     phones.append("sp")
+                    scales.append(1.0)
                 word_trace.append({"token": tok, "source": "punctuation", "phones": ["sp"]})
             else:
                 word_trace.append({"token": tok, "source": "dropped (unsupported symbol)", "phones": []})
@@ -162,8 +167,14 @@ def text_to_phones(text, lexicon_path):
             if fixed:
                 source += ", final 'oo' -> UW"
         phones.extend(pron)
+        scale = LETTER_DURATION_SCALE if source == "letter names" else 1.0
+        scales.extend([scale] * len(pron))
         word_trace.append({"token": tok, "source": source, "phones": list(pron)})
+        if scale != 1.0:
+            word_trace[-1]["duration_scale"] = scale
         wi += 1
     while phones and phones[-1] == "sp":
         phones.pop()
-    return phones, {"original": text, "model_input": model_input, "rules": rules, "words": word_trace}
+        scales.pop()
+    return phones, {"original": text, "model_input": model_input, "rules": rules, "words": word_trace,
+                    "duration_scale": scales}
