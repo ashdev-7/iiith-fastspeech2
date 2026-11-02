@@ -1,0 +1,997 @@
+{
+ "rule": "Every training speaker: clarity of its natural recordings and of copy-synthesis (3 utterances each).\nclarity = mean 1-4 kHz band share (dB) + HNR/2; the 1-4 kHz band carries formant and consonant cues.",
+ "ranked": [
+  "svarah_dd158f69",
+  "svarah_8a8e2655",
+  "svarah_628a28ca",
+  "svarah_07da09a1",
+  "svarah_39174ebc",
+  "svarah_23e3b028",
+  "svarah_fe3df200",
+  "svarah_0b04b9ce",
+  "svarah_37f33801",
+  "svarah_0d3a47fc",
+  "svarah_8b31966b",
+  "svarah_c2b69822",
+  "svarah_4564a1c8",
+  "svarah_6b8b82d3",
+  "svarah_9434854d",
+  "svarah_89eb8682",
+  "svarah_c921123b",
+  "svarah_e1a930c3",
+  "svarah_7cc3fe21",
+  "svarah_e0fa6c41",
+  "svarah_1b4675d0",
+  "svarah_97389d1e",
+  "svarah_1b5984e2",
+  "svarah_7a0e168c",
+  "svarah_4c0dc540",
+  "svarah_d8362d6a",
+  "svarah_aec26ef1",
+  "svarah_ea958cdf",
+  "svarah_3df01326",
+  "svarah_20bc9c58",
+  "svarah_c5877934",
+  "svarah_691ec828",
+  "svarah_8c920653",
+  "svarah_4ffe7a0e",
+  "svarah_63b5ade8",
+  "svarah_327a71cd",
+  "svarah_cf803cf9",
+  "svarah_a6081258",
+  "svarah_bddc783b",
+  "svarah_ddaf0ffd",
+  "svarah_517a8496",
+  "svarah_67ab0891",
+  "svarah_50c2b6f6",
+  "svarah_c61d29ac",
+  "svarah_e2dfb052",
+  "svarah_c5bcf5b5",
+  "svarah_1e623a42",
+  "svarah_04c7004b",
+  "svarah_eec79f81",
+  "svarah_05520303",
+  "svarah_b8eaa3bd",
+  "svarah_516f74a8",
+  "svarah_14ff0f5c",
+  "svarah_66a49fe4",
+  "svarah_8e8d57c8",
+  "svarah_461d308c",
+  "svarah_07d7e886",
+  "svarah_c4143710",
+  "svarah_0848a74c",
+  "svarah_e425afd0",
+  "svarah_faabaa18",
+  "svarah_88e61db0",
+  "svarah_08263a1e",
+  "svarah_367a6205",
+  "svarah_7e222e9d",
+  "svarah_e353743d",
+  "svarah_b5fda952",
+  "svarah_164b2143",
+  "svarah_ab37e038",
+  "svarah_7a393f2e",
+  "svarah_471f2154",
+  "svarah_6690504e",
+  "svarah_d2497d9f",
+  "svarah_61fc0158",
+  "svarah_8ea9802d",
+  "svarah_fdf5f393",
+  "svarah_101a5f77",
+  "svarah_36bc5417",
+  "svarah_47dd6b3b",
+  "svarah_6eb33b9a",
+  "svarah_90edcf3e",
+  "svarah_931393e4",
+  "svarah_d4334b71",
+  "svarah_d6b4c595",
+  "svarah_5da61660",
+  "svarah_7145847b",
+  "svarah_bed642f5",
+  "svarah_4f795a3c",
+  "svarah_006334cc",
+  "svarah_fd39b2c9",
+  "svarah_8c7735fa",
+  "svarah_10b8800f",
+  "svarah_c57f9616",
+  "svarah_2ff6eea0",
+  "svarah_00e7dd46",
+  "svarah_26e1cb25",
+  "svarah_1d14c3ec",
+  "svarah_be0ff3c9",
+  "svarah_c44e759d",
+  "svarah_26409e04",
+  "svarah_eb17c4c8",
+  "svarah_0eea2961",
+  "svarah_50e348db",
+  "svarah_452b4cde",
+  "svarah_558a16f8",
+  "svarah_d0c70295",
+  "svarah_b4202165",
+  "svarah_eebaf972",
+  "svarah_71f88d2a",
+  "svarah_f29ff563"
+ ],
+ "speakers": {
+  "svarah_006334cc": {
+   "utterances_in_train": 23,
+   "natural_band_1_4k_db": -18.49,
+   "natural_hnr_db": 16.93,
+   "copy_band_1_4k_db": -17.88,
+   "copy_hnr_db": 16.9,
+   "clarity": -9.43
+  },
+  "svarah_00e7dd46": {
+   "utterances_in_train": 11,
+   "natural_band_1_4k_db": -16.99,
+   "natural_hnr_db": 12.63,
+   "copy_band_1_4k_db": -16.86,
+   "copy_hnr_db": 12.2,
+   "clarity": -10.76
+  },
+  "svarah_04c7004b": {
+   "utterances_in_train": 21,
+   "natural_band_1_4k_db": -12.52,
+   "natural_hnr_db": 12.27,
+   "copy_band_1_4k_db": -12.02,
+   "copy_hnr_db": 11.8,
+   "clarity": -6.12
+  },
+  "svarah_05520303": {
+   "utterances_in_train": 59,
+   "natural_band_1_4k_db": -14.23,
+   "natural_hnr_db": 18.2,
+   "copy_band_1_4k_db": -15.2,
+   "copy_hnr_db": 18.03,
+   "clarity": -6.18
+  },
+  "svarah_07d7e886": {
+   "utterances_in_train": 10,
+   "natural_band_1_4k_db": -12.47,
+   "natural_hnr_db": 11.53,
+   "copy_band_1_4k_db": -12.93,
+   "copy_hnr_db": 12.37,
+   "clarity": -6.75
+  },
+  "svarah_07da09a1": {
+   "utterances_in_train": 25,
+   "natural_band_1_4k_db": -7.07,
+   "natural_hnr_db": 12.57,
+   "copy_band_1_4k_db": -7.58,
+   "copy_hnr_db": 11.8,
+   "clarity": -1.68
+  },
+  "svarah_08263a1e": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -12.91,
+   "natural_hnr_db": 11.07,
+   "copy_band_1_4k_db": -13.29,
+   "copy_hnr_db": 12.33,
+   "clarity": -7.12
+  },
+  "svarah_0848a74c": {
+   "utterances_in_train": 74,
+   "natural_band_1_4k_db": -14.74,
+   "natural_hnr_db": 14.53,
+   "copy_band_1_4k_db": -14.3,
+   "copy_hnr_db": 15.03,
+   "clarity": -6.79
+  },
+  "svarah_0b04b9ce": {
+   "utterances_in_train": 9,
+   "natural_band_1_4k_db": -9.1,
+   "natural_hnr_db": 15.53,
+   "copy_band_1_4k_db": -10.02,
+   "copy_hnr_db": 15.63,
+   "clarity": -2.2
+  },
+  "svarah_0d3a47fc": {
+   "utterances_in_train": 6,
+   "natural_band_1_4k_db": -9.01,
+   "natural_hnr_db": 13.77,
+   "copy_band_1_4k_db": -9.35,
+   "copy_hnr_db": 13.57,
+   "clarity": -2.56
+  },
+  "svarah_0eea2961": {
+   "utterances_in_train": 18,
+   "natural_band_1_4k_db": -18.82,
+   "natural_hnr_db": 13.73,
+   "copy_band_1_4k_db": -19.13,
+   "copy_hnr_db": 13.67,
+   "clarity": -12.29
+  },
+  "svarah_101a5f77": {
+   "utterances_in_train": 11,
+   "natural_band_1_4k_db": -16.48,
+   "natural_hnr_db": 15.77,
+   "copy_band_1_4k_db": -16.24,
+   "copy_hnr_db": 15.9,
+   "clarity": -8.29
+  },
+  "svarah_10b8800f": {
+   "utterances_in_train": 20,
+   "natural_band_1_4k_db": -15.39,
+   "natural_hnr_db": 9.4,
+   "copy_band_1_4k_db": -15.64,
+   "copy_hnr_db": 11.3,
+   "clarity": -9.99
+  },
+  "svarah_14ff0f5c": {
+   "utterances_in_train": 30,
+   "natural_band_1_4k_db": -13.23,
+   "natural_hnr_db": 13.17,
+   "copy_band_1_4k_db": -13.7,
+   "copy_hnr_db": 14.33,
+   "clarity": -6.53
+  },
+  "svarah_164b2143": {
+   "utterances_in_train": 18,
+   "natural_band_1_4k_db": -14.67,
+   "natural_hnr_db": 14.8,
+   "copy_band_1_4k_db": -14.99,
+   "copy_hnr_db": 14.97,
+   "clarity": -7.5
+  },
+  "svarah_1b4675d0": {
+   "utterances_in_train": 6,
+   "natural_band_1_4k_db": -10.4,
+   "natural_hnr_db": 13.9,
+   "copy_band_1_4k_db": -10.55,
+   "copy_hnr_db": 13.83,
+   "clarity": -3.64
+  },
+  "svarah_1b5984e2": {
+   "utterances_in_train": 86,
+   "natural_band_1_4k_db": -11.45,
+   "natural_hnr_db": 15.27,
+   "copy_band_1_4k_db": -11.4,
+   "copy_hnr_db": 14.63,
+   "clarity": -4.08
+  },
+  "svarah_1d14c3ec": {
+   "utterances_in_train": 54,
+   "natural_band_1_4k_db": -17.94,
+   "natural_hnr_db": 14.73,
+   "copy_band_1_4k_db": -17.95,
+   "copy_hnr_db": 13.57,
+   "clarity": -11.16
+  },
+  "svarah_1e623a42": {
+   "utterances_in_train": 42,
+   "natural_band_1_4k_db": -11.71,
+   "natural_hnr_db": 10.6,
+   "copy_band_1_4k_db": -11.52,
+   "copy_hnr_db": 11.13,
+   "clarity": -5.95
+  },
+  "svarah_20bc9c58": {
+   "utterances_in_train": 27,
+   "natural_band_1_4k_db": -6.53,
+   "natural_hnr_db": 6.73,
+   "copy_band_1_4k_db": -6.26,
+   "copy_hnr_db": 3.17,
+   "clarity": -4.67
+  },
+  "svarah_23e3b028": {
+   "utterances_in_train": 19,
+   "natural_band_1_4k_db": -8.1,
+   "natural_hnr_db": 13.4,
+   "copy_band_1_4k_db": -8.4,
+   "copy_hnr_db": 12.73,
+   "clarity": -2.04
+  },
+  "svarah_26409e04": {
+   "utterances_in_train": 34,
+   "natural_band_1_4k_db": -20.57,
+   "natural_hnr_db": 16.9,
+   "copy_band_1_4k_db": -19.75,
+   "copy_hnr_db": 16.37,
+   "clarity": -11.56
+  },
+  "svarah_26e1cb25": {
+   "utterances_in_train": 16,
+   "natural_band_1_4k_db": -20.33,
+   "natural_hnr_db": 18.13,
+   "copy_band_1_4k_db": -20.1,
+   "copy_hnr_db": 17.9,
+   "clarity": -11.15
+  },
+  "svarah_2ff6eea0": {
+   "utterances_in_train": 17,
+   "natural_band_1_4k_db": -19.43,
+   "natural_hnr_db": 18.37,
+   "copy_band_1_4k_db": -19.68,
+   "copy_hnr_db": 18.03,
+   "clarity": -10.66
+  },
+  "svarah_327a71cd": {
+   "utterances_in_train": 46,
+   "natural_band_1_4k_db": -12.78,
+   "natural_hnr_db": 16.33,
+   "copy_band_1_4k_db": -12.84,
+   "copy_hnr_db": 16.1,
+   "clarity": -4.79
+  },
+  "svarah_367a6205": {
+   "utterances_in_train": 23,
+   "natural_band_1_4k_db": -12.87,
+   "natural_hnr_db": 10.0,
+   "copy_band_1_4k_db": -12.76,
+   "copy_hnr_db": 11.2,
+   "clarity": -7.16
+  },
+  "svarah_36bc5417": {
+   "utterances_in_train": 5,
+   "natural_band_1_4k_db": -13.61,
+   "natural_hnr_db": 11.93,
+   "copy_band_1_4k_db": -13.79,
+   "copy_hnr_db": 11.0,
+   "clarity": -8.29
+  },
+  "svarah_37f33801": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -7.67,
+   "natural_hnr_db": 11.23,
+   "copy_band_1_4k_db": -8.03,
+   "copy_hnr_db": 11.53,
+   "clarity": -2.26
+  },
+  "svarah_39174ebc": {
+   "utterances_in_train": 31,
+   "natural_band_1_4k_db": -7.73,
+   "natural_hnr_db": 12.47,
+   "copy_band_1_4k_db": -8.22,
+   "copy_hnr_db": 12.87,
+   "clarity": -1.79
+  },
+  "svarah_3df01326": {
+   "utterances_in_train": 4,
+   "natural_band_1_4k_db": -9.33,
+   "natural_hnr_db": 9.67,
+   "copy_band_1_4k_db": -9.21,
+   "copy_hnr_db": 9.17,
+   "clarity": -4.63
+  },
+  "svarah_452b4cde": {
+   "utterances_in_train": 25,
+   "natural_band_1_4k_db": -20.41,
+   "natural_hnr_db": 13.93,
+   "copy_band_1_4k_db": -19.79,
+   "copy_hnr_db": 13.83,
+   "clarity": -12.88
+  },
+  "svarah_4564a1c8": {
+   "utterances_in_train": 41,
+   "natural_band_1_4k_db": -9.94,
+   "natural_hnr_db": 14.17,
+   "copy_band_1_4k_db": -10.0,
+   "copy_hnr_db": 14.3,
+   "clarity": -2.85
+  },
+  "svarah_461d308c": {
+   "utterances_in_train": 53,
+   "natural_band_1_4k_db": -13.77,
+   "natural_hnr_db": 14.33,
+   "copy_band_1_4k_db": -13.47,
+   "copy_hnr_db": 13.5,
+   "clarity": -6.72
+  },
+  "svarah_471f2154": {
+   "utterances_in_train": 27,
+   "natural_band_1_4k_db": -13.53,
+   "natural_hnr_db": 11.13,
+   "copy_band_1_4k_db": -13.76,
+   "copy_hnr_db": 12.07,
+   "clarity": -7.72
+  },
+  "svarah_47dd6b3b": {
+   "utterances_in_train": 36,
+   "natural_band_1_4k_db": -16.6,
+   "natural_hnr_db": 15.27,
+   "copy_band_1_4k_db": -16.16,
+   "copy_hnr_db": 15.53,
+   "clarity": -8.39
+  },
+  "svarah_4c0dc540": {
+   "utterances_in_train": 20,
+   "natural_band_1_4k_db": -11.22,
+   "natural_hnr_db": 15.17,
+   "copy_band_1_4k_db": -11.76,
+   "copy_hnr_db": 15.07,
+   "clarity": -4.22
+  },
+  "svarah_4f795a3c": {
+   "utterances_in_train": 16,
+   "natural_band_1_4k_db": -15.89,
+   "natural_hnr_db": 11.03,
+   "copy_band_1_4k_db": -15.63,
+   "copy_hnr_db": 12.63,
+   "clarity": -9.32
+  },
+  "svarah_4ffe7a0e": {
+   "utterances_in_train": 10,
+   "natural_band_1_4k_db": -12.31,
+   "natural_hnr_db": 15.5,
+   "copy_band_1_4k_db": -12.24,
+   "copy_hnr_db": 14.97,
+   "clarity": -4.75
+  },
+  "svarah_50c2b6f6": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -11.16,
+   "natural_hnr_db": 10.5,
+   "copy_band_1_4k_db": -11.35,
+   "copy_hnr_db": 11.23,
+   "clarity": -5.73
+  },
+  "svarah_50e348db": {
+   "utterances_in_train": 29,
+   "natural_band_1_4k_db": -21.17,
+   "natural_hnr_db": 17.27,
+   "copy_band_1_4k_db": -20.82,
+   "copy_hnr_db": 16.9,
+   "clarity": -12.37
+  },
+  "svarah_516f74a8": {
+   "utterances_in_train": 15,
+   "natural_band_1_4k_db": -10.71,
+   "natural_hnr_db": 8.1,
+   "copy_band_1_4k_db": -10.77,
+   "copy_hnr_db": 8.7,
+   "clarity": -6.42
+  },
+  "svarah_517a8496": {
+   "utterances_in_train": 9,
+   "natural_band_1_4k_db": -8.55,
+   "natural_hnr_db": 7.9,
+   "copy_band_1_4k_db": -8.98,
+   "copy_hnr_db": 7.07,
+   "clarity": -5.45
+  },
+  "svarah_558a16f8": {
+   "utterances_in_train": 20,
+   "natural_band_1_4k_db": -20.25,
+   "natural_hnr_db": 11.9,
+   "copy_band_1_4k_db": -19.62,
+   "copy_hnr_db": 13.1,
+   "clarity": -13.07
+  },
+  "svarah_5da61660": {
+   "utterances_in_train": 13,
+   "natural_band_1_4k_db": -14.58,
+   "natural_hnr_db": 10.53,
+   "copy_band_1_4k_db": -14.64,
+   "copy_hnr_db": 11.87,
+   "clarity": -8.71
+  },
+  "svarah_61fc0158": {
+   "utterances_in_train": 29,
+   "natural_band_1_4k_db": -14.94,
+   "natural_hnr_db": 12.87,
+   "copy_band_1_4k_db": -14.71,
+   "copy_hnr_db": 13.17,
+   "clarity": -8.12
+  },
+  "svarah_628a28ca": {
+   "utterances_in_train": 32,
+   "natural_band_1_4k_db": -7.67,
+   "natural_hnr_db": 12.67,
+   "copy_band_1_4k_db": -8.23,
+   "copy_hnr_db": 13.23,
+   "clarity": -1.62
+  },
+  "svarah_63b5ade8": {
+   "utterances_in_train": 5,
+   "natural_band_1_4k_db": -12.81,
+   "natural_hnr_db": 16.37,
+   "copy_band_1_4k_db": -12.85,
+   "copy_hnr_db": 16.2,
+   "clarity": -4.75
+  },
+  "svarah_6690504e": {
+   "utterances_in_train": 14,
+   "natural_band_1_4k_db": -14.36,
+   "natural_hnr_db": 12.87,
+   "copy_band_1_4k_db": -14.38,
+   "copy_hnr_db": 13.0,
+   "clarity": -7.88
+  },
+  "svarah_66a49fe4": {
+   "utterances_in_train": 38,
+   "natural_band_1_4k_db": -14.67,
+   "natural_hnr_db": 17.87,
+   "copy_band_1_4k_db": -15.34,
+   "copy_hnr_db": 17.63,
+   "clarity": -6.53
+  },
+  "svarah_67ab0891": {
+   "utterances_in_train": 15,
+   "natural_band_1_4k_db": -10.07,
+   "natural_hnr_db": 8.67,
+   "copy_band_1_4k_db": -10.08,
+   "copy_hnr_db": 9.2,
+   "clarity": -5.48
+  },
+  "svarah_691ec828": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -11.65,
+   "natural_hnr_db": 12.5,
+   "copy_band_1_4k_db": -11.2,
+   "copy_hnr_db": 13.03,
+   "clarity": -4.68
+  },
+  "svarah_6b8b82d3": {
+   "utterances_in_train": 15,
+   "natural_band_1_4k_db": -8.5,
+   "natural_hnr_db": 11.73,
+   "copy_band_1_4k_db": -8.4,
+   "copy_hnr_db": 11.07,
+   "clarity": -2.87
+  },
+  "svarah_6eb33b9a": {
+   "utterances_in_train": 90,
+   "natural_band_1_4k_db": -17.68,
+   "natural_hnr_db": 17.4,
+   "copy_band_1_4k_db": -17.2,
+   "copy_hnr_db": 17.53,
+   "clarity": -8.43
+  },
+  "svarah_7145847b": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -13.64,
+   "natural_hnr_db": 9.13,
+   "copy_band_1_4k_db": -13.76,
+   "copy_hnr_db": 10.07,
+   "clarity": -8.72
+  },
+  "svarah_71f88d2a": {
+   "utterances_in_train": 107,
+   "natural_band_1_4k_db": -23.25,
+   "natural_hnr_db": 15.43,
+   "copy_band_1_4k_db": -22.73,
+   "copy_hnr_db": 15.47,
+   "clarity": -15.0
+  },
+  "svarah_7a0e168c": {
+   "utterances_in_train": 74,
+   "natural_band_1_4k_db": -11.27,
+   "natural_hnr_db": 14.2,
+   "copy_band_1_4k_db": -11.26,
+   "copy_hnr_db": 14.2,
+   "clarity": -4.16
+  },
+  "svarah_7a393f2e": {
+   "utterances_in_train": 8,
+   "natural_band_1_4k_db": -14.17,
+   "natural_hnr_db": 13.5,
+   "copy_band_1_4k_db": -14.34,
+   "copy_hnr_db": 13.5,
+   "clarity": -7.59
+  },
+  "svarah_7cc3fe21": {
+   "utterances_in_train": 41,
+   "natural_band_1_4k_db": -11.21,
+   "natural_hnr_db": 15.47,
+   "copy_band_1_4k_db": -11.18,
+   "copy_hnr_db": 15.33,
+   "clarity": -3.51
+  },
+  "svarah_7e222e9d": {
+   "utterances_in_train": 10,
+   "natural_band_1_4k_db": -11.52,
+   "natural_hnr_db": 7.6,
+   "copy_band_1_4k_db": -11.0,
+   "copy_hnr_db": 7.6,
+   "clarity": -7.2
+  },
+  "svarah_88e61db0": {
+   "utterances_in_train": 36,
+   "natural_band_1_4k_db": -12.17,
+   "natural_hnr_db": 10.1,
+   "copy_band_1_4k_db": -12.23,
+   "copy_hnr_db": 10.3,
+   "clarity": -7.08
+  },
+  "svarah_89eb8682": {
+   "utterances_in_train": 28,
+   "natural_band_1_4k_db": -8.64,
+   "natural_hnr_db": 12.07,
+   "copy_band_1_4k_db": -9.05,
+   "copy_hnr_db": 12.1,
+   "clarity": -3.0
+  },
+  "svarah_8a8e2655": {
+   "utterances_in_train": 29,
+   "natural_band_1_4k_db": -9.67,
+   "natural_hnr_db": 17.5,
+   "copy_band_1_4k_db": -10.23,
+   "copy_hnr_db": 17.7,
+   "clarity": -1.38
+  },
+  "svarah_8b31966b": {
+   "utterances_in_train": 22,
+   "natural_band_1_4k_db": -9.41,
+   "natural_hnr_db": 14.93,
+   "copy_band_1_4k_db": -10.26,
+   "copy_hnr_db": 15.17,
+   "clarity": -2.67
+  },
+  "svarah_8c7735fa": {
+   "utterances_in_train": 41,
+   "natural_band_1_4k_db": -16.84,
+   "natural_hnr_db": 13.1,
+   "copy_band_1_4k_db": -16.78,
+   "copy_hnr_db": 13.73,
+   "clarity": -9.92
+  },
+  "svarah_8c920653": {
+   "utterances_in_train": 10,
+   "natural_band_1_4k_db": -13.61,
+   "natural_hnr_db": 17.83,
+   "copy_band_1_4k_db": -13.61,
+   "copy_hnr_db": 17.83,
+   "clarity": -4.7
+  },
+  "svarah_8e8d57c8": {
+   "utterances_in_train": 79,
+   "natural_band_1_4k_db": -13.03,
+   "natural_hnr_db": 12.87,
+   "copy_band_1_4k_db": -13.2,
+   "copy_hnr_db": 13.03,
+   "clarity": -6.68
+  },
+  "svarah_8ea9802d": {
+   "utterances_in_train": 71,
+   "natural_band_1_4k_db": -16.24,
+   "natural_hnr_db": 15.97,
+   "copy_band_1_4k_db": -16.02,
+   "copy_hnr_db": 15.73,
+   "clarity": -8.15
+  },
+  "svarah_90edcf3e": {
+   "utterances_in_train": 25,
+   "natural_band_1_4k_db": -15.01,
+   "natural_hnr_db": 12.97,
+   "copy_band_1_4k_db": -14.86,
+   "copy_hnr_db": 12.83,
+   "clarity": -8.45
+  },
+  "svarah_931393e4": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -16.83,
+   "natural_hnr_db": 16.03,
+   "copy_band_1_4k_db": -16.56,
+   "copy_hnr_db": 16.2,
+   "clarity": -8.46
+  },
+  "svarah_9434854d": {
+   "utterances_in_train": 36,
+   "natural_band_1_4k_db": -9.94,
+   "natural_hnr_db": 14.63,
+   "copy_band_1_4k_db": -10.02,
+   "copy_hnr_db": 14.2,
+   "clarity": -2.92
+  },
+  "svarah_97389d1e": {
+   "utterances_in_train": 97,
+   "natural_band_1_4k_db": -11.41,
+   "natural_hnr_db": 15.93,
+   "copy_band_1_4k_db": -11.64,
+   "copy_hnr_db": 15.83,
+   "clarity": -3.73
+  },
+  "svarah_a6081258": {
+   "utterances_in_train": 41,
+   "natural_band_1_4k_db": -12.77,
+   "natural_hnr_db": 17.87,
+   "copy_band_1_4k_db": -13.61,
+   "copy_hnr_db": 17.3,
+   "clarity": -4.96
+  },
+  "svarah_ab37e038": {
+   "utterances_in_train": 19,
+   "natural_band_1_4k_db": -13.43,
+   "natural_hnr_db": 11.87,
+   "copy_band_1_4k_db": -13.34,
+   "copy_hnr_db": 11.63,
+   "clarity": -7.52
+  },
+  "svarah_aec26ef1": {
+   "utterances_in_train": 7,
+   "natural_band_1_4k_db": -12.6,
+   "natural_hnr_db": 15.1,
+   "copy_band_1_4k_db": -12.1,
+   "copy_hnr_db": 15.27,
+   "clarity": -4.46
+  },
+  "svarah_b4202165": {
+   "utterances_in_train": 11,
+   "natural_band_1_4k_db": -17.66,
+   "natural_hnr_db": 6.6,
+   "copy_band_1_4k_db": -17.48,
+   "copy_hnr_db": 7.1,
+   "clarity": -13.93
+  },
+  "svarah_b5fda952": {
+   "utterances_in_train": 8,
+   "natural_band_1_4k_db": -12.7,
+   "natural_hnr_db": 11.37,
+   "copy_band_1_4k_db": -13.29,
+   "copy_hnr_db": 11.83,
+   "clarity": -7.37
+  },
+  "svarah_b8eaa3bd": {
+   "utterances_in_train": 6,
+   "natural_band_1_4k_db": -13.94,
+   "natural_hnr_db": 14.9,
+   "copy_band_1_4k_db": -13.65,
+   "copy_hnr_db": 14.83,
+   "clarity": -6.24
+  },
+  "svarah_bddc783b": {
+   "utterances_in_train": 47,
+   "natural_band_1_4k_db": -10.87,
+   "natural_hnr_db": 11.3,
+   "copy_band_1_4k_db": -11.21,
+   "copy_hnr_db": 11.7,
+   "clarity": -5.36
+  },
+  "svarah_be0ff3c9": {
+   "utterances_in_train": 23,
+   "natural_band_1_4k_db": -15.34,
+   "natural_hnr_db": 7.83,
+   "copy_band_1_4k_db": -15.07,
+   "copy_hnr_db": 7.7,
+   "clarity": -11.22
+  },
+  "svarah_bed642f5": {
+   "utterances_in_train": 58,
+   "natural_band_1_4k_db": -16.16,
+   "natural_hnr_db": 13.33,
+   "copy_band_1_4k_db": -15.86,
+   "copy_hnr_db": 13.43,
+   "clarity": -9.14
+  },
+  "svarah_c2b69822": {
+   "utterances_in_train": 20,
+   "natural_band_1_4k_db": -10.45,
+   "natural_hnr_db": 14.93,
+   "copy_band_1_4k_db": -10.12,
+   "copy_hnr_db": 14.8,
+   "clarity": -2.72
+  },
+  "svarah_c4143710": {
+   "utterances_in_train": 12,
+   "natural_band_1_4k_db": -13.62,
+   "natural_hnr_db": 14.2,
+   "copy_band_1_4k_db": -13.98,
+   "copy_hnr_db": 14.47,
+   "clarity": -6.75
+  },
+  "svarah_c44e759d": {
+   "utterances_in_train": 68,
+   "natural_band_1_4k_db": -20.99,
+   "natural_hnr_db": 18.6,
+   "copy_band_1_4k_db": -20.52,
+   "copy_hnr_db": 18.13,
+   "clarity": -11.46
+  },
+  "svarah_c57f9616": {
+   "utterances_in_train": 23,
+   "natural_band_1_4k_db": -16.14,
+   "natural_hnr_db": 10.17,
+   "copy_band_1_4k_db": -15.72,
+   "copy_hnr_db": 11.37,
+   "clarity": -10.04
+  },
+  "svarah_c5877934": {
+   "utterances_in_train": 4,
+   "natural_band_1_4k_db": -12.19,
+   "natural_hnr_db": 15.23,
+   "copy_band_1_4k_db": -12.05,
+   "copy_hnr_db": 14.77,
+   "clarity": -4.67
+  },
+  "svarah_c5bcf5b5": {
+   "utterances_in_train": 27,
+   "natural_band_1_4k_db": -13.36,
+   "natural_hnr_db": 15.5,
+   "copy_band_1_4k_db": -13.52,
+   "copy_hnr_db": 15.27,
+   "clarity": -5.88
+  },
+  "svarah_c61d29ac": {
+   "utterances_in_train": 66,
+   "natural_band_1_4k_db": -11.38,
+   "natural_hnr_db": 11.53,
+   "copy_band_1_4k_db": -11.35,
+   "copy_hnr_db": 11.23,
+   "clarity": -5.73
+  },
+  "svarah_c921123b": {
+   "utterances_in_train": 11,
+   "natural_band_1_4k_db": -7.28,
+   "natural_hnr_db": 8.53,
+   "copy_band_1_4k_db": -7.6,
+   "copy_hnr_db": 8.93,
+   "clarity": -3.13
+  },
+  "svarah_cf803cf9": {
+   "utterances_in_train": 10,
+   "natural_band_1_4k_db": -11.45,
+   "natural_hnr_db": 14.83,
+   "copy_band_1_4k_db": -11.66,
+   "copy_hnr_db": 13.53,
+   "clarity": -4.9
+  },
+  "svarah_d0c70295": {
+   "utterances_in_train": 24,
+   "natural_band_1_4k_db": -19.7,
+   "natural_hnr_db": 9.23,
+   "copy_band_1_4k_db": -18.92,
+   "copy_hnr_db": 10.9,
+   "clarity": -13.47
+  },
+  "svarah_d2497d9f": {
+   "utterances_in_train": 21,
+   "natural_band_1_4k_db": -13.1,
+   "natural_hnr_db": 9.13,
+   "copy_band_1_4k_db": -12.88,
+   "copy_hnr_db": 9.73,
+   "clarity": -8.02
+  },
+  "svarah_d4334b71": {
+   "utterances_in_train": 20,
+   "natural_band_1_4k_db": -15.18,
+   "natural_hnr_db": 13.3,
+   "copy_band_1_4k_db": -15.56,
+   "copy_hnr_db": 13.97,
+   "clarity": -8.57
+  },
+  "svarah_d6b4c595": {
+   "utterances_in_train": 44,
+   "natural_band_1_4k_db": -18.83,
+   "natural_hnr_db": 19.7,
+   "copy_band_1_4k_db": -18.33,
+   "copy_hnr_db": 19.27,
+   "clarity": -8.69
+  },
+  "svarah_d8362d6a": {
+   "utterances_in_train": 16,
+   "natural_band_1_4k_db": -9.77,
+   "natural_hnr_db": 11.23,
+   "copy_band_1_4k_db": -10.05,
+   "copy_hnr_db": 11.4,
+   "clarity": -4.35
+  },
+  "svarah_dd158f69": {
+   "utterances_in_train": 33,
+   "natural_band_1_4k_db": -3.63,
+   "natural_hnr_db": 8.23,
+   "copy_band_1_4k_db": -3.7,
+   "copy_hnr_db": 8.2,
+   "clarity": 0.4
+  },
+  "svarah_ddaf0ffd": {
+   "utterances_in_train": 74,
+   "natural_band_1_4k_db": -11.69,
+   "natural_hnr_db": 14.47,
+   "copy_band_1_4k_db": -12.86,
+   "copy_hnr_db": 14.93,
+   "clarity": -5.39
+  },
+  "svarah_e0fa6c41": {
+   "utterances_in_train": 35,
+   "natural_band_1_4k_db": -11.04,
+   "natural_hnr_db": 16.43,
+   "copy_band_1_4k_db": -11.53,
+   "copy_hnr_db": 15.97,
+   "clarity": -3.54
+  },
+  "svarah_e1a930c3": {
+   "utterances_in_train": 11,
+   "natural_band_1_4k_db": -10.32,
+   "natural_hnr_db": 13.33,
+   "copy_band_1_4k_db": -10.1,
+   "copy_hnr_db": 13.6,
+   "clarity": -3.3
+  },
+  "svarah_e2dfb052": {
+   "utterances_in_train": 19,
+   "natural_band_1_4k_db": -12.31,
+   "natural_hnr_db": 12.77,
+   "copy_band_1_4k_db": -12.37,
+   "copy_hnr_db": 13.07,
+   "clarity": -5.83
+  },
+  "svarah_e353743d": {
+   "utterances_in_train": 15,
+   "natural_band_1_4k_db": -14.11,
+   "natural_hnr_db": 13.07,
+   "copy_band_1_4k_db": -13.79,
+   "copy_hnr_db": 12.87,
+   "clarity": -7.35
+  },
+  "svarah_e425afd0": {
+   "utterances_in_train": 53,
+   "natural_band_1_4k_db": -13.7,
+   "natural_hnr_db": 14.07,
+   "copy_band_1_4k_db": -13.72,
+   "copy_hnr_db": 13.83,
+   "clarity": -6.81
+  },
+  "svarah_ea958cdf": {
+   "utterances_in_train": 35,
+   "natural_band_1_4k_db": -10.36,
+   "natural_hnr_db": 12.77,
+   "copy_band_1_4k_db": -11.02,
+   "copy_hnr_db": 12.87,
+   "clarity": -4.58
+  },
+  "svarah_eb17c4c8": {
+   "utterances_in_train": 24,
+   "natural_band_1_4k_db": -17.93,
+   "natural_hnr_db": 10.87,
+   "copy_band_1_4k_db": -17.74,
+   "copy_hnr_db": 12.13,
+   "clarity": -11.67
+  },
+  "svarah_eebaf972": {
+   "utterances_in_train": 12,
+   "natural_band_1_4k_db": -19.66,
+   "natural_hnr_db": 12.4,
+   "copy_band_1_4k_db": -20.13,
+   "copy_hnr_db": 12.17,
+   "clarity": -14.04
+  },
+  "svarah_eec79f81": {
+   "utterances_in_train": 11,
+   "natural_band_1_4k_db": -12.12,
+   "natural_hnr_db": 11.0,
+   "copy_band_1_4k_db": -12.0,
+   "copy_hnr_db": 11.67,
+   "clarity": -6.17
+  },
+  "svarah_f29ff563": {
+   "utterances_in_train": 1,
+   "natural_band_1_4k_db": -18.49,
+   "natural_hnr_db": 3.7,
+   "copy_band_1_4k_db": -18.55,
+   "copy_hnr_db": 6.4,
+   "clarity": -15.35
+  },
+  "svarah_faabaa18": {
+   "utterances_in_train": 27,
+   "natural_band_1_4k_db": -11.41,
+   "natural_hnr_db": 9.87,
+   "copy_band_1_4k_db": -11.48,
+   "copy_hnr_db": 9.1,
+   "clarity": -6.93
+  },
+  "svarah_fd39b2c9": {
+   "utterances_in_train": 45,
+   "natural_band_1_4k_db": -16.29,
+   "natural_hnr_db": 13.53,
+   "copy_band_1_4k_db": -16.36,
+   "copy_hnr_db": 13.87,
+   "clarity": -9.43
+  },
+  "svarah_fdf5f393": {
+   "utterances_in_train": 16,
+   "natural_band_1_4k_db": -16.36,
+   "natural_hnr_db": 16.67,
+   "copy_band_1_4k_db": -16.71,
+   "copy_hnr_db": 17.1,
+   "clarity": -8.16
+  },
+  "svarah_fe3df200": {
+   "utterances_in_train": 27,
+   "natural_band_1_4k_db": -9.26,
+   "natural_hnr_db": 14.1,
+   "copy_band_1_4k_db": -9.22,
+   "copy_hnr_db": 14.07,
+   "clarity": -2.19
+  }
+ }
+}

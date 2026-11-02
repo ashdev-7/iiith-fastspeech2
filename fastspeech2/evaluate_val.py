@@ -53,16 +53,19 @@ def _t(x, dtype=torch.float32):
     return torch.from_numpy(np.asarray(x)[None]).to(device=device, dtype=dtype)
 
 
-def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None):
+def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None, scales=None):
     """Free-running synthesis. Returns dict with mel (T, 80), wav int16, variances and timings."""
     dev = dev or device
     pre_cfg, model_cfg, _ = configs
     texts = torch.from_numpy(np.array([seq])).long().to(dev)
+    d_control = controls[2]
+    if scales is not None and any(x != 1.0 for x in scales):  # per-phone duration control (letter names)
+        d_control = torch.tensor([scales], device=dev, dtype=torch.float32) * controls[2]
     src_lens = torch.tensor([len(seq)], device=dev)
     spk = torch.tensor([speaker_id], device=dev).long()
     t0 = _now(dev)
     with torch.no_grad():
-        out = model(spk, texts, src_lens, len(seq), p_control=controls[0], e_control=controls[1], d_control=controls[2])
+        out = model(spk, texts, src_lens, len(seq), p_control=controls[0], e_control=controls[1], d_control=d_control)
     t1 = _now(dev)
     mel_len = int(out[9][0].item())
     res = {"p": out[2][0, :len(seq)].cpu().numpy(), "e": out[3][0, :len(seq)].cpu().numpy(),
@@ -247,7 +250,7 @@ def main(args):
         try:
             phones, trace = frontend(text, lang)
             seq = text_to_sequence("{" + " ".join(phones) + "}", [], lang)
-            r = synthesize(model, vocoder, configs, spk_id, seq)
+            r = synthesize(model, vocoder, configs, spk_id, seq, scales=trace.get("duration_scale"))
             rec.update({"model_input": trace["model_input"], "phones": " ".join(phones), "audio_s": (
                 len(r["wav"]) / sr) if r["wav"] is not None else 0, "wav": r["wav"]})
             if it["set"] == "stress" and r["wav"] is not None:

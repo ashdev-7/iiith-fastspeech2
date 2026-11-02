@@ -1,4 +1,5 @@
-"""Kaggle job 05 (CPU): regenerate the English test outputs after the frontend fixes found in the
+"""Kaggle job 05 (CPU): v3 = new test voice (clarity ranking, job 07) + letter-name durations.
+v1/v2: regenerate the English test outputs after the frontend fixes found in the
 first full run (E3 "rhyth m" read as "R AY1 DH" + the letter M; E4 "andaroo" ending in OW).
 No retraining: the checkpoint from fs2-03-train-en is reused, so only the text -> phones step differs.
 
@@ -31,7 +32,9 @@ try:
     P.run_tests(status, repo)
     with status.stage("stage_inputs") as rec:
         P.unpack_preprocessed("en", root)
-        speaker = rec["test_voice"] = P.data_job_test_voice("en")
+        # v3: the clearest-recorded voice by fs2-07-diagnose (speaker_clarity.json; the former voice,
+        # svarah_71f88d2a, ranked 108/110: its own recordings are muffled). Override with FS2_EN_VOICE.
+        speaker = rec["test_voice"] = os.environ.get("FS2_EN_VOICE", "svarah_8a8e2655")
         ckpt = rec["checkpoint"] = P.find_checkpoint("en", "fs2-03-train-en")
     with status.stage("inference") as rec:
         results = f"{OUT}/Results/English"

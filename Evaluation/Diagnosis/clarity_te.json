@@ -1,0 +1,25 @@
+{
+ "rule": "Every training speaker: clarity of its natural recordings and of copy-synthesis (3 utterances each).\nclarity = mean 1-4 kHz band share (dB) + HNR/2; the 1-4 kHz band carries formant and consonant cues.",
+ "ranked": [
+  "te_female",
+  "te_male"
+ ],
+ "speakers": {
+  "te_female": {
+   "utterances_in_train": 936,
+   "natural_band_1_4k_db": -9.39,
+   "natural_hnr_db": 17.2,
+   "copy_band_1_4k_db": -10.09,
+   "copy_hnr_db": 16.5,
+   "clarity": -1.84
+  },
+  "te_male": {
+   "utterances_in_train": 1204,
+   "natural_band_1_4k_db": -12.36,
+   "natural_hnr_db": 15.93,
+   "copy_band_1_4k_db": -12.02,
+   "copy_hnr_db": 15.7,
+   "clarity": -4.17
+  }
+ }
+}
