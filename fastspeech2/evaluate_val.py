@@ -113,14 +113,19 @@ def transcribe(asr, wavs, sr, lang, batch_size=8):
     import librosa
     if not wavs:
         return []
-    inputs = [{"raw": librosa.resample(w.astype(np.float32) / 32768.0, orig_sr=sr, target_sr=16000),
-               "sampling_rate": 16000} for w in wavs]
+    audio = [librosa.resample(w.astype(np.float32) / 32768.0, orig_sr=sr, target_sr=16000) for w in wavs]
+
+    def inputs():  # fresh dicts every call: the pipeline pops "raw"/"sampling_rate" out of its inputs
+        return [{"raw": a, "sampling_rate": 16000} for a in audio]
+
     kw = {"generate_kwargs": {"language": ASR_LANGUAGE[lang], "task": "transcribe"}}
+    if lang == "te":  # Whisper writes Telugu as many byte-level tokens: batches of 8 ran out of memory
+        batch_size = 1
     try:
-        outs = asr(inputs, batch_size=batch_size, **kw)
-    except torch.cuda.OutOfMemoryError:  # Telugu: byte-level tokens make batches of 8 too large (fs2-04-eval)
+        outs = asr(inputs(), batch_size=batch_size, **kw)
+    except torch.cuda.OutOfMemoryError:
         torch.cuda.empty_cache()
-        outs = [asr(x, **kw) for x in inputs]
+        outs = [asr(x, **kw) for x in inputs()]
     return [o["text"].strip() for o in outs]
 
 

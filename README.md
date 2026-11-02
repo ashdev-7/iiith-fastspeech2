@@ -60,7 +60,15 @@ their audio, Whisper transcripts and a control-factor check are in `Evaluation/`
 
 ## Checkpoints
 
-Model weights (no optimizer state), one per language: *link pending*.
+Model weights (no optimizer state), one per language, attached to the
+[v1.0 release](https://github.com/ashdev-7/iiith-fastspeech2/releases/tag/v1.0) because they exceed
+GitHub's 100 MB file limit (checksums in `English/checkpoints/README.md`, `Telugu/checkpoints/README.md`):
+
+| | File | Step |
+|---|---|---|
+| English | [`en_model.pth.tar`](https://github.com/ashdev-7/iiith-fastspeech2/releases/download/v1.0/en_model.pth.tar) (135 MB) | 17,949 |
+| Telugu | [`te_model.pth.tar`](https://github.com/ashdev-7/iiith-fastspeech2/releases/download/v1.0/te_model.pth.tar) (135 MB) | 55,524 |
+
 Load with `torch.load(path, map_location=..., weights_only=True)["model"]`; place them in
 `English/checkpoints/` and `Telugu/checkpoints/`.
 

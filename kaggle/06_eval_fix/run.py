@@ -28,7 +28,9 @@ status = P.Status(job="eval_fix", code_commit=commit)
 try:
     P.setup_python(status)
     P.run_tests(status, repo)
-    for lang, name, extra in (("te", "Telugu", []), ("en", "English_sentences", ["--sentences_only"])):
+    # Version 1 did both; its English part succeeded (eval_en_sentences_v2.tar). Version 2 repeats
+    # Telugu only: its Whisper stage failed (batch OOM, then the pipeline had consumed its input dicts).
+    for lang, name, extra in (("te", "Telugu", []),):
         with status.stage(f"{lang}_evaluate", fatal=False) as rec:
             P.unpack_preprocessed(lang, root)
             speaker = rec["speaker"] = P.data_job_test_voice(lang)
