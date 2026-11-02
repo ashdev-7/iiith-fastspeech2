@@ -202,7 +202,12 @@ so the validation set measures generalisation to new sentences, not to new voice
 <li><b>Text</b>: English transcripts normalised by the English frontend rules for the MFA dictionary; Telugu transcripts by the
 Telugu normaliser; one pronunciation dictionary per language generated from the project's own frontends, so training and
 inference use the same phone sets.</li>
-<li><b>Forced alignment</b> (MFA 3.4.3): English 3,821 / 3,821 utterances aligned; Telugu 2,586 / 2,614 <span class="tag meas">measured</span>.</li>
+<li><b>Forced alignment</b> (MFA 3.4.3): English 3,821 / 3,821 utterances aligned; Telugu 2,586 / 2,614 <span class="tag meas">measured</span>.
+The English aligner is MFA's pretrained model and saw none of our data. The Telugu aligner had to be trained here, and it
+was trained on all 6 selected hours, validation included, because the aligner itself produces the validation duration
+targets. This is unsupervised alignment, as in the reference recipe (which aligns its whole corpus); the TTS model
+never trains on validation audio or text. It does mean the Telugu validation durations come from an aligner that saw
+those clips, so validation duration errors may be slightly optimistic <span class="tag est">estimated</span>.</li>
 <li><b>Features</b> (reference preprocessor with fixes M5–M7): leading/trailing silence trimmed using the alignment; 80-band
 log-mel (FFT 1024, hop 256 = 11.6 ms, 0–8 kHz, matching the HiFi-GAN vocoder); F0 with WORLD DIO + StoneMask, unvoiced
 frames linearly interpolated, averaged per phone; energy = L2 norm of each STFT frame, averaged per phone; pitch and energy
