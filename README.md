@@ -45,7 +45,7 @@ duration, pitch and energy metrics.
 | Phone-level pitch RMSE / r | 34.6 Hz / 0.35 | 29.2 Hz / 0.76 |
 | Phone-level energy r | 0.78 | 0.90 |
 | Mel-cepstral distortion\*, ground-truth variances → predicted variances (DTW) | 36.6 → 39.0 | 26.1 → 30.9 |
-| Whisper large-v3 CER, our synthesis vs. copy-synthesis ceiling (150 utterances) | 15.7 % vs 11.6 % | *pending (fs2-06-eval-fix)* |
+| Whisper large-v3 CER, our synthesis vs. copy-synthesis ceiling (150 utterances) | 15.7 % vs 11.6 % | 35.8 % vs 33.1 %† |
 | Real-time factor, T4 GPU (acoustic + vocoder, batch 1) | 0.027 (37× faster than real time) | 0.025 (39×) |
 | Real-time factor, CPU 4 threads | 0.35 (2.9×) | 0.38 (2.6×) |
 
@@ -53,6 +53,8 @@ duration, pitch and energy metrics.
 reported in papers; comparable only between rows and languages here.
 Copy-synthesis = the ground-truth mel through the same HiFi-GAN, i.e. the best this vocoder and this
 ASR model can do; the gap is what the acoustic model loses.
+† Whisper's Telugu recognition is weak (33 % CER even on copy-synthesis), so the Telugu figure mainly bounds
+the gap (2.7 points) rather than measuring pronunciation.
 
 Extra stress sentences (numbers, questions, homographs, names, abbreviations, long sentences,
 Telugu–English code-mixing) are in [`Evaluation/stress_sentences.json`](Evaluation/stress_sentences.json);

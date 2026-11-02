@@ -127,9 +127,26 @@ def main(browser):
     rep["TE_OBSERVATIONS"] = (
         "All five sentences are synthesised without errors in the frontend, with every number expanded to Telugu words. "
         "Against Whisper's Telugu recognition the clearest sentence is {} (CER {}) and the hardest {} (CER {}); "
-        "the mean over the five is {}. Transcripts should be read with Whisper's weak Telugu ability in mind (below).").format(
+        "the mean over the five is {}. Transcripts should be read with Whisper's weak Telugu ability in mind (below). "
+        "What the transcripts show, sentence by sentence: "
+        "<b>T1</b> — Whisper recognises the long English loanword and writes it in Latin script (<i>Neuro-Pharmacological</i>), "
+        "so most of T1's CER is a script mismatch, not a mispronunciation; the remaining errors are శ → స in "
+        "పరిశోధనలో and విశ్లేషించారు and ఔ → ఉ in ఔషధాల. "
+        "<b>T2a/T2b</b> — పట్టు is transcribed correctly in both senses (the two are written and pronounced identically; "
+        "only the pitch differs, §6.2); the errors are word-boundary merges (పయతని, ఆమేపట్టు) and vowel length "
+        "(ఆమె → ఆమే, చీర → చిర). "
+        "<b>T3</b> — the split అడ  విలో is heard as the single word అడవిలో, i.e. the model joins it as a listener would; "
+        "the only error is again శ → స (నిస్సబ్దంగా). "
+        "<b>T4</b> — Whisper writes the expanded numbers back as digits (2026, 10.45), which the CER counts as errors, "
+        "drops the opening ఈ సమావేశం, and merges నవంబర్ పన్నెండవ తేదీ across word boundaries (the syllables are all "
+        "present); ప్రారంభ → ప్రారంబ is a lost aspiration. "
+        "The one systematic pattern is శ (frontend phone <code>sh</code>) heard as స (<code>s</code>) in all four words "
+        "that contain it. The frontend keeps the two phones distinct, so the merger is in the acoustic model or in "
+        "Whisper; with only these transcripts the two cannot be separated <span class=\"tag est\">estimated</span>.").format(
         best, pct(cers[best]), worst, pct(cers[worst]), pct(sum(cers.values()) / 5))
-    rep["TE_FAILURES"] = "highest ASR error on {} (CER {}); see §5.2".format(worst, pct(cers[worst]))
+    rep["TE_FAILURES"] = ("శ heard as స in every word that has it; vowel-length and word-boundary errors; "
+                          "highest ASR error on {} (CER {}, partly digits written by Whisper); see §5.2").format(
+                              worst, pct(cers[worst]))
     rep["TE_EN_SENTENCE_FIGS"] = ("<h3>6.1 English</h3>\n" + sentence_figs("English", ["E1", "E2a", "E2b", "E3", "E4"], tests)
                                   + '\n<h3 class="pb">6.2 Telugu</h3>\n'
                                   + sentence_figs("Telugu", ["T1", "T2a", "T2b", "T3", "T4"], tests))

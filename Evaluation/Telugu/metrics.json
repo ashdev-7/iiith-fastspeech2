@@ -1,0 +1,411 @@
+{
+ "checkpoint": "te_model.pth.tar",
+ "lang": "te",
+ "device": "cuda (Tesla T4)",
+ "definitions": "Objective metrics for evaluate_val.py (numpy only, so they are unit-tested without torch).\n\nDefinitions (stated in the report exactly as implemented here):\n  * CER / WER: Levenshtein distance / reference length, after normalise_text() on both sides.\n  * mel-cepstral distortion (MCD-mel): the 80-band natural-log mel spectrogram (the model's own\n    feature) is turned into cepstra with an orthonormal DCT-II; coefficients c1..c24 (c0 = energy is\n    excluded) give  MCD = (10 / ln 10) * sqrt(2 * sum_k (c_k - c'_k)^2), averaged over frames.\n    This is NOT the WORLD/SPTK mel-cepstrum MCD that papers report; values are only comparable\n    within this project (between models, languages and conditions computed the same way).\n  * Pearson r and RMSE on phone-level values.\n",
+ "checkpoint_step": 55524,
+ "validation": {
+  "utterances": 446,
+  "speakers": 2,
+  "metrics": {
+   "duration_mae_frames": {
+    "mean": 1.0582726154707585,
+    "median": 1.03938185443669,
+    "std": 0.21101249398871197,
+    "n": 446
+   },
+   "duration_log_r": {
+    "mean": 0.8480535061945659,
+    "median": 0.8569593114612433,
+    "std": 0.0626536127486431,
+    "n": 446
+   },
+   "length_rel_error": {
+    "mean": 0.04520312059838026,
+    "median": 0.03616374163606462,
+    "std": 0.035479535532321776,
+    "n": 446
+   },
+   "pitch_rmse_hz": {
+    "mean": 29.167500510349875,
+    "median": 28.525077344821355,
+    "std": 7.104964695225767,
+    "n": 446
+   },
+   "pitch_r": {
+    "mean": 0.7589740037393697,
+    "median": 0.7782082632559819,
+    "std": 0.11881470740982325,
+    "n": 446
+   },
+   "energy_rmse": {
+    "mean": 17.384587816033267,
+    "median": 16.85183028261219,
+    "std": 4.0959402900881265,
+    "n": 446
+   },
+   "energy_r": {
+    "mean": 0.8984655838784499,
+    "median": 0.9047492670942191,
+    "std": 0.04321030246976713,
+    "n": 446
+   },
+   "mcd_mel_oracle": {
+    "mean": 27.26936116690425,
+    "median": 26.79752408148739,
+    "std": 2.7198436970379007,
+    "n": 446
+   },
+   "mcd_mel_oracle_dtw": {
+    "mean": 26.09348167378773,
+    "median": 25.649274209490788,
+    "std": 2.646077075889335,
+    "n": 446
+   },
+   "mcd_mel_free_dtw": {
+    "mean": 30.914134158631956,
+    "median": 30.46904125968126,
+    "std": 3.3671711345838355,
+    "n": 446
+   }
+  },
+  "zero_length_predictions": 0
+ },
+ "speed_gpu": {
+  "utterances": 446,
+  "audio_s": 3078.304217687075,
+  "rtf_acoustic": 0.006961138288697353,
+  "rtf_vocoder": 0.018558730975564458,
+  "note": "batch 1, warm (one untimed warm-up call), CUDA-synchronised; excludes text frontend",
+  "rtf_total": 0.02551986926426181
+ },
+ "controls": {
+  "text": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+  "conditions": [
+   {
+    "condition": "base",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 209.35505759075107,
+    "rms": 0.14759988586529565
+   },
+   {
+    "condition": "duration_0.8",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 0.8,
+    "audio_s": 1.8808163265306121,
+    "median_f0_hz": 209.55244336757806,
+    "rms": 0.14542290096636806
+   },
+   {
+    "condition": "duration_1.25",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 1.25,
+    "audio_s": 3.01859410430839,
+    "median_f0_hz": 208.38633433969216,
+    "rms": 0.1430989591695083
+   },
+   {
+    "condition": "pitch_0.8",
+    "pitch_control": 0.8,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 164.88668614333443,
+    "rms": 0.1115766590578394
+   },
+   {
+    "condition": "pitch_1.2",
+    "pitch_control": 1.2,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 251.7828866223694,
+    "rms": 0.16357519484794542
+   },
+   {
+    "condition": "energy_0.8",
+    "pitch_control": 1.0,
+    "energy_control": 0.8,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 208.89442687263795,
+    "rms": 0.12030485035899102
+   },
+   {
+    "condition": "energy_1.2",
+    "pitch_control": 1.0,
+    "energy_control": 1.2,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 206.14549844193533,
+    "rms": 0.1588822663040202
+   }
+  ],
+  "note": "pitch/energy controls scale the normalised predictions in the reference code"
+ },
+ "speed_cpu": {
+  "utterances": 20,
+  "audio_s": 169.180589569161,
+  "rtf_acoustic": 0.026323474775333058,
+  "rtf_vocoder": 0.3393529769650685,
+  "rtf_total": 0.36567645174040153,
+  "threads": 4,
+  "note": "batch 1, warm, float32"
+ },
+ "intelligibility": {
+  "asr_model": "openai/whisper-large-v3",
+  "utterances": 150,
+  "synthesis": {
+   "cer": 0.3580350406572219,
+   "wer": 0.8028328611898017,
+   "utterances": 150
+  },
+  "copy_synthesis_ceiling": {
+   "cer": 0.33146114510855895,
+   "wer": 0.7858356940509915,
+   "utterances": 150
+  },
+  "reference_text": "the validation transcript (.lab text used for alignment)"
+ },
+ "sentences": [
+  {
+   "id": "T1",
+   "set": "assignment",
+   "category": null,
+   "text": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "model_input": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "phones": "n y uu r oo ph aa r m a k oo l aa j i k a l p a r i sh oo dh a n a l oo n uu t a n a au ss a dh aa l a p r a bh aa v aa n n i v i sh l ee ss i ny c aa r u",
+   "audio_s": 5.270929705215419,
+   "asr_transcript": "Neuro-Pharmacological పరిసోధనలో నూతన ఉషధాల ప్రభావాన్ని విస్లేశించారు.",
+   "asr_vs_model_input": {
+    "cer": 0.3870967741935484,
+    "wer": 0.8333333333333334,
+    "ref_chars": 62,
+    "ref_words": 6,
+    "char_edits": 24,
+    "word_edits": 5
+   }
+  },
+  {
+   "id": "T2a",
+   "set": "assignment",
+   "category": null,
+   "text": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+   "model_input": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+   "phones": "t aa dd u p ai a t a n i p a tt tt u c aa l aa b a l a ng g aa u n d i",
+   "audio_s": 2.461315192743764,
+   "asr_transcript": "తాడు పయతని పట్టు చాలా బలంగా ఉంది.",
+   "asr_vs_model_input": {
+    "cer": 0.07142857142857142,
+    "wer": 0.3333333333333333,
+    "ref_chars": 28,
+    "ref_words": 6,
+    "char_edits": 2,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "T2b",
+   "set": "assignment",
+   "category": null,
+   "text": "ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "model_input": "ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "phones": "aa m e p a tt tt u c ii r a n u dh a r i ny c i v ee dd u k a k u v a c c i n d i",
+   "audio_s": 2.693514739229025,
+   "asr_transcript": "ఆమేపట్టు చిరను ధరించి వేడుకకు వచ్చింది.",
+   "asr_vs_model_input": {
+    "cer": 0.058823529411764705,
+    "wer": 0.5,
+    "ref_chars": 34,
+    "ref_words": 6,
+    "char_edits": 2,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "T3",
+   "set": "assignment",
+   "category": null,
+   "text": "పులి అడ  విలో నిశ్శబ్దంగా నడిచింది.",
+   "model_input": "పులి అడ విలో నిశ్శబ్దంగా నడిచింది.",
+   "phones": "p u l i a dd a v i l oo n i sh sh a b d a ng g aa n a dd i c i n d i",
+   "audio_s": 2.136235827664399,
+   "asr_transcript": "పులి అడవిలో నిస్సబ్దంగా నడిచింది.",
+   "asr_vs_model_input": {
+    "cer": 0.06896551724137931,
+    "wer": 0.6,
+    "ref_chars": 29,
+    "ref_words": 5,
+    "char_edits": 2,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "T4",
+   "set": "assignment",
+   "category": null,
+   "text": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ధంగా ఉంచండి.",
+   "model_input": "ఈ సమావేశం రెండు వేల ఇరవై ఆరు నవంబర్ పన్నెండవ తేదీ ఉదయం పది నలభై ఐదు గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ధంగా ఉంచండి.",
+   "phones": "ii s a m aa v ee sh a m r e nn dd u v ee l a i r a v ai aa r u n a v a m b a r p a n n e nn dd a v a t ee d ii u d a y a m p a d i n a l a bh ai ai d u g a nn tt a l a k u p r aa r a m bh a m a v u t u n d i sp s a m a y aa n i k i s i d dh a ng g aa u ny c a nn dd i",
+   "audio_s": 9.125442176870749,
+   "asr_transcript": "2026 నవం బర్పన్ నండవతేది ఉదయం 10.45 గంటలకు ప్రారంబమోతుంది సమయానికి సిద్ధంగా ఉంచండి",
+   "asr_vs_model_input": {
+    "cer": 0.3877551020408163,
+    "wer": 0.7222222222222222,
+    "ref_chars": 98,
+    "ref_words": 18,
+    "char_edits": 38,
+    "word_edits": 13
+   }
+  },
+  {
+   "id": "ST01",
+   "set": "stress",
+   "category": "question intonation",
+   "text": "మీరు రేపు ఉదయం ఆఫీసుకు వస్తారా?",
+   "model_input": "మీరు రేపు ఉదయం ఆఫీసుకు వస్తారా?",
+   "phones": "m ii r u r ee p u u d a y a m aa ph ii s u k u v a s t aa r aa",
+   "audio_s": 2.391655328798186,
+   "asr_transcript": "మీరు రేపు ఉదైయమాఫి సుకువస్తారా.",
+   "asr_vs_model_input": {
+    "cer": 0.15384615384615385,
+    "wer": 0.6,
+    "ref_chars": 26,
+    "ref_words": 5,
+    "char_edits": 4,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "ST02",
+   "set": "stress",
+   "category": "numbers",
+   "text": "ఈ పుస్తకం ధర 250 రూపాయలు.",
+   "model_input": "ఈ పుస్తకం ధర రెండు వందల యాభై రూపాయలు.",
+   "phones": "ii p u s t a k a m dh a r a r e nn dd u v a n d a l a y aa bh ai r uu p aa y a l u",
+   "audio_s": 2.8560544217687074,
+   "asr_transcript": "ఈ పుస్తకం ధర రేండు వందల యాభి రూపాయలు.",
+   "asr_vs_model_input": {
+    "cer": 0.06666666666666667,
+    "wer": 0.2857142857142857,
+    "ref_chars": 30,
+    "ref_words": 7,
+    "char_edits": 2,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "ST03",
+   "set": "stress",
+   "category": "time",
+   "text": "రైలు సాయంత్రం 6:30 కి బయలుదేరుతుంది.",
+   "model_input": "రైలు సాయంత్రం ఆరు ముప్పై కి బయలుదేరుతుంది.",
+   "phones": "r ai l u s aa y a n t r a m aa r u m u p p ai k i b a y a l u d ee r u t u n d i",
+   "audio_s": 2.914104308390023,
+   "asr_transcript": "రేలు సాయంత్రమారు ముప్పైకి బయలు దేరుతుంది.",
+   "asr_vs_model_input": {
+    "cer": 0.08333333333333333,
+    "wer": 1.0,
+    "ref_chars": 36,
+    "ref_words": 6,
+    "char_edits": 3,
+    "word_edits": 6
+   }
+  },
+  {
+   "id": "ST04",
+   "set": "stress",
+   "category": "consonant clusters (conjuncts)",
+   "text": "స్త్రీ శక్తి రాష్ట్ర అభివృద్ధికి ముఖ్యం.",
+   "model_input": "స్త్రీ శక్తి రాష్ట్ర అభివృద్ధికి ముఖ్యం.",
+   "phones": "s t r ii sh a k t i r aa ss tt r a a bh i v r u d dh i k i m u kh y a m",
+   "audio_s": 2.6354648526077096,
+   "asr_transcript": "3. సక్తి రాష్ట్ర ఆభివరుద్ది కి ముఖ్యమ్",
+   "asr_vs_model_input": {
+    "cer": 0.37142857142857144,
+    "wer": 1.0,
+    "ref_chars": 35,
+    "ref_words": 5,
+    "char_edits": 13,
+    "word_edits": 5
+   }
+  },
+  {
+   "id": "ST05",
+   "set": "stress",
+   "category": "English loanwords in Telugu script (with ZWNJ)",
+   "text": "నా లాప్‌టాప్ బ్యాటరీ త్వరగా అయిపోతోంది.",
+   "model_input": "నా లాప్టాప్ బ్యాటరీ త్వరగా అయిపోతోంది.",
+   "phones": "n aa l aa p tt aa p b y aa tt a r ii t v a r a g aa a y i p oo t oo n d i",
+   "audio_s": 2.705124716553288,
+   "asr_transcript": "4 లాప్టాప్ బ్యాటరి త్వరగా ఆయి పోతోంది.",
+   "asr_vs_model_input": {
+    "cer": 0.12121212121212122,
+    "wer": 0.8,
+    "ref_chars": 33,
+    "ref_words": 5,
+    "char_edits": 4,
+    "word_edits": 4
+   }
+  },
+  {
+   "id": "ST06",
+   "set": "stress",
+   "category": "Latin-script word inside Telugu (code-mixing)",
+   "text": "నేను నిన్న కొత్త iPhone కొన్నాను.",
+   "model_input": "నేను నిన్న కొత్త iPhone కొన్నాను.",
+   "phones": "n ee n u n i n n a k o t t a ai ph oo n k o n n aa n u",
+   "audio_s": 1.8808163265306121,
+   "asr_transcript": "నేను నిన్న కొత్త ఆఈ ఫోన్ కొన్నాను.",
+   "asr_vs_model_input": {
+    "cer": 0.21428571428571427,
+    "wer": 0.4,
+    "ref_chars": 28,
+    "ref_words": 5,
+    "char_edits": 6,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "ST07",
+   "set": "stress",
+   "category": "long sentence",
+   "text": "హైదరాబాద్ నగరంలో ప్రతి సంవత్సరం జరిగే పుస్తక ప్రదర్శనకు వేలాది మంది పాఠకులు, రచయితలు మరియు విద్యార్థులు ఉత్సాహంగా హాజరవుతారు.",
+   "model_input": "హైదరాబాద్ నగరంలో ప్రతి సంవత్సరం జరిగే పుస్తక ప్రదర్శనకు వేలాది మంది పాఠకులు, రచయితలు మరియు విద్యార్థులు ఉత్సాహంగా హాజరవుతారు.",
+   "phones": "h ai d a r aa b aa d n a g a r a m l oo p r a t i s a m v a t s a r a m j a r i g ee p u s t a k a p r a d a r sh a n a k u v ee l aa d i m a n d i p aa tth a k u l u sp r a c a y i t a l u m a r i y u v i d y aa r th u l u u t s aa h a ng g aa h aa j a r a v u t aa r u",
+   "audio_s": 9.218321995464853,
+   "asr_transcript": "AIDARABADNAGARAN లో ప్రతి సంవచ్రం జరిగే పుస్తక ప్రదర్శనకు వేలాది మంది పాదకులు, రచైతలు మరియు విద్యార్ధులు ఉత్సాహంగా హాజరవుతారు.",
+   "asr_vs_model_input": {
+    "cer": 0.2018348623853211,
+    "wer": 0.4,
+    "ref_chars": 109,
+    "ref_words": 15,
+    "char_edits": 22,
+    "word_edits": 6
+   }
+  },
+  {
+   "id": "ST08",
+   "set": "stress",
+   "category": "exclamation, very short",
+   "text": "ఎంత అందమైన దృశ్యం!",
+   "model_input": "ఎంత అందమైన దృశ్యం!",
+   "phones": "e n t a a n d a m ai n a d r u sh y a m",
+   "audio_s": 1.5441269841269842,
+   "asr_transcript": "ఎంతా అందమైన ద్రుస్యం.",
+   "asr_vs_model_input": {
+    "cer": 0.3333333333333333,
+    "wer": 0.6666666666666666,
+    "ref_chars": 15,
+    "ref_words": 3,
+    "char_edits": 5,
+    "word_edits": 2
+   }
+  }
+ ]
+}

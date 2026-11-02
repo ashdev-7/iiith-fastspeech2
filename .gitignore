@@ -20,3 +20,4 @@ output/
 kaggle.json
 access_token
 .env
+Report/src/report.built.html
