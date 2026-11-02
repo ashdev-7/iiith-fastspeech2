@@ -119,6 +119,26 @@ def test_plots_render(tmp_path):
     assert all(os.path.getsize(p) > 1000 for p in out)
 
 
+def test_pitch_energy_controls_scale_physical_units(tmp_path):
+    """M12: p_control / e_control scale Hz (energy units), not the z-score. A voice below the corpus
+    mean got LOWER with the reference's p * 1.2 (measured on the English test voice: 126 -> 113 Hz)."""
+    from model.modules import VarianceAdaptor
+    p = torch.tensor([-1.0, 0.5])  # stats in _configs: mean 180 Hz, std 40 -> 140 Hz, 200 Hz
+    hz = lambda z: z * 40.0 + 180.0  # noqa: E731
+    assert torch.allclose(hz(VarianceAdaptor.scale_physical(p, 1.2, 180.0, 40.0)), hz(p) * 1.2)
+    assert VarianceAdaptor.scale_physical(p, 1.0, 180.0, 40.0) is p  # training / default: untouched
+    torch.manual_seed(0)
+    pre, mc, _ = _configs("en", tmp_path)
+    model = FastSpeech2(pre, mc).to(device).eval()
+    seq = torch.tensor([[5, 6, 7, 8, 9]], device=device)
+    args = (torch.tensor([0], device=device), seq, torch.tensor([5], device=device), 5)
+    with torch.no_grad():
+        base, up = model(*args)[2], model(*args, p_control=1.2)[2]
+        e_base, e_up = model(*args)[3], model(*args, e_control=0.8)[3]
+    assert torch.allclose(hz(up), hz(base) * 1.2, atol=1e-3)
+    assert torch.allclose(e_up * 20.0 + 30.0, (e_base * 20.0 + 30.0) * 0.8, atol=1e-3)
+
+
 def test_to_device_casts_float64_features():
     """Normalised pitch/energy .npy files are float64 (divided by float64 stats); the reference
     to_device left energy as double, which made backward() fail ("Found dtype Double")."""

@@ -509,6 +509,8 @@ def evaluate(lang, root, repo, rec, checkpoint, speaker, out_dir, extra=()):
     rec["sentence_errors"] = {s["id"]: s["error"] for s in m["sentences"] if s.get("error")}
     rec["sentence_cer"] = {s["id"]: round(s["asr_vs_model_input"]["cer"], 3)
                            for s in m["sentences"] if s.get("asr_vs_model_input")}
+    rec["sentence_cer_whisper_norm"] = {s["id"]: round(s["asr_vs_original_whisper_norm"]["cer"], 3)
+                                        for s in m["sentences"] if s.get("asr_vs_original_whisper_norm")}
     return m
 
 

@@ -38,9 +38,13 @@ def levenshtein(a, b):
     return prev[-1]
 
 
-def error_rates(reference, hypothesis):
+def error_rates(reference, hypothesis, norm=None):
     """{"cer", "wer", "ref_chars", "ref_words", "char_edits", "word_edits"} after normalisation.
-    CER counts characters without spaces."""
+    CER counts characters without spaces. norm: optional extra normaliser applied to both texts first
+    (Whisper's EnglishTextNormalizer for English: numbers, spellings, "a.m."). Never use Whisper's
+    BasicTextNormalizer for Telugu: it deletes combining marks (vowel signs, virama)."""
+    if norm is not None:
+        reference, hypothesis = norm(reference), norm(hypothesis)
     r, h = normalise_text(reference), normalise_text(hypothesis)
     rc, hc = r.replace(" ", ""), h.replace(" ", "")
     rw, hw = r.split(), h.split()

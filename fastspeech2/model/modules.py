@@ -44,6 +44,9 @@ class VarianceAdaptor(nn.Module):
             stats = json.load(f)
             pitch_min, pitch_max = stats["pitch"][:2]
             energy_min, energy_max = stats["energy"][:2]
+            # mean/std of the un-normalised values (Hz; STFT-magnitude norm), for the controls (M12)
+            self.pitch_mean, self.pitch_std = stats["pitch"][2:4]
+            self.energy_mean, self.energy_std = stats["energy"][2:4]
 
         if pitch_quantization == "log":
             self.pitch_bins = nn.Parameter(
@@ -77,12 +80,22 @@ class VarianceAdaptor(nn.Module):
             n_bins, model_config["transformer"]["encoder_hidden"]
         )
 
+    @staticmethod
+    def scale_physical(prediction, control, mean, std):
+        """Scale a z-normalised prediction by `control` in physical units: ((p*std+mean)*c - mean)/std.
+        The reference multiplied the normalised value (p*c), which scales the distance from the CORPUS
+        mean: for a voice below the mean (p < 0), c = 1.2 LOWERED the pitch (measured: 126 -> 113 Hz).
+        control == 1 (training, default inference) leaves the prediction unchanged. (M12)"""
+        if control == 1.0:
+            return prediction
+        return ((prediction * std + mean) * control - mean) / std
+
     def get_pitch_embedding(self, x, target, mask, control):
         prediction = self.pitch_predictor(x, mask)
         if target is not None:
             embedding = self.pitch_embedding(torch.bucketize(target, self.pitch_bins))
         else:
-            prediction = prediction * control
+            prediction = self.scale_physical(prediction, control, self.pitch_mean, self.pitch_std)
             embedding = self.pitch_embedding(
                 torch.bucketize(prediction, self.pitch_bins)
             )
@@ -93,7 +106,7 @@ class VarianceAdaptor(nn.Module):
         if target is not None:
             embedding = self.energy_embedding(torch.bucketize(target, self.energy_bins))
         else:
-            prediction = prediction * control
+            prediction = self.scale_physical(prediction, control, self.energy_mean, self.energy_std)
             embedding = self.energy_embedding(
                 torch.bucketize(prediction, self.energy_bins)
             )

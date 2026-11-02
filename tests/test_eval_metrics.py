@@ -22,6 +22,12 @@ def test_error_rates():
     assert abs(M.corpus_rates(rows)["cer"] - 2 / 6) < 1e-9  # total edits / total chars
 
 
+def test_error_rates_with_extra_normaliser():
+    digits = lambda s: s.replace("ten", "10")  # noqa: E731  (stand-in for Whisper's normaliser)
+    assert M.error_rates("at ten", "at 10")["cer"] > 0
+    assert M.error_rates("at ten", "at 10", norm=digits)["cer"] == 0
+
+
 def test_levenshtein():
     assert M.levenshtein("kitten", "sitting") == 3
     assert M.levenshtein([], [1, 2]) == 2

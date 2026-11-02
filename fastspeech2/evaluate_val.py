@@ -115,9 +115,23 @@ def transcribe(asr, wavs, sr, lang, batch_size=8):
         return []
     inputs = [{"raw": librosa.resample(w.astype(np.float32) / 32768.0, orig_sr=sr, target_sr=16000),
                "sampling_rate": 16000} for w in wavs]
-    outs = asr(inputs, batch_size=batch_size,
-               generate_kwargs={"language": ASR_LANGUAGE[lang], "task": "transcribe"})
+    kw = {"generate_kwargs": {"language": ASR_LANGUAGE[lang], "task": "transcribe"}}
+    try:
+        outs = asr(inputs, batch_size=batch_size, **kw)
+    except torch.cuda.OutOfMemoryError:  # Telugu: byte-level tokens make batches of 8 too large (fs2-04-eval)
+        torch.cuda.empty_cache()
+        outs = [asr(x, **kw) for x in inputs]
     return [o["text"].strip() for o in outs]
+
+
+def whisper_english_normaliser(asr):
+    """Whisper's EnglishTextNormalizer (numbers -> digits, British/American spelling, "a.m."), or None."""
+    try:
+        f = asr.tokenizer.normalize
+        f("Ten forty five a.m.")
+        return f
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def main(args):
@@ -288,6 +302,7 @@ def main(args):
     torch.cuda.empty_cache() if torch.cuda.is_available() else None
     try:
         asr = load_asr(args.asr_model)
+        wnorm = whisper_english_normaliser(asr) if lang == "en" else None
         hyp_s = transcribe(asr, [a["synth"] for a in asr_items], sr, lang)
         hyp_c = transcribe(asr, [a["copy"] for a in asr_items], sr, lang)
         asr_rows = []
@@ -295,6 +310,9 @@ def main(args):
             es_, ec = M.error_rates(a["ref"], hs), M.error_rates(a["ref"], hc)
             asr_rows.append({"id": a["id"], "speaker": a["speaker"], "reference": a["ref"], "synth_hyp": hs,
                              "copy_hyp": hc, "synth": es_, "copy": ec})
+            if wnorm:
+                asr_rows[-1]["synth_wn"] = M.error_rates(a["ref"], hs, wnorm)
+                asr_rows[-1]["copy_wn"] = M.error_rates(a["ref"], hc, wnorm)
         with open(os.path.join(out, "asr_validation.csv"), "w", encoding="utf-8", newline="") as f:
             w = csv.writer(f)
             w.writerow(["id", "speaker", "reference", "synth_transcript", "synth_cer", "copy_synthesis_transcript",
@@ -307,10 +325,17 @@ def main(args):
             "synthesis": M.corpus_rates([r["synth"] for r in asr_rows]),
             "copy_synthesis_ceiling": M.corpus_rates([r["copy"] for r in asr_rows]),
             "reference_text": "the validation transcript (.lab text used for alignment)"}
+        if wnorm and asr_rows:
+            report["intelligibility"]["whisper_english_normaliser"] = {
+                "synthesis": M.corpus_rates([r["synth_wn"] for r in asr_rows]),
+                "copy_synthesis_ceiling": M.corpus_rates([r["copy_wn"] for r in asr_rows]),
+                "note": "Whisper's EnglishTextNormalizer applied to reference and transcript (numbers, spellings)"}
         sent_ok = [r for r in sent_rows if r.get("wav") is not None]
         for r, h in zip(sent_ok, transcribe(asr, [r["wav"] for r in sent_ok], sr, lang)):
             r["asr_transcript"] = h
             r["asr_vs_model_input"] = M.error_rates(r["model_input"], h)
+            if wnorm:  # against the ORIGINAL text ("10:45 AM"), both sides through Whisper's normaliser
+                r["asr_vs_original_whisper_norm"] = M.error_rates(r["text"], h, wnorm)
     except Exception as e:  # noqa: BLE001  (ASR is an extra; its failure must not lose the other metrics)
         report["intelligibility"] = {"error": "{}: {}".format(type(e).__name__, e)}
     for r in sent_rows:
