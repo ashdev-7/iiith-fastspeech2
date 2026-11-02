@@ -1,0 +1,458 @@
+{
+ "checkpoint": "en_model.pth.tar",
+ "lang": "en",
+ "device": "cuda (Tesla T4)",
+ "definitions": "Objective metrics for evaluate_val.py (numpy only, so they are unit-tested without torch).\n\nDefinitions (stated in the report exactly as implemented here):\n  * CER / WER: Levenshtein distance / reference length, after normalise_text() on both sides.\n  * mel-cepstral distortion (MCD-mel): the 80-band natural-log mel spectrogram (the model's own\n    feature) is turned into cepstra with an orthonormal DCT-II; coefficients c1..c24 (c0 = energy is\n    excluded) give  MCD = (10 / ln 10) * sqrt(2 * sum_k (c_k - c'_k)^2), averaged over frames.\n    This is NOT the WORLD/SPTK mel-cepstrum MCD that papers report; values are only comparable\n    within this project (between models, languages and conditions computed the same way).\n  * Pearson r and RMSE on phone-level values.\n",
+ "checkpoint_step": 17949,
+ "mode": "sentences_only",
+ "validation": {
+  "utterances": 0,
+  "speakers": 0,
+  "metrics": {
+   "duration_mae_frames": {
+    "n": 0
+   },
+   "duration_log_r": {
+    "n": 0
+   },
+   "length_rel_error": {
+    "n": 0
+   },
+   "pitch_rmse_hz": {
+    "n": 0
+   },
+   "pitch_r": {
+    "n": 0
+   },
+   "energy_rmse": {
+    "n": 0
+   },
+   "energy_r": {
+    "n": 0
+   },
+   "mcd_mel_oracle": {
+    "n": 0
+   },
+   "mcd_mel_oracle_dtw": {
+    "n": 0
+   },
+   "mcd_mel_free_dtw": {
+    "n": 0
+   }
+  },
+  "zero_length_predictions": 0
+ },
+ "controls": {
+  "text": "The researchers will conduct an experiment to evaluate the proposed method.",
+  "conditions": [
+   {
+    "condition": "base",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 3.7964625850340137,
+    "median_f0_hz": 125.82115544453895,
+    "rms": 0.1430905456383503
+   },
+   {
+    "condition": "duration_0.8",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 0.8,
+    "audio_s": 2.786394557823129,
+    "median_f0_hz": 128.1736552642355,
+    "rms": 0.14633276767272899
+   },
+   {
+    "condition": "duration_1.25",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 1.25,
+    "audio_s": 4.493061224489796,
+    "median_f0_hz": 127.1025515068033,
+    "rms": 0.14514594692149982
+   },
+   {
+    "condition": "pitch_0.8",
+    "pitch_control": 0.8,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 3.7964625850340137,
+    "median_f0_hz": 107.6862304491193,
+    "rms": 0.15541871055219733
+   },
+   {
+    "condition": "pitch_1.2",
+    "pitch_control": 1.2,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 3.7964625850340137,
+    "median_f0_hz": 156.60712701623302,
+    "rms": 0.18045557342255125
+   },
+   {
+    "condition": "energy_0.8",
+    "pitch_control": 1.0,
+    "energy_control": 0.8,
+    "duration_control": 1.0,
+    "audio_s": 3.7964625850340137,
+    "median_f0_hz": 124.53037675788383,
+    "rms": 0.1392731912115975
+   },
+   {
+    "condition": "energy_1.2",
+    "pitch_control": 1.0,
+    "energy_control": 1.2,
+    "duration_control": 1.0,
+    "audio_s": 3.7964625850340137,
+    "median_f0_hz": 124.44680990512356,
+    "rms": 0.16569433381372695
+   }
+  ],
+  "note": "pitch/energy controls scale the normalised predictions in the reference code"
+ },
+ "speed_cpu": {
+  "error": "RuntimeError: skipped (no validation utterances in this mode)"
+ },
+ "intelligibility": {},
+ "sentences": [
+  {
+   "id": "E1",
+   "set": "assignment",
+   "category": null,
+   "text": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "model_input": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "phones": "DH AH0 AE2 N T AY0 D IH0 S AH0 S T AE2 B L IH0 SH M AH0 N T EH1 R IY0 AH0 N IH0 Z AH0 M M UW1 V M AH0 N T G EY1 N D K AH0 N S IH1 D ER0 AH0 B AH0 L M OW0 M EH1 N T AH0 M D ER1 IH0 NG DH AH0 P AA2 R L AH0 M EH1 N ER0 IY0 P R AH0 S IY1 D IH0 NG Z",
+   "audio_s": 5.224489795918367,
+   "asr_transcript": "The entire establishment in India is a movement in considerable momentum during the parliamentary proceedings.",
+   "asr_vs_model_input": {
+    "cer": 0.15306122448979592,
+    "wer": 0.7,
+    "ref_chars": 98,
+    "ref_words": 10,
+    "char_edits": 15,
+    "word_edits": 7
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.15306122448979592,
+    "wer": 0.7,
+    "ref_chars": 98,
+    "ref_words": 10,
+    "char_edits": 15,
+    "word_edits": 7
+   }
+  },
+  {
+   "id": "E2a",
+   "set": "assignment",
+   "category": null,
+   "text": "The orchestra's conduct during the ceremony was praised by the audience.",
+   "model_input": "The orchestra's conduct during the ceremony was praised by the audience.",
+   "phones": "DH AH0 AO1 R K AH0 S T R AH0 Z K AA1 N D AH0 K T D ER1 IH0 NG DH AH0 S EH1 R AH0 M OW2 N IY0 W AA1 Z P R EY1 Z D B AY1 DH AH0 AA1 D IY0 AH0 N S",
+   "audio_s": 3.610702947845805,
+   "asr_transcript": "The orchestra's conduct during the ceremony was praised by the audience.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 60,
+    "ref_words": 12,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 61,
+    "ref_words": 12,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "E2b",
+   "set": "assignment",
+   "category": null,
+   "text": "The researchers will conduct an experiment to evaluate the proposed method.",
+   "model_input": "The researchers will conduct an experiment to evaluate the proposed method.",
+   "phones": "DH AH0 R IY1 S ER0 CH ER0 Z W AH0 L K AA0 N D AH1 K T AE1 N IH0 K S P EH1 R AH0 M AH0 N T T AH0 IH0 V AE1 L Y UW0 EY2 T DH AH0 P R AH0 P OW1 Z D M EH1 TH AH0 D",
+   "audio_s": 3.7964625850340137,
+   "asr_transcript": "Researchers will conduct an experiment to evaluate the proposed method.",
+   "asr_vs_model_input": {
+    "cer": 0.046875,
+    "wer": 0.09090909090909091,
+    "ref_chars": 64,
+    "ref_words": 11,
+    "char_edits": 3,
+    "word_edits": 1
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.046875,
+    "wer": 0.09090909090909091,
+    "ref_chars": 64,
+    "ref_words": 11,
+    "char_edits": 3,
+    "word_edits": 1
+   }
+  },
+  {
+   "id": "E3",
+   "set": "assignment",
+   "category": null,
+   "text": "The rhyth  m of the orchestra changed unexpectedly.",
+   "model_input": "The rhyth m of the orchestra changed unexpectedly.",
+   "phones": "DH AH0 R IH1 DH AH0 M AH0 V DH AH0 AO1 R K AH0 S T R AH0 CH EY1 N JH D AH2 N IH0 K S P EH1 K T IH0 D L IY0",
+   "audio_s": 2.380045351473923,
+   "asr_transcript": "The rhythm of the orchestra's engine expectedly",
+   "asr_vs_model_input": {
+    "cer": 0.16666666666666666,
+    "wer": 0.625,
+    "ref_chars": 42,
+    "ref_words": 8,
+    "char_edits": 7,
+    "word_edits": 5
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.16666666666666666,
+    "wer": 0.625,
+    "ref_chars": 42,
+    "ref_words": 8,
+    "char_edits": 7,
+    "word_edits": 5
+   }
+  },
+  {
+   "id": "E4",
+   "set": "assignment",
+   "category": null,
+   "text": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.",
+   "model_input": "The meeting will start at ten forty five AM on twelve November twenty twenty six, so andaroo should arrive on time.",
+   "phones": "DH AH0 M IY1 T IH0 NG W AH0 L S T AA1 R T AE1 T T EH1 N F AO1 R T IY0 F AY1 V EY1 EH1 M AA1 N T W EH1 L V N OW0 V EH1 M B ER0 T W EH1 N IY0 T W EH1 N IY0 S IH1 K S sp S OW1 AE0 N D AA1 R UW0 SH UH1 D ER0 AY1 V AA1 N T AY1 M",
+   "audio_s": 6.292607709750567,
+   "asr_transcript": "The meeting will start at 10.45 pm on 12 November 2026.",
+   "asr_vs_model_input": {
+    "cer": 0.6559139784946236,
+    "wer": 0.6666666666666666,
+    "ref_chars": 93,
+    "ref_words": 21,
+    "char_edits": 61,
+    "word_edits": 14
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.4,
+    "wer": 0.3888888888888889,
+    "ref_chars": 70,
+    "ref_words": 18,
+    "char_edits": 28,
+    "word_edits": 7
+   }
+  },
+  {
+   "id": "SE01",
+   "set": "stress",
+   "category": "time and numbers",
+   "text": "The train leaves at 7:30 PM from platform 3.",
+   "model_input": "The train leaves at seven thirty PM from platform three.",
+   "phones": "DH AH0 T R EY1 N L IY1 V Z AE1 T S EH1 V AH0 N TH ER1 D IY0 P IY1 EH1 M F ER0 M P L AE1 T F AO2 R M TH R IY1",
+   "audio_s": 2.8792743764172335,
+   "asr_transcript": "The train leaves at 7.30 p.m. from Platform 3.",
+   "asr_vs_model_input": {
+    "cer": 0.34782608695652173,
+    "wer": 0.5,
+    "ref_chars": 46,
+    "ref_words": 10,
+    "char_edits": 16,
+    "word_edits": 5
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.2,
+    "ref_chars": 34,
+    "ref_words": 10,
+    "char_edits": 0,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "SE02",
+   "set": "stress",
+   "category": "question intonation",
+   "text": "Did you remember to bring the documents for tomorrow's interview?",
+   "model_input": "Did you remember to bring the documents for tomorrow's interview?",
+   "phones": "D IH0 D Y UW1 R IH0 M EH1 M B ER0 T AH0 B R IH1 NG DH AH0 D AA1 K Y AH0 M AH0 N T S F AO1 R T AH0 M AA1 R OW2 Z IH1 N ER0 V Y UW2",
+   "audio_s": 2.948934240362812,
+   "asr_transcript": "Did you remember to bring the documents for tomorrow's interview?",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 54,
+    "ref_words": 11,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 55,
+    "ref_words": 11,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "SE03",
+   "set": "stress",
+   "category": "homograph (wind: noun / verb)",
+   "text": "The wind was strong, so we had to wind the rope tightly.",
+   "model_input": "The wind was strong, so we had to wind the rope tightly.",
+   "phones": "DH AH0 W AY1 N D W AA1 Z S T R AO1 NG sp S OW1 W IY1 HH AE1 D T AH0 W AY1 N D DH AH0 R OW1 P T AY1 T L IY0",
+   "audio_s": 3.320453514739229,
+   "asr_transcript": "Wind was strong, so we had to wind the optative.",
+   "asr_vs_model_input": {
+    "cer": 0.2558139534883721,
+    "wer": 0.25,
+    "ref_chars": 43,
+    "ref_words": 12,
+    "char_edits": 11,
+    "word_edits": 3
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.2558139534883721,
+    "wer": 0.25,
+    "ref_chars": 43,
+    "ref_words": 12,
+    "char_edits": 11,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "SE04",
+   "set": "stress",
+   "category": "Indian names and places",
+   "text": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend.",
+   "model_input": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend.",
+   "phones": "P R IY1 AH0 AE1 N D V EH2 N K AA0 T EH1 SH T R AE1 V AH0 L D F ER0 M HH AY0 D EH1 R AH0 B AE2 D T AH0 CH EH1 N AY2 L AE1 S W IY1 K EH2 N D",
+   "audio_s": 3.0650340136054424,
+   "asr_transcript": "Priya and Venkatesh traveled from Hyderabad to Chen last weekend.",
+   "asr_vs_model_input": {
+    "cer": 0.06779661016949153,
+    "wer": 0.2,
+    "ref_chars": 59,
+    "ref_words": 10,
+    "char_edits": 4,
+    "word_edits": 2
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.05172413793103448,
+    "wer": 0.1,
+    "ref_chars": 58,
+    "ref_words": 10,
+    "char_edits": 3,
+    "word_edits": 1
+   }
+  },
+  {
+   "id": "SE05",
+   "set": "stress",
+   "category": "rare technical words",
+   "text": "The cryptographic protocol relies on elliptic curve signatures.",
+   "model_input": "The cryptographic protocol relies on elliptic curve signatures.",
+   "phones": "DH AH0 K R IH1 P T AH0 G R AE1 F IH0 K P R OW1 T AH0 K AA2 L R IH0 L AY1 Z AA1 N IH0 L IH1 P T IH0 K K ER1 V S IH1 G N AH0 CH ER0 Z",
+   "audio_s": 3.2856235827664397,
+   "asr_transcript": "The cryptographic protocol relies on elliptic cough signatures.",
+   "asr_vs_model_input": {
+    "cer": 0.07272727272727272,
+    "wer": 0.125,
+    "ref_chars": 55,
+    "ref_words": 8,
+    "char_edits": 4,
+    "word_edits": 1
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.07272727272727272,
+    "wer": 0.125,
+    "ref_chars": 55,
+    "ref_words": 8,
+    "char_edits": 4,
+    "word_edits": 1
+   }
+  },
+  {
+   "id": "SE06",
+   "set": "stress",
+   "category": "abbreviations (known gap: no abbreviation expansion)",
+   "text": "Dr. Rao presented the results at IIIT Hyderabad.",
+   "model_input": "Dr. Rao presented the results at IIIT Hyderabad.",
+   "phones": "D AA1 K T ER0 sp R AW1 P ER0 Z EH1 N AH0 D DH AH0 R IH0 Z AH1 L T S AE1 T AY1 AH0 T HH AY0 D EH1 R AH0 B AE2 D",
+   "audio_s": 3.076643990929705,
+   "asr_transcript": "The doctor, of course, in the results, said it had a bud.",
+   "asr_vs_model_input": {
+    "cer": 0.5897435897435898,
+    "wer": 1.25,
+    "ref_chars": 39,
+    "ref_words": 8,
+    "char_edits": 23,
+    "word_edits": 10
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.4418604651162791,
+    "wer": 1.125,
+    "ref_chars": 43,
+    "ref_words": 8,
+    "char_edits": 19,
+    "word_edits": 9
+   }
+  },
+  {
+   "id": "SE07",
+   "set": "stress",
+   "category": "long sentence",
+   "text": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring.",
+   "model_input": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring.",
+   "phones": "AO2 L DH OW1 DH AH0 M AA0 N S UW1 N ER0 AY1 V D L EY1 T ER0 DH AE1 N IH0 K S P EH1 K T AH0 D DH IH0 S Y IH1 R sp DH AH0 F AA1 R M ER0 Z IH0 N DH AH0 IY1 S T ER0 N D IH1 S T R IH0 K T S M AE1 N AH0 JH D T AH0 S AW1 DH EH1 R K R AA1 P S AA1 N T AY1 M sp TH AE1 NG K S T AH0 DH AH0 N UW1 IH2 R AH0 G EY1 SH AH0 N K AH0 N AE1 L Z DH AE1 T W ER0 K AH0 M P L IY1 T AH0 D IH0 N ER1 L IY0 S P ER0 IH1 NG",
+   "audio_s": 9.613061224489796,
+   "asr_transcript": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time thanks to the navigation panels that work on retaining and whispering.",
+   "asr_vs_model_input": {
+    "cer": 0.13609467455621302,
+    "wer": 0.23529411764705882,
+    "ref_chars": 169,
+    "ref_words": 34,
+    "char_edits": 23,
+    "word_edits": 8
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.13609467455621302,
+    "wer": 0.23529411764705882,
+    "ref_chars": 169,
+    "ref_words": 34,
+    "char_edits": 23,
+    "word_edits": 8
+   }
+  },
+  {
+   "id": "SE08",
+   "set": "stress",
+   "category": "exclamation, very short",
+   "text": "What a wonderful surprise!",
+   "model_input": "What a wonderful surprise!",
+   "phones": "HH W AH1 T AH0 W AH1 N D ER0 F AH0 L S AH0 P R AY1 Z",
+   "audio_s": 1.509297052154195,
+   "asr_transcript": "What a wonderful surprise!",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 22,
+    "ref_words": 4,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 22,
+    "ref_words": 4,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  }
+ ]
+}
