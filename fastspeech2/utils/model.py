@@ -51,7 +51,8 @@ def get_param_num(model):
     return num_param
 
 
-def get_vocoder(config, device):
+def get_vocoder(config, device, checkpoint=None):
+    """checkpoint: optional fine-tuned HiFi-GAN generator ({"generator": state_dict}, vocoder_finetune.py)."""
     name = config["vocoder"]["model"]
     speaker = config["vocoder"]["speaker"]
 
@@ -75,6 +76,8 @@ def get_vocoder(config, device):
             ckpt = torch.load(_hifigan_ckpt("generator_LJSpeech.pth.tar"), map_location=device, weights_only=True)
         elif speaker == "universal":
             ckpt = torch.load(_hifigan_ckpt("generator_universal.pth.tar"), map_location=device, weights_only=True)
+        if checkpoint:
+            ckpt = torch.load(checkpoint, map_location=device, weights_only=True)
         vocoder.load_state_dict(ckpt["generator"])
         vocoder.eval()
         vocoder.remove_weight_norm()

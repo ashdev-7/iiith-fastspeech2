@@ -110,7 +110,7 @@ def main(a):
     sr = pre_cfg["preprocessing"]["audio"]["sampling_rate"]
     raw = pre_cfg["path"]["raw_path"]
     model, step = load_model(configs, a.checkpoint)
-    vocoder = get_vocoder(model_cfg, device)
+    vocoder = get_vocoder(model_cfg, device, a.vocoder)
     os.makedirs(a.out_dir, exist_ok=True)
     if a.rank_speakers:
         rank_speakers(a, configs, model, vocoder)
@@ -163,6 +163,7 @@ if __name__ == "__main__":
     ap.add_argument("--config", required=True)
     ap.add_argument("--data_root", required=True)
     ap.add_argument("--checkpoint", required=True)
+    ap.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
     ap.add_argument("--speaker", required=True)
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--n", type=int, default=30)

@@ -93,7 +93,7 @@ def main(args):
     energy_mean, energy_std = stats["energy"][2:4]
 
     model, step = load_model(configs, args.checkpoint)
-    vocoder = get_vocoder(model_config, device)
+    vocoder = get_vocoder(model_config, device, args.vocoder)
     telugu_font = find_font(extra_dirs=[args.font_dir] if args.font_dir else ())
 
     with open(args.sentences, encoding="utf-8") as f:
@@ -111,6 +111,7 @@ def main(args):
     gv_ratio = postfilter.load_ratio(args.gv_ratio) if args.gv_ratio and args.gv_strength else None
     report["gv_postfilter"] = {"ratio_file": args.gv_ratio, "strength": args.gv_strength} if gv_ratio else None
     report["device"] = str(device) + (" ({})".format(torch.cuda.get_device_name(0)) if device.type == "cuda" else "")
+    report["vocoder"] = os.path.basename(args.vocoder) if args.vocoder else "generator_universal"
     for it in items:
         item_id, text = it["id"], it["canonical"]
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != it["canonical_sha256"]:
@@ -212,6 +213,7 @@ if __name__ == "__main__":
     parser.add_argument("--config", required=True)
     parser.add_argument("--data_root", default=None, help="root holding preprocessed/<lang>/stats.json, speakers.json")
     parser.add_argument("--checkpoint", required=True)
+    parser.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
     parser.add_argument("--speaker", required=True, help="speaker name from speakers.json")
     parser.add_argument("--out_dir", required=True)
     parser.add_argument("--sentences", default=os.path.join(REPO, "tests", "test_sentences.json"))

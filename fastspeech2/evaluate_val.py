@@ -161,7 +161,8 @@ def main(args):
 
     model, step = load_model(configs, args.checkpoint)
     report["checkpoint_step"] = step
-    vocoder = get_vocoder(model_cfg, device)
+    vocoder = get_vocoder(model_cfg, device, args.vocoder)
+    report["vocoder"] = os.path.basename(args.vocoder) if args.vocoder else "generator_universal"
     ds = Dataset("val.txt", pre_cfg, train_cfg, sort=False, drop_last=False)
     n = len(ds) if args.max_utts <= 0 else min(args.max_utts, len(ds))
     if args.sentences_only:  # only parts 3/4 (+ their ASR): e.g. after a frontend change
@@ -286,7 +287,7 @@ def main(args):
             raise RuntimeError("skipped (no validation utterances in this mode)")
         cpu = torch.device("cpu")
         m_cpu = copy.deepcopy(model).to(cpu)
-        v_cpu = get_vocoder(model_cfg, cpu)
+        v_cpu = get_vocoder(model_cfg, cpu, args.vocoder)
         torch.set_num_threads(os.cpu_count() or 1)
         items = [ds[i] for i in range(min(args.cpu_utts, n))]
         synthesize(m_cpu, v_cpu, configs, items[0]["speaker"], items[0]["text"], dev=cpu)  # warm-up
@@ -359,6 +360,7 @@ if __name__ == "__main__":
     ap.add_argument("--config", required=True)
     ap.add_argument("--data_root", default=None)
     ap.add_argument("--checkpoint", required=True)
+    ap.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
     ap.add_argument("--speaker", required=True, help="test voice for the test/stress/control sentences")
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--max_utts", type=int, default=0, help="validation utterances (0 = all)")

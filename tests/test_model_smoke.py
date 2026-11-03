@@ -184,3 +184,35 @@ def test_train_checkpoint_loads_with_weights_only(tmp_path):
     assert ckpt["step"] == 7 and isinstance(ckpt["optimizer"]["param_groups"][0]["lr"], float)
     resumed = ScheduledOptim(model, train_config, model_config, 7)
     resumed.load_state_dict(ckpt["optimizer"])
+
+
+def test_vocoder_finetune_parts(tmp_path):
+    """DiffMel reproduces the reference (non-differentiable) mel; discriminators run on a training segment;
+    a fine-tuned generator checkpoint loads through get_vocoder."""
+    import hifigan
+    from audio.stft import TacotronSTFT
+    from audio.tools import get_mel_from_wav
+    from hifigan.discriminators import MultiPeriodDiscriminator, MultiScaleDiscriminator
+    from utils.model import get_vocoder
+    from vocoder_finetune import DiffMel
+    stft = TacotronSTFT(1024, 256, 1024, 80, 22050, 0, 8000)
+    rng = np.random.default_rng(0)
+    y = (0.3 * np.sin(np.arange(8192) * 0.05) + 0.05 * rng.standard_normal(8192)).astype(np.float32)
+    ref, _ = get_mel_from_wav(y, stft)
+    ours = DiffMel(stft)(torch.from_numpy(y)[None])[0].detach().numpy()
+    assert ref.shape == ours.shape
+    assert np.abs(ref - ours).max() < 1e-3
+    x = torch.randn(2, 1, 8192)
+    for D in (MultiPeriodDiscriminator(), MultiScaleDiscriminator()):
+        r, g, fr, fg = D(x, x * 0.5)
+        assert len(r) == len(g) and all(torch.isfinite(t).all() for t in r)
+    cfg = {"vocoder": {"model": "HiFi-GAN", "speaker": "universal"}}
+    universal = get_vocoder(cfg, torch.device("cpu"))
+    import json
+    from utils.model import HIFIGAN_DIR
+    G = hifigan.Generator(hifigan.AttrDict(json.load(open(os.path.join(HIFIGAN_DIR, "config.json")))))
+    path = os.path.join(str(tmp_path), "g.pth.tar")
+    torch.save({"generator": G.state_dict(), "step": 1}, path)
+    ft = get_vocoder(cfg, torch.device("cpu"), path)
+    assert type(ft) is type(universal)
+
