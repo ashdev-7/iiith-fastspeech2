@@ -1,4 +1,4 @@
-"""Kaggle job 10 (GPU T4): English, compare the final configurations on the test and stress sentences.
+"""Kaggle job 10 (GPU T4): English, Whisper scores of the chosen configuration (A). Originally: compare the final configurations on the test and stress sentences.
   A  universal HiFi-GAN + GV post-filter (strength 1.0)   (chosen by listening, job 08)
   B  fine-tuned HiFi-GAN (fs2-09-vocoder-ft-en)
   C  fine-tuned HiFi-GAN + GV post-filter (strength 1.0)
@@ -40,7 +40,9 @@ try:
         P.run(["tar", "-xf", P.find_one("/kaggle/input/**/vocoder_en.tar", "vocoder_en.tar"), "-C", TMP])
         ft = rec["vocoder"] = f"{TMP}/vocoder_en/generator_ft.pth.tar"
         rec["finetune_val"] = open(f"{TMP}/vocoder_en/val.csv").read()
-    combos = {"A_universal_pf1": [None, 1.0], "B_ft": [ft, 0.0], "C_ft_pf1": [ft, 1.0]}
+    # v1: only A. The fine-tuned vocoder (B, C) was rejected on fs2-09-vocoder-ft-en's own evaluation
+    # (copy-synthesis CER 11.6 -> 12.3 %, HNR 17.1 -> 14.9 dB, E4 CER 2.9 -> 17.1 %).
+    combos = {"A_universal_pf1": [None, 1.0]}
     base = f"{TMP}/combos"
     for name, (voc, st) in combos.items():
         extra = (["--vocoder", voc] if voc else []) + (["--gv_ratio", ratio, "--gv_strength", str(st)] if st else [])
