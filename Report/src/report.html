@@ -343,14 +343,16 @@ longer run <span class="tag est">estimated</span>.</p>
 <tr><td>E3</td><td class="n">2.88 s</td><td>"rhyth m" joined for pronunciation → <i>rhythm</i> <code>R IH1 DH AH0 M</code>; text unchanged</td><td>exact</td><td class="n">0 / 0 %</td></tr>
 <tr><td>E4</td><td class="n">7.19 s</td><td>"ten forty five A M on twelve November twenty twenty six"; AM as letter names, durations ×1.6;
 <i>andaroo</i> (Telugu అందరూ "everyone") → <code>AE0 N D AA1 R UW0</code></td>
-<td>"The meeting will start at 10.45 am on 12 November 2026, so <u>and are</u> should arrive on time."</td><td class="n">37.6 / 2.9 %</td></tr>
+<td>"The meeting will start at 10.45 am on 12 November 2026, so <u>and our</u> should arrive on time."</td><td class="n">39.8 / 5.7 %</td></tr>
 </table>
+<p class="small">Final configuration (voice <code>svarah_8a8e2655</code>, GV post-filter strength 1.0, universal HiFi-GAN), Kaggle
+<code>fs2-10-combos-en</code>. Without the post-filter the transcripts are identical except E4 (2.9 % normalised CER).</p>
 <p><b>Observations.</b> Four of the five sentences are transcribed exactly after normalisation (E4's raw CER is digit
 formatting: "10.45", "12", "2026"). The long rare word in E1 is recognised as the intended word. The homograph pair is
 pronounced as intended (E2a exact; in E2b "experiment to evaluate" is heard as "experimental evaluation of", a word-boundary
 slip in a fast unstressed stretch, not a stress error on <i>conduct</i>). E3 is exact, including the joined <i>rhythm</i>.
 E4: numbers, date and <i>AM</i> are correct; <i>AM</i> was heard as "pm" while its letters were predicted in 244 ms, and is heard
-correctly after the letter-name duration rule (453 ms). <i>andaroo</i>, a Telugu word in English text, is heard as "and are": its
+correctly after the letter-name duration rule (453 ms). <i>andaroo</i>, a Telugu word in English text, is heard as "and our" ("and are" without the post-filter): its
 phones are right, but the ASR has no such word. Remaining audible weaknesses, from the per-word Praat analysis: unstressed
 function words are short and breathy (<i>the</i> 93–116 ms, HNR 11–15 dB against a sentence median of 16–17 dB), "twenty twenty"
 is fast (20–23 phones/s against ~11) and phrase-final words are slightly breathy (<i>arrive</i>, <i>time</i>).</p>
@@ -431,11 +433,11 @@ is synchronised before each reading; one untimed warm-up call.</p>
 <h3>7.2 Prosody controls <span class="tag meas">measured</span></h3>
 <table>
 <tr><th>Control (factor)</th><th>English: length / median F0 / RMS</th><th>Telugu: length / median F0 / RMS</th></tr>
-<tr><td>none</td><td class="n">4.55 s / 205 Hz / 0.121</td><td class="n">2.46 s / 209 Hz / 0.148</td></tr>
+<tr><td>none</td><td class="n">4.55 s / 206 Hz / 0.146</td><td class="n">2.46 s / 209 Hz / 0.148</td></tr>
 <tr><td>duration 0.8 / 1.25</td><td class="n">3.37 s / 5.42 s</td><td class="n">1.88 s / 3.02 s</td></tr>
-<tr><td>pitch 0.8 / 1.2 (after M12)</td><td class="n">169 Hz / 244 Hz</td><td class="n">165 Hz / 252 Hz</td></tr>
+<tr><td>pitch 0.8 / 1.2 (after M12)</td><td class="n">169 Hz / 245 Hz</td><td class="n">165 Hz / 252 Hz</td></tr>
 <tr><td>pitch 0.8 / 1.2 (reference code)</td><td class="n">140 Hz / 113 Hz — inverted (former voice, 126 Hz)</td><td class="n">204 Hz / 209 Hz — almost no effect</td></tr>
-<tr><td>energy 0.8 / 1.2 (after M12)</td><td class="n">RMS 0.103 / 0.139</td><td class="n">RMS 0.120 / 0.159</td></tr>
+<tr><td>energy 0.8 / 1.2 (after M12)</td><td class="n">RMS 0.126 / 0.164</td><td class="n">RMS 0.120 / 0.159</td></tr>
 </table>
 <p>The duration control scales length close to the factor (0.74× and 1.19× for English; 0.76× and 1.23× for Telugu; rounding
 of per-phone frames explains the difference). Pitch control after M12 is near-proportional (×0.79/×1.20 for Telugu).</p>
