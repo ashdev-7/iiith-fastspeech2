@@ -80,7 +80,8 @@ Load with `torch.load(path, map_location=..., weights_only=True)["model"]`; plac
 ```bash
 mkdir -p D/preprocessed/en && cp Results/English/stats.json Results/English/speakers.json D/preprocessed/en/
 python English/inference.py --data_root D --checkpoint English/checkpoints/en_model.pth.tar \
-    --speaker svarah_8a8e2655 --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 \n    --out_dir my_output          # optional: --pitch_control 1.2 --duration_control 0.9
+    --speaker svarah_8a8e2655 --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 \
+    --out_dir my_output          # optional: --pitch_control 1.2 --duration_control 0.9
 ```
 
 ## Reproducing
