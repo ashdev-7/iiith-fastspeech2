@@ -1,4 +1,4 @@
-"""Kaggle job 10 (GPU T4): English, Whisper scores of the chosen configuration (A). Originally: compare the final configurations on the test and stress sentences.
+"""Kaggle job 10 (CPU; the weekly GPU quota was used up): English, Whisper scores of the chosen configuration (A). Originally: compare the final configurations on the test and stress sentences.
   A  universal HiFi-GAN + GV post-filter (strength 1.0)   (chosen by listening, job 08)
   B  fine-tuned HiFi-GAN (fs2-09-vocoder-ft-en)
   C  fine-tuned HiFi-GAN + GV post-filter (strength 1.0)
