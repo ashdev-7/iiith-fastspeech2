@@ -10,7 +10,7 @@ HiFi-GAN (universal) as the vocoder:
 | Train / validation | 4.87 h / 0.98 h (3077 / 742 utterances) | 4.96 h / 1.02 h selected; 2140 / 446 utterances after alignment |
 | Text front end | lexicon + g2p_en, homograph POS rule, time/number normalisation | rule-based Telugu G2P, Telugu numbers/ordinals/times, English loanwords in Latin script |
 | Training | 17,949 steps, 1 × T4, 3.5 h | 55,524 steps, 2 × T4, 8 h |
-| Test voice | `svarah_8a8e2655` (clearest recordings, see report §5.0) | `te_female` (better HiFi-GAN copy-synthesis) |
+| Test voice | `svarah_8a8e2655` (clearest recordings, report §5.0); GV post-filter at inference (§5.0b) | `te_female` (better HiFi-GAN copy-synthesis) |
 
 The full write-up is [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf). Every change to the
 reference code is listed, with its reason and test, in [`MODIFICATIONS.md`](MODIFICATIONS.md).
@@ -80,7 +80,7 @@ Load with `torch.load(path, map_location=..., weights_only=True)["model"]`; plac
 ```bash
 mkdir -p D/preprocessed/en && cp Results/English/stats.json Results/English/speakers.json D/preprocessed/en/
 python English/inference.py --data_root D --checkpoint English/checkpoints/en_model.pth.tar \
-    --speaker svarah_8a8e2655 --out_dir my_output          # optional: --pitch_control 1.2 --duration_control 0.9
+    --speaker svarah_8a8e2655 --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 \n    --out_dir my_output          # optional: --pitch_control 1.2 --duration_control 0.9
 ```
 
 ## Reproducing

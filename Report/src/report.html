@@ -292,6 +292,46 @@ sentences (means over E1–E4): spectral centre of gravity 300 → 620 Hz, jitte
 (normalised) on E1 / E3 / E4 from 15 / 17 / 40 % to 0 / 0 / 3 %. The selection rule was changed after listening to the first outputs; it is
 an objective rule on training recordings, and the earlier outputs remain in the repository history (commit <code>8f5ae5f</code>).</p>
 
+<h3>5.0b Over-smoothing: diagnosis and two remedies <span class="tag meas">measured</span></h3>
+<p>The band-energy comparison above is coarse: it cannot see whether spectral <i>detail</i> is preserved. Measuring the variance of
+each log-mel bin over time ("global variance", GV) and the mean frame-to-frame change (flux) on the same held-out clips shows the
+classic FastSpeech 2 weakness: the decoder, trained with an L1/L2 loss, predicts conditional averages. English free-running mels keep
+80–88 % of the natural GV and ~80 % of its flux, <i>also with ground-truth duration, pitch and energy</i> (so it is the decoder, not the
+variance predictors); copy-synthesis keeps 97–101 %. Telugu keeps 93–98 %. With 110 speakers of ~2.7 min each, the English decoder
+averages over very different voices and recording conditions; with two studio speakers, Telugu does not. This matches the literature
+on over-smoothing in non-autoregressive TTS (Ren et al., ACL 2022: the less the conditioning reduces the data's variability, the
+smoother the output).</p>
+<p><b>Remedy 1 — GV post-filter (adopted for English).</b> <code>fastspeech2/postfilter.py</code> rescales each mel bin's deviation from
+its utterance mean by <code>r<sub>k</sub><sup>s/2</sup></code>, where <code>r<sub>k</sub></code> is the ratio of natural to predicted
+variance, estimated once on <b>training</b> clips of the test voice (<code>Results/English/gv_ratio.json</code>), as in statistical
+parametric synthesis (global-variance compensation). Inference only; the model is unchanged. Scored on held-out clips of the test voice
+(<code>Evaluation/Postfilter/</code>, Kaggle <code>fs2-08-postfilter</code>):</p>
+<table>
+<tr><th>English, strength s</th><th class="n">GV / natural</th><th class="n">flux / natural</th><th class="n">HNR (dB)</th><th class="n">shimmer (%)</th><th class="n">MCD (DTW)</th></tr>
+<tr><td>0 (off)</td><td class="n">0.76</td><td class="n">0.62</td><td class="n">16.9</td><td class="n">8.2</td><td class="n">36.7</td></tr>
+<tr><td>0.5</td><td class="n">0.90</td><td class="n">0.67</td><td class="n">17.4</td><td class="n">8.1</td><td class="n">37.6</td></tr>
+<tr><td>1.0 (used)</td><td class="n">1.04</td><td class="n">0.71</td><td class="n">17.6</td><td class="n">7.9</td><td class="n">38.6</td></tr>
+<tr><td>Telugu 0 → 1.0</td><td class="n">0.97 → 1.00</td><td class="n">0.81 → 0.81</td><td class="n">18.0 → 17.9</td><td class="n">8.0 → 7.6</td><td class="n">29.7 → 29.9</td></tr>
+</table>
+<p>The post-filter restores the variance completely and part of the temporal sharpness, and makes the voice slightly less breathy and
+rough; MCD rises slightly because it rewards averaged spectra (a known property of MCD). The three English strengths were compared by
+listening (A/B/C on all five test sentences); full strength was preferred, and all English outputs in <code>Results/English</code> use it.
+Telugu is not over-smoothed (r ≈ 1.02, no measurable change), so its outputs are left unfiltered.</p>
+<p><b>Remedy 2 — HiFi-GAN fine-tuning on ground-truth-aligned mels (tried, not adopted).</b> The vocoder was fine-tuned per language on
+FastSpeech 2's teacher-forced mels of the training set, paired with the recordings cut exactly as the preprocessor cuts them (checked:
+the recomputed mel equals the stored one to 10<sup>−4</sup>), with discriminators (MPD + MSD, from the original HiFi-GAN code) trained
+from scratch because the reference ships only the generator (<code>fastspeech2/vocoder_finetune.py</code>, Kaggle
+<code>fs2-09-vocoder-ft-*</code>; 7.7k steps for English in 4 h, 4.7k for Telugu in 2.5 h; <code>Evaluation/VocoderFinetune/summary.json</code>).</p>
+<table>
+<tr><th>Universal → fine-tuned</th><th class="n">val. mel L1 (GTA)</th><th class="n">Whisper CER, synthesis</th><th class="n">Whisper CER, copy-synthesis</th><th>other</th></tr>
+<tr><td>English</td><td class="n">0.866 → 0.850</td><td class="n">15.7 → 15.3 %</td><td class="n">11.6 → 12.3 %</td><td>GV ratio 0.91 → 0.87; copy-synthesis HNR 14.9 dB vs 17.1 natural; E4 CER 2.9 → 17.1 %</td></tr>
+<tr><td>Telugu</td><td class="n">0.671 → 0.600</td><td class="n">35.8 → 35.5 %</td><td class="n">33.1 → 31.0 %</td><td>GV ratio 1.00 → 0.94; stress sentence ST04 CER 37 → 106 %</td></tr>
+</table>
+<p>The fine-tuned vocoders fit the training mels better but did not make the synthesis clearer and made some outputs worse, so the
+universal HiFi-GAN is kept for both languages. The likely reason is the short adversarial training with discriminators started from
+scratch (HiFi-GAN fine-tuning normally starts from trained discriminators and runs far longer); the weekly GPU quota did not allow a
+longer run <span class="tag est">estimated</span>.</p>
+
 <h3>5.1 English</h3>
 <table>
 <tr><th>ID</th><th>Duration</th><th>Frontend decisions</th><th>Whisper transcript of our audio</th><th class="n">CER raw / norm.</th></tr>
@@ -423,8 +463,11 @@ STRESS_TABLES
 training set (§4) and English prosody generalises poorly.</li>
 <li><b>No listening test</b>: quality statements rely on ASR and acoustic measurements. Whisper is weak on Telugu, so Telugu
 intelligibility is under-measured.</li>
-<li><b>Universal vocoder, not fine-tuned</b>: copy-synthesis costs 11.6 % CER on English validation speech, but its spectrum
-matches the recordings within ~1 dB (§5.0); recording quality varies by Svarah speaker and bounds what each voice can sound like.</li>
+<li><b>English decoder over-smoothing</b> (§5.0b): the GV post-filter restores the spectral variance but only part of the
+frame-to-frame sharpness; the remaining smoothness is a property of the trained decoder on 110 short-duration speakers.</li>
+<li><b>Universal vocoder</b>: copy-synthesis costs 11.6 % CER on English validation speech but matches the recordings' spectrum within
+~1 dB (§5.0); a short fine-tune with fresh discriminators did not help (§5.0b). Recording quality varies by Svarah speaker and bounds
+what each voice can sound like.</li>
 <li><b>Telugu G2P is orthographic</b>: it transcribes the script; it does not model schwa reduction, loanword pronunciations
 (ఫ as /f/), or sandhi. It was not reviewed by a native speaker.</li>
 <li><b>English abbreviations and acronyms are not expanded</b> ("Dr.", "IIIT"; stress sentence SE06).</li>
@@ -439,8 +482,9 @@ by amount of audio; the test-voice choice alone removed most English ASR errors.
 <li><b>Early stopping / checkpoint selection</b> on validation loss (English ~7–10k steps).</li>
 <li><b>Rare and long words</b>: a pronunciation lexicon for domain terms (E1 is now recognised, but relies on g2p_en).</li>
 <li><b>Text normalisation</b>: abbreviations, acronyms (spelled letter by letter), ordinals in English dates ("12th November").</li>
-<li><b>Vocoder fine-tuning</b> on each language's data (HiFi-GAN fine-tuned on ground-truth-aligned mels) — a smaller gain than first
-expected, since copy-synthesis already matches the recordings' spectrum (§5.0) <span class="tag est">estimated</span>.</li>
+<li><b>Against over-smoothing</b> (largest remaining English gap): a decoder loss that does not average (Laplacian/Gaussian mixture
+output, or an adversarial post-net), which needs retraining; or a longer vocoder fine-tune that starts from trained discriminators
+(§5.0b) <span class="tag est">estimated</span>.</li>
 <li><b>Telugu</b>: native-speaker review of the G2P rules; frame-level pitch with CWT (as in the paper) for richer intonation.</li>
 </ul>
 

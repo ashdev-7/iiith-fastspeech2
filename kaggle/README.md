@@ -14,6 +14,9 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `05_reinfer_en` (`fs2-05-reinfer-en`) | CPU | 02, 03 en | English test outputs regenerated with the same checkpoint: v1/v2 after the frontend fixes (rhythm, andaroo), v3 with the clearest-recorded voice `svarah_8a8e2655` and letter-name durations; sentence and stress evaluation with Whisper |
 | `06_eval_fix` (`fs2-06-eval-fix`) | GPU T4 | 02, 03 te, 03 en | Telugu evaluation re-run after the Whisper out-of-memory fix |
 | `07_diagnose` (`fs2-07-diagnose`) | CPU | 01, 02, 03 te, 03 en | natural vs copy-synthesis vs oracle vs free-running (Praat, band spectrum); clarity ranking of all training speakers; test sentences in the four clearest English voices |
+| `08_postfilter` (`fs2-08-postfilter`) | CPU | 02, 03 te, 03 en | GV post-filter: ratio estimated on training clips of each test voice; strengths 0 / 0.5 / 1.0 scored on held-out clips; test sentences rendered at 0.5 and 1.0 |
+| `09_vocoder_ft_en`, `09_vocoder_ft_te` (`fs2-09-vocoder-ft-<lang>`) | GPU T4 | 01, 02, 03 | HiFi-GAN fine-tuning on ground-truth-aligned mels (smoke run first, watchdog), then test sentences, diagnosis and full evaluation with the fine-tuned vocoder (not adopted, report §5.0b) |
+| `10_combos_en` (`fs2-10-combos-en`) | CPU | 02, 03 en, 09 en | Whisper scores of the final English configuration (universal vocoder + GV post-filter) on the test and stress sentences |
 
 `03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
 by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.
