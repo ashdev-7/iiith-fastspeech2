@@ -27,6 +27,7 @@ from plotting import TITLE_RENDERING, find_font, plot_variances
 from text import text_to_sequence
 from text.symbols import get_symbols
 from utils.config import load_configs
+import postfilter  # noqa: E402
 from utils.model import get_vocoder, vocoder_infer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -107,6 +108,8 @@ def main(args):
               "items": {}}
     traces = {}
     warmed_up = False
+    gv_ratio = postfilter.load_ratio(args.gv_ratio) if args.gv_ratio and args.gv_strength else None
+    report["gv_postfilter"] = {"ratio_file": args.gv_ratio, "strength": args.gv_strength} if gv_ratio else None
     report["device"] = str(device) + (" ({})".format(torch.cuda.get_device_name(0)) if device.type == "cuda" else "")
     for it in items:
         item_id, text = it["id"], it["canonical"]
@@ -143,7 +146,10 @@ def main(args):
         mel_len = int(mel_lens[0].item())
         if mel_len == 0:
             raise SystemExit("{}: the model predicted zero frames for every phone".format(item_id))
-        mel = postnet_mel[0, :mel_len].transpose(0, 1).unsqueeze(0)
+        mel_tf = postnet_mel[0, :mel_len]
+        if gv_ratio is not None:  # optional GV post-filter (fastspeech2/postfilter.py)
+            mel_tf = postfilter.apply(mel_tf, gv_ratio, args.gv_strength)
+        mel = mel_tf.transpose(0, 1).unsqueeze(0)
         t0 = _now(device)
         wav = vocoder_infer(mel, vocoder, model_config, preprocess_config)[0]
         t_vocoder = _now(device) - t0
@@ -213,4 +219,6 @@ if __name__ == "__main__":
     parser.add_argument("--pitch_control", type=float, default=1.0)
     parser.add_argument("--energy_control", type=float, default=1.0)
     parser.add_argument("--duration_control", type=float, default=1.0)
+    parser.add_argument("--gv_ratio", default=None, help="gv_ratio.json from postfilter_eval.py (GV post-filter)")
+    parser.add_argument("--gv_strength", type=float, default=0.0, help="0 = off, 1 = full variance match")
     main(parser.parse_args())
