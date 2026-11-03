@@ -4,7 +4,7 @@
  "speaker": "svarah_8a8e2655",
  "speaker_id": 61,
  "symbol_table_sha256": "c46db8d7e6a7a0907431c5e7fbc39c0151b8e1dfab6eb855e48362db52b7e7ee",
- "telugu_font": null,
+ "telugu_font": "Noto Sans Telugu",
  "controls": {
   "pitch": 1.0,
   "energy": 1.0,
@@ -21,16 +21,16 @@
     "wav_samples": 139264,
     "mel_frames_x_hop": 139264,
     "wav_finite": true,
-    "wav_rms": 0.10481160621292732,
+    "wav_rms": 0.12580636608181922,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.25309,
-    "vocoder_s": 4.08207,
+    "acoustic_s": 0.26829,
+    "vocoder_s": 4.08314,
     "audio_s": 6.316,
-    "rtf_acoustic": 0.04007,
-    "rtf_total": 0.6864
+    "rtf_acoustic": 0.04248,
+    "rtf_total": 0.68897
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E1_duration.png",
@@ -48,16 +48,16 @@
     "wav_samples": 93440,
     "mel_frames_x_hop": 93440,
     "wav_finite": true,
-    "wav_rms": 0.11506420689732443,
+    "wav_rms": 0.14139112513942576,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.17735,
-    "vocoder_s": 2.30458,
+    "acoustic_s": 0.19382,
+    "vocoder_s": 2.55894,
     "audio_s": 4.238,
-    "rtf_acoustic": 0.04185,
-    "rtf_total": 0.58569
+    "rtf_acoustic": 0.04574,
+    "rtf_total": 0.6496
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E2a_duration.png",
@@ -75,16 +75,16 @@
     "wav_samples": 100352,
     "mel_frames_x_hop": 100352,
     "wav_finite": true,
-    "wav_rms": 0.12141279681250386,
+    "wav_rms": 0.14564295874514757,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.22453,
-    "vocoder_s": 2.55519,
+    "acoustic_s": 0.19143,
+    "vocoder_s": 2.81899,
     "audio_s": 4.551,
-    "rtf_acoustic": 0.04934,
-    "rtf_total": 0.61078
+    "rtf_acoustic": 0.04206,
+    "rtf_total": 0.66147
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E2b_duration.png",
@@ -102,16 +102,16 @@
     "wav_samples": 63488,
     "mel_frames_x_hop": 63488,
     "wav_finite": true,
-    "wav_rms": 0.11245334116891044,
+    "wav_rms": 0.1412632949616425,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.13119,
-    "vocoder_s": 1.58023,
+    "acoustic_s": 0.13372,
+    "vocoder_s": 1.6506,
     "audio_s": 2.879,
-    "rtf_acoustic": 0.04556,
-    "rtf_total": 0.59439
+    "rtf_acoustic": 0.04644,
+    "rtf_total": 0.61971
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E3_duration.png",
@@ -129,16 +129,16 @@
     "wav_samples": 158464,
     "mel_frames_x_hop": 158464,
     "wav_finite": true,
-    "wav_rms": 0.09728721646486754,
+    "wav_rms": 0.1250438147610802,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.30161,
-    "vocoder_s": 4.58699,
+    "acoustic_s": 0.30266,
+    "vocoder_s": 4.54112,
     "audio_s": 7.187,
-    "rtf_acoustic": 0.04197,
-    "rtf_total": 0.68024
+    "rtf_acoustic": 0.04211,
+    "rtf_total": 0.674
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E4_duration.png",
@@ -147,12 +147,16 @@
    }
   }
  },
+ "gv_postfilter": {
+  "ratio_file": "Results/English/gv_ratio.json",
+  "strength": 1.0
+ },
  "device": "cpu",
  "timing_summary": {
   "items": 5,
   "audio_s": 25.171,
-  "rtf_acoustic": 0.04322,
-  "rtf_total": 0.64347,
+  "rtf_acoustic": 0.0433,
+  "rtf_total": 0.66516,
   "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
  },
  "title_rendering": "Latin text only"

@@ -53,6 +53,9 @@ def _t(x, dtype=torch.float32):
     return torch.from_numpy(np.asarray(x)[None]).to(device=device, dtype=dtype)
 
 
+POSTFILTER = None  # (ratio, strength) when --gv_ratio/--gv_strength are given (fastspeech2/postfilter.py)
+
+
 def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None, scales=None):
     """Free-running synthesis. Returns dict with mel (T, 80), wav int16, variances and timings."""
     dev = dev or device
@@ -74,6 +77,9 @@ def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0
         res["wav"], res["vocoder_s"] = None, 0.0
         return res
     mel = out[1][0, :mel_len]
+    if POSTFILTER is not None:
+        import postfilter
+        mel = postfilter.apply(mel, POSTFILTER[0], POSTFILTER[1])
     res["mel"] = mel.cpu().numpy()
     t2 = _now(dev)
     res["wav"] = vocoder_infer(mel.transpose(0, 1).unsqueeze(0), vocoder, model_cfg, pre_cfg)[0]
@@ -162,6 +168,11 @@ def main(args):
     model, step = load_model(configs, args.checkpoint)
     report["checkpoint_step"] = step
     vocoder = get_vocoder(model_cfg, device, args.vocoder)
+    global POSTFILTER
+    if args.gv_ratio and args.gv_strength:
+        import postfilter
+        POSTFILTER = (postfilter.load_ratio(args.gv_ratio), args.gv_strength)
+    report["gv_postfilter"] = {"ratio_file": os.path.basename(args.gv_ratio), "strength": args.gv_strength} if POSTFILTER else None
     report["vocoder"] = os.path.basename(args.vocoder) if args.vocoder else "generator_universal"
     ds = Dataset("val.txt", pre_cfg, train_cfg, sort=False, drop_last=False)
     n = len(ds) if args.max_utts <= 0 else min(args.max_utts, len(ds))
@@ -361,6 +372,8 @@ if __name__ == "__main__":
     ap.add_argument("--data_root", default=None)
     ap.add_argument("--checkpoint", required=True)
     ap.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
+    ap.add_argument("--gv_ratio", default=None, help="gv_ratio.json (GV post-filter, fastspeech2/postfilter.py)")
+    ap.add_argument("--gv_strength", type=float, default=0.0)
     ap.add_argument("--speaker", required=True, help="test voice for the test/stress/control sentences")
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--max_utts", type=int, default=0, help="validation utterances (0 = all)")

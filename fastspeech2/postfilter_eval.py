@@ -39,7 +39,7 @@ def main(a):
     pre_cfg, model_cfg, train_cfg = configs
     sr = pre_cfg["preprocessing"]["audio"]["sampling_rate"]
     model, step = load_model(configs, a.checkpoint)
-    vocoder = get_vocoder(model_cfg, device)
+    vocoder = get_vocoder(model_cfg, device, a.vocoder)
     os.makedirs(os.path.join(a.out_dir, "wavs"), exist_ok=True)
 
     tr = Dataset("train.txt", pre_cfg, train_cfg, sort=False, drop_last=False)
@@ -91,6 +91,7 @@ if __name__ == "__main__":
     ap.add_argument("--config", required=True)
     ap.add_argument("--data_root", required=True)
     ap.add_argument("--checkpoint", required=True)
+    ap.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
     ap.add_argument("--speaker", required=True)
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--n_train", type=int, default=40)
