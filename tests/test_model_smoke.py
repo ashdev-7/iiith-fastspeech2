@@ -216,3 +216,46 @@ def test_vocoder_finetune_parts(tmp_path):
     ft = get_vocoder(cfg, torch.device("cpu"), path)
     assert type(ft) is type(universal)
 
+
+
+def test_adapt_speaker_end_to_end(tmp_path):
+    """Speaker adaptation on a tiny synthetic corpus: only the voice's train clips are used, the encoder
+    stays frozen, validation metrics are finite and a loadable checkpoint is written."""
+    import argparse
+    import adapt_speaker
+    from model import FastSpeech2 as FS2
+    pre_cfg, mc, _ = _configs("te", tmp_path)
+    pre = pre_cfg["path"]["preprocessed_path"]
+    phones, _ = frontend("నమస్కారం అందరికీ", "te")
+    text = "{" + " ".join(phones) + "}"
+    rng = np.random.default_rng(0)
+    for sub in ("mel", "pitch", "energy", "duration"):
+        os.makedirs(os.path.join(pre, sub), exist_ok=True)
+    lines = {"train.txt": [], "val.txt": []}
+    for split, spk, name in [("train.txt", "spk_a", "a1"), ("train.txt", "spk_a", "a2"), ("train.txt", "spk_b", "b1"),
+                             ("val.txt", "spk_a", "a3")]:
+        d = np.full(len(phones), 4, dtype=np.int64)
+        np.save(os.path.join(pre, "duration", "{}-duration-{}.npy".format(spk, name)), d)
+        np.save(os.path.join(pre, "mel", "{}-mel-{}.npy".format(spk, name)), rng.normal(-5, 1, (int(d.sum()), 80)).astype(np.float32))
+        np.save(os.path.join(pre, "pitch", "{}-pitch-{}.npy".format(spk, name)), rng.normal(0, 1, len(phones)))
+        np.save(os.path.join(pre, "energy", "{}-energy-{}.npy".format(spk, name)), rng.normal(0, 1, len(phones)))
+        lines[split].append("|".join([name, spk, text, "x"]))
+    for f, ls in lines.items():
+        open(os.path.join(pre, f), "w", encoding="utf-8").write("\n".join(ls) + "\n")
+    torch.manual_seed(0)
+    model = FS2(pre_cfg, mc)
+    with torch.no_grad():
+        model.variance_adaptor.duration_predictor.linear_layer.bias.fill_(1.6)
+    ck = os.path.join(str(tmp_path), "base.pth.tar")
+    torch.save({"model": model.state_dict(), "step": 5}, ck)
+    enc0 = {k: v.clone() for k, v in model.encoder.state_dict().items()}
+    out = os.path.join(str(tmp_path), "adapt")
+    adapt_speaker.main(argparse.Namespace(
+        config=os.path.join(ROOT, CONFIG["te"]), data_root=str(tmp_path), checkpoint=ck, speaker="spk_a",
+        out_dir=out, parts="decoder", steps=4, lr=1e-3, batch_size=2, eval_every=2, patience=5, seed=0))
+    s = json.load(open(os.path.join(out, "adapt_summary.json")))
+    assert s["train_clips"] == 2 and s["val_clips"] == 1
+    assert all(np.isfinite(h["mcd_free"]) for h in s["history"])
+    sd = torch.load(os.path.join(out, "adapted.pth.tar"), map_location="cpu", weights_only=True)["model"]
+    for k, v in enc0.items():
+        assert torch.equal(sd["encoder." + k].cpu(), v.cpu()), k

@@ -81,6 +81,9 @@ def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0
         import postfilter
         mel = postfilter.apply(mel, POSTFILTER[0], POSTFILTER[1])
     res["mel"] = mel.cpu().numpy()
+    if vocoder is None:  # mel only (speaker adaptation validation)
+        res["wav"], res["vocoder_s"] = None, 0.0
+        return res
     t2 = _now(dev)
     res["wav"] = vocoder_infer(mel.transpose(0, 1).unsqueeze(0), vocoder, model_cfg, pre_cfg)[0]
     res["vocoder_s"] = _now(dev) - t2

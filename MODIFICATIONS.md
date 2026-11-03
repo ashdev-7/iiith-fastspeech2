@@ -58,6 +58,7 @@ Each entry lists: file · original behaviour · reason · new behaviour · langu
 | `text/english_frontend.py` (letter names), `inference.py`, `evaluate_val.py` | Letter names (AM/PM) get per-phone duration scale 1.6, passed to the variance adaptor as a (1, L) `d_control`; AM had been predicted in 244 ms and heard as "pm" | `tests/test_english_frontend.py`, `tests/test_model_smoke.py::test_per_phone_duration_control`; job `fs2-05-reinfer-en` v3 |
 | `postfilter.py`, `postfilter_eval.py`; `inference.py`/`evaluate_val.py` `--gv_ratio --gv_strength` | Global-variance post-filter against decoder over-smoothing (inference only, ratio from training clips of the test voice); used for English at strength 1.0 | `tests/test_postfilter.py`; Kaggle job `fs2-08-postfilter` |
 | `vocoder_finetune.py`, `hifigan/discriminators.py`; `--vocoder` options | HiFi-GAN fine-tuning on ground-truth-aligned mels (discriminators from jik876/hifi-gan, MIT); evaluated and not adopted | `tests/test_model_smoke.py::test_vocoder_finetune_parts`; Kaggle jobs `fs2-09-vocoder-ft-*` |
+| `adapt_speaker.py`; `evaluate_val.synthesize` returns the mel only when no vocoder is given | Speaker adaptation of the English decoder to the test voice on its training clips only, encoder frozen, early stopping on its validation clips (AdaSpeech-style) | `tests/test_model_smoke.py::test_adapt_speaker_end_to_end`; Kaggle job `fs2-11-adapt-en` |
 
 ## Deliberate deviations from the reference conventions
 
