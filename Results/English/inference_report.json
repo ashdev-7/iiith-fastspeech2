@@ -1,8 +1,8 @@
 {
  "checkpoint": "en_model.pth.tar",
  "step": 17949,
- "speaker": "svarah_71f88d2a",
- "speaker_id": 54,
+ "speaker": "svarah_8a8e2655",
+ "speaker_id": 61,
  "symbol_table_sha256": "c46db8d7e6a7a0907431c5e7fbc39c0151b8e1dfab6eb855e48362db52b7e7ee",
  "telugu_font": null,
  "controls": {
@@ -13,24 +13,24 @@
  "items": {
   "E1": {
    "wav": "test_generated_audios/E1_en.wav",
-   "seconds": 5.224,
+   "seconds": 6.316,
    "phones": 85,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 115200,
-    "mel_frames_x_hop": 115200,
+    "wav_samples": 139264,
+    "mel_frames_x_hop": 139264,
     "wav_finite": true,
-    "wav_rms": 0.16794923334535472,
+    "wav_rms": 0.10481160621292732,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.21097,
-    "vocoder_s": 3.08378,
-    "audio_s": 5.224,
-    "rtf_acoustic": 0.04038,
-    "rtf_total": 0.63064
+    "acoustic_s": 0.25309,
+    "vocoder_s": 4.08207,
+    "audio_s": 6.316,
+    "rtf_acoustic": 0.04007,
+    "rtf_total": 0.6864
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E1_duration.png",
@@ -40,24 +40,24 @@
   },
   "E2a": {
    "wav": "test_generated_audios/E2a_en.wav",
-   "seconds": 3.611,
+   "seconds": 4.238,
    "phones": 50,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 79616,
-    "mel_frames_x_hop": 79616,
+    "wav_samples": 93440,
+    "mel_frames_x_hop": 93440,
     "wav_finite": true,
-    "wav_rms": 0.14092071467877,
+    "wav_rms": 0.11506420689732443,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.15395,
-    "vocoder_s": 2.00186,
-    "audio_s": 3.611,
-    "rtf_acoustic": 0.04264,
-    "rtf_total": 0.59706
+    "acoustic_s": 0.17735,
+    "vocoder_s": 2.30458,
+    "audio_s": 4.238,
+    "rtf_acoustic": 0.04185,
+    "rtf_total": 0.58569
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E2a_duration.png",
@@ -67,24 +67,24 @@
   },
   "E2b": {
    "wav": "test_generated_audios/E2b_en.wav",
-   "seconds": 3.796,
+   "seconds": 4.551,
    "phones": 56,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 83712,
-    "mel_frames_x_hop": 83712,
+    "wav_samples": 100352,
+    "mel_frames_x_hop": 100352,
     "wav_finite": true,
-    "wav_rms": 0.14308980819593475,
+    "wav_rms": 0.12141279681250386,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.15836,
-    "vocoder_s": 2.02956,
-    "audio_s": 3.796,
-    "rtf_acoustic": 0.04171,
-    "rtf_total": 0.57631
+    "acoustic_s": 0.22453,
+    "vocoder_s": 2.55519,
+    "audio_s": 4.551,
+    "rtf_acoustic": 0.04934,
+    "rtf_total": 0.61078
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E2b_duration.png",
@@ -94,24 +94,24 @@
   },
   "E3": {
    "wav": "test_generated_audios/E3_en.wav",
-   "seconds": 2.38,
+   "seconds": 2.879,
    "phones": 37,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 52480,
-    "mel_frames_x_hop": 52480,
+    "wav_samples": 63488,
+    "mel_frames_x_hop": 63488,
     "wav_finite": true,
-    "wav_rms": 0.15412404122813436,
+    "wav_rms": 0.11245334116891044,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.11184,
-    "vocoder_s": 1.27282,
-    "audio_s": 2.38,
-    "rtf_acoustic": 0.04699,
-    "rtf_total": 0.58178
+    "acoustic_s": 0.13119,
+    "vocoder_s": 1.58023,
+    "audio_s": 2.879,
+    "rtf_acoustic": 0.04556,
+    "rtf_total": 0.59439
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E3_duration.png",
@@ -121,24 +121,24 @@
   },
   "E4": {
    "wav": "test_generated_audios/E4_en.wav",
-   "seconds": 6.293,
+   "seconds": 7.187,
    "phones": 79,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 138752,
-    "mel_frames_x_hop": 138752,
+    "wav_samples": 158464,
+    "mel_frames_x_hop": 158464,
     "wav_finite": true,
-    "wav_rms": 0.13385842495002276,
+    "wav_rms": 0.09728721646486754,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.25977,
-    "vocoder_s": 3.59298,
-    "audio_s": 6.293,
-    "rtf_acoustic": 0.04128,
-    "rtf_total": 0.61227
+    "acoustic_s": 0.30161,
+    "vocoder_s": 4.58699,
+    "audio_s": 7.187,
+    "rtf_acoustic": 0.04197,
+    "rtf_total": 0.68024
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E4_duration.png",
@@ -150,9 +150,9 @@
  "device": "cpu",
  "timing_summary": {
   "items": 5,
-  "audio_s": 21.304,
-  "rtf_acoustic": 0.04201,
-  "rtf_total": 0.60439,
+  "audio_s": 25.171,
+  "rtf_acoustic": 0.04322,
+  "rtf_total": 0.64347,
   "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
  },
  "title_rendering": "Latin text only"

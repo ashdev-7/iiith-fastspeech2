@@ -261,33 +261,59 @@ studio-quality Telugu speakers with ~2.5 h each.</p>
 
 <!-- =============================================================== -->
 <h2 id="s5" class="pb">5. Generated speech, per test sentence</h2>
-<p>Audio: <code>Results/&lt;Lang&gt;/test_generated_audios/</code>. Voices: English <code>svarah_71f88d2a</code> (the Svarah speaker with
-the most training audio); Telugu <code>te_female</code> (lower HiFi-GAN copy-synthesis error than <code>te_male</code>: mel L1 0.378
+<p>Audio: <code>Results/&lt;Lang&gt;/test_generated_audios/</code>. Voices: English <code>svarah_8a8e2655</code> (chosen by recording
+clarity, §5.0); Telugu <code>te_female</code> (lower HiFi-GAN copy-synthesis error than <code>te_male</code>: mel L1 0.378
 vs 0.394 on 20 validation clips each) <span class="tag meas">measured</span>. To assess pronunciation without a listening panel,
 each wav was transcribed with Whisper large-v3 and compared with the frontend's normalised text; CER is shown both raw and
 after Whisper's English text normaliser (numbers, spellings), which removes pure formatting differences ("10:45" vs "ten
 forty five").</p>
 
+<h3>5.0 Choice of the English test voice, and where quality is lost <span class="tag meas">measured</span></h3>
+<p>The first English outputs (voice <code>svarah_71f88d2a</code>, chosen because it has the most training audio) sounded muffled on
+listening. A Praat analysis (<code>tools/acoustic_analysis.py</code>) and a diagnostic job (<code>fastspeech2/diagnose_quality.py</code>,
+Kaggle <code>fs2-07-diagnose</code>, results in <code>Evaluation/Diagnosis/</code>) located the cause. For 24–30 validation clips of
+each test voice it compares the natural recording, copy-synthesis (ground-truth mel → HiFi-GAN), FastSpeech 2 with ground-truth
+duration/pitch/energy (oracle) and free-running FastSpeech 2, band by band (long-term spectrum, dB relative to the natural recording):</p>
+<table>
+<tr><th>Band (Hz)</th><th class="n">0–500</th><th class="n">500–1k</th><th class="n">1k–2k</th><th class="n">2k–4k</th><th class="n">4k–6k</th><th class="n">6k–8k</th></tr>
+<tr><td>English, copy − natural</td><td class="n">−0.1</td><td class="n">+0.7</td><td class="n">+0.5</td><td class="n">+0.8</td><td class="n">+1.0</td><td class="n">+1.1</td></tr>
+<tr><td>English, free-running − natural</td><td class="n">−0.3</td><td class="n">+3.1</td><td class="n">0.0</td><td class="n">+3.1</td><td class="n">+3.9</td><td class="n">+1.9</td></tr>
+<tr><td>Telugu, copy − natural</td><td class="n">0.0</td><td class="n">+0.4</td><td class="n">−0.7</td><td class="n">+0.1</td><td class="n">+0.2</td><td class="n">0.0</td></tr>
+<tr><td>Telugu, free-running − natural</td><td class="n">+0.3</td><td class="n">−0.3</td><td class="n">−2.4</td><td class="n">−1.9</td><td class="n">−1.1</td><td class="n">−0.2</td></tr>
+</table>
+<p>Neither the vocoder nor the acoustic model removes high-frequency energy: both reproduce the recording to within ~1 dB (copy) and
+~4 dB (free-running) in every band, and HNR, jitter and shimmer of all four versions are within 1.5 dB / 0.4 % / 1.2 % of each other.
+The muffled sound was <b>the voice's own recordings</b>: ranking all 110 training speakers by the clarity of their recordings
+(1–4 kHz band share + HNR/2, three training clips each, <code>clarity_en.json</code>) put <code>svarah_71f88d2a</code> 108th
+(1–4 kHz band −23 dB). Svarah is crowd-sourced; recording conditions vary by speaker. The test sentences were rendered in the four
+clearest voices; <code>svarah_8a8e2655</code> (rank 2, 1–4 kHz band −9.7 dB) had the lowest jitter and shimmer of the four and is used
+for all English outputs. The checkpoint is unchanged; only the speaker embedding chosen at inference differs. Effect on the test
+sentences (means over E1–E4): spectral centre of gravity 300 → 620 Hz, jitter 1.2 → 0.5 %, shimmer 11.1 → 9.0 %; Whisper CER
+(normalised) on E1 / E3 / E4 from 15 / 17 / 40 % to 0 / 0 / 3 %. The selection rule was changed after listening to the first outputs; it is
+an objective rule on training recordings, and the earlier outputs remain in the repository history (commit <code>8f5ae5f</code>).</p>
+
 <h3>5.1 English</h3>
 <table>
 <tr><th>ID</th><th>Duration</th><th>Frontend decisions</th><th>Whisper transcript of our audio</th><th class="n">CER raw / norm.</th></tr>
-<tr><td>E1</td><td class="n">5.22 s</td><td><i>antidisestablishmentarianism</i>: not in the lexicon → g2p_en
+<tr><td>E1</td><td class="n">6.32 s</td><td><i>antidisestablishmentarianism</i>: not in the lexicon → g2p_en
 <code>AE2 N T AY0 D IH0 S AH0 S T AE2 B L IH0 SH M AH0 N T EH1 R IY0 AH0 N IH0 Z AH0 M</code> (plausible, primary stress on -tar-)</td>
-<td>"The <u>entire establishment in India is a</u> movement in considerable momentum during the parliamentary proceedings."</td><td class="n">15.3 / 15.3 %</td></tr>
-<tr><td>E2a</td><td class="n">3.61 s</td><td><i>conduct</i> tagged noun (NN) → <code>K AA1 N D AH0 K T</code> (stress on 1st syllable)</td><td>exact</td><td class="n">0 / 0 %</td></tr>
-<tr><td>E2b</td><td class="n">3.80 s</td><td><i>conduct</i> tagged verb (VB) → <code>K AA0 N D AH1 K T</code> (stress on 2nd syllable)</td><td>"Researchers will conduct …" (only the leading "The" missed)</td><td class="n">4.7 / 4.7 %</td></tr>
-<tr><td>E3</td><td class="n">2.38 s</td><td>"rhyth m" joined for pronunciation → <i>rhythm</i> <code>R IH1 DH AH0 M</code>; text unchanged</td><td>"The rhythm of the orchestra's <u>engine expectedly</u>"</td><td class="n">16.7 / 16.7 %</td></tr>
-<tr><td>E4</td><td class="n">6.29 s</td><td>"ten forty five A M on twelve November twenty twenty six"; <i>andaroo</i> (Telugu అందరూ "everyone") → <code>AE0 N D AA1 R UW0</code></td>
-<td>"The meeting will start at 10.45 <u>pm</u> on 12 November 2026." <i>(stops at the comma)</i></td><td class="n">65.6 / 40.0 %</td></tr>
+<td>exact ("anti-disestablishmentarianism")</td><td class="n">0 / 0 %</td></tr>
+<tr><td>E2a</td><td class="n">4.24 s</td><td><i>conduct</i> tagged noun (NN) → <code>K AA1 N D AH0 K T</code> (stress on 1st syllable)</td><td>exact</td><td class="n">0 / 0 %</td></tr>
+<tr><td>E2b</td><td class="n">4.55 s</td><td><i>conduct</i> tagged verb (VB) → <code>K AA0 N D AH1 K T</code> (stress on 2nd syllable)</td><td>"The researchers will conduct an <u>experimental evaluation of</u> the proposed method."</td><td class="n">10.9 / 10.9 %</td></tr>
+<tr><td>E3</td><td class="n">2.88 s</td><td>"rhyth m" joined for pronunciation → <i>rhythm</i> <code>R IH1 DH AH0 M</code>; text unchanged</td><td>exact</td><td class="n">0 / 0 %</td></tr>
+<tr><td>E4</td><td class="n">7.19 s</td><td>"ten forty five A M on twelve November twenty twenty six"; AM as letter names, durations ×1.6;
+<i>andaroo</i> (Telugu అందరూ "everyone") → <code>AE0 N D AA1 R UW0</code></td>
+<td>"The meeting will start at 10.45 am on 12 November 2026, so <u>and are</u> should arrive on time."</td><td class="n">37.6 / 2.9 %</td></tr>
 </table>
-<p><b>Observations.</b> The homograph pair is pronounced as intended and transcribed exactly; E2a/E2b are the cleanest outputs.
-The long rare word in E1 is synthesised with a plausible phone sequence, but Whisper maps it onto common words ("entire
-establishment in India is a"), i.e. its middle part is not clearly articulated or not recognisable to the ASR model
-<span class="tag est">estimated</span>. In E3, "changed unexpectedly" is heard as "'s engine expectedly": the /tʃ/–/eɪ/ onset of
-<i>changed</i> and the un- prefix are weak. E4's numbers, date and AM are rendered correctly; Whisper writes "pm" for AM
-(an A/P confusion on a 244 ms letter sequence) and stops transcribing at the <b>824 ms pause</b> the model inserts at the comma
-(§6.1). The audio after the pause is present (energy plot, Fig. E4) — the missing clause is an ASR artefact of the long pause,
-but the pause itself is unnaturally long.</p>
+<p><b>Observations.</b> Four of the five sentences are transcribed exactly after normalisation (E4's raw CER is digit
+formatting: "10.45", "12", "2026"). The long rare word in E1 is recognised as the intended word. The homograph pair is
+pronounced as intended (E2a exact; in E2b "experiment to evaluate" is heard as "experimental evaluation of", a word-boundary
+slip in a fast unstressed stretch, not a stress error on <i>conduct</i>). E3 is exact, including the joined <i>rhythm</i>.
+E4: numbers, date and <i>AM</i> are correct; <i>AM</i> was heard as "pm" while its letters were predicted in 244 ms, and is heard
+correctly after the letter-name duration rule (453 ms). <i>andaroo</i>, a Telugu word in English text, is heard as "and are": its
+phones are right, but the ASR has no such word. Remaining audible weaknesses, from the per-word Praat analysis: unstressed
+function words are short and breathy (<i>the</i> 93–116 ms, HNR 11–15 dB against a sentence median of 16–17 dB), "twenty twenty"
+is fast (20–23 phones/s against ~11) and phrase-final words are slightly breathy (<i>arrive</i>, <i>time</i>).</p>
 <p><b>Before/after the frontend fix.</b> The first full English run (same checkpoint) read E3 as <code>R AY1 DH</code> + the letter
 name <code>EH1 M</code> ("rythe em") and ended <i>andaroo</i> in <code>OW</code>. Both were caught by inspecting
 <code>frontend_trace.json</code>, fixed by general rules (not word-specific exceptions), covered by tests, and the English test outputs
@@ -314,10 +340,10 @@ ground truth for test sentences. The numbers behind each plot are in <code>varia
 <h4>Patterns common to all ten sentences <span class="tag meas">measured</span></h4>
 <ul>
 <li><b>Declination</b>: pitch is highest on an early content word and lowest on the last word in every sentence (English
-first-third mean 136–160 Hz → last third 121–130 Hz; Telugu 217–246 → 178–197 Hz).</li>
-<li><b>Phrase-final lengthening</b> in 9/10 sentences: the last vowel is 1.3–3.7× the sentence's mean vowel duration (E2a is the exception, 0.7×).</li>
+first-third mean 214–235 Hz → last third 192–210 Hz; Telugu 217–246 → 178–197 Hz).</li>
+<li><b>Phrase-final lengthening</b> in 9/10 sentences: the last vowel is 1.3–2.9× the sentence's mean vowel duration (E2a is the exception, 0.7×).</li>
 <li><b>Segmental energy pattern</b>: vowels and nasals high, stops/fricatives and pauses low — e.g. E4 /S/ ≈ 8, vowels 80–150 a.u. — as expected for an STFT-norm energy.</li>
-<li><b>Speaking rate</b> 12.4–16.3 phones/s (English), 12.5–14.5 phones/s (Telugu).</li>
+<li><b>Speaking rate</b> 11.7–13.5 phones/s (English), 12.5–14.5 phones/s (Telugu).</li>
 <li>The F0 measured on the generated audio tracks the predicted phone-level F0 closely within voiced phones, so the
 decoder and vocoder realise the predicted pitch; deviations appear at phone boundaries and on short phones, as expected
 from phone-level (step-wise) targets.</li>
@@ -365,13 +391,13 @@ is synchronised before each reading; one untimed warm-up call.</p>
 <h3>7.2 Prosody controls <span class="tag meas">measured</span></h3>
 <table>
 <tr><th>Control (factor)</th><th>English: length / median F0 / RMS</th><th>Telugu: length / median F0 / RMS</th></tr>
-<tr><td>none</td><td class="n">3.80 s / 126 Hz / 0.143</td><td class="n">2.46 s / 209 Hz / 0.148</td></tr>
-<tr><td>duration 0.8 / 1.25</td><td class="n">2.79 s / 4.49 s</td><td class="n">1.88 s / 3.02 s</td></tr>
-<tr><td>pitch 0.8 / 1.2 (after M12)</td><td class="n">108 Hz / 157 Hz</td><td class="n">165 Hz / 252 Hz</td></tr>
-<tr><td>pitch 0.8 / 1.2 (reference code)</td><td class="n">140 Hz / 113 Hz — inverted</td><td class="n">204 Hz / 209 Hz — almost no effect</td></tr>
-<tr><td>energy 0.8 / 1.2 (after M12)</td><td class="n">RMS 0.139 / 0.166</td><td class="n">RMS 0.120 / 0.159</td></tr>
+<tr><td>none</td><td class="n">4.55 s / 205 Hz / 0.121</td><td class="n">2.46 s / 209 Hz / 0.148</td></tr>
+<tr><td>duration 0.8 / 1.25</td><td class="n">3.37 s / 5.42 s</td><td class="n">1.88 s / 3.02 s</td></tr>
+<tr><td>pitch 0.8 / 1.2 (after M12)</td><td class="n">169 Hz / 244 Hz</td><td class="n">165 Hz / 252 Hz</td></tr>
+<tr><td>pitch 0.8 / 1.2 (reference code)</td><td class="n">140 Hz / 113 Hz — inverted (former voice, 126 Hz)</td><td class="n">204 Hz / 209 Hz — almost no effect</td></tr>
+<tr><td>energy 0.8 / 1.2 (after M12)</td><td class="n">RMS 0.103 / 0.139</td><td class="n">RMS 0.120 / 0.159</td></tr>
 </table>
-<p>The duration control scales length close to the factor (0.73× and 1.18× for English; 0.76× and 1.23× for Telugu; rounding
+<p>The duration control scales length close to the factor (0.74× and 1.19× for English; 0.76× and 1.23× for Telugu; rounding
 of per-phone frames explains the difference). Pitch control after M12 is near-proportional (×0.79/×1.20 for Telugu).</p>
 
 <h3>7.3 Stress sentences (beyond the assignment)</h3>
@@ -388,8 +414,8 @@ STRESS_TABLES
 <tr><td>Text → phones</td><td>irregular spelling: lexicon + neural G2P; homographs, OOV words and normalisation are the main risks</td><td>near-phonemic script: deterministic rules cover every word; risks are normalisation and corrupted input text</td></tr>
 <tr><td>Prosody prediction (validation)</td><td>weak: pitch r 0.35, duration r 0.58</td><td>good: pitch r 0.76, duration r 0.85</td></tr>
 <tr><td>Over-fitting</td><td>mild (validation drifts up after 7k)</td><td>none visible (flat after ~10k)</td></tr>
-<tr><td>Phrase structure</td><td>long pause at the E4 comma (824 ms), no pitch reset after it</td><td>shorter pause at the T4 comma (546 ms) followed by a pitch reset (208 → 270 Hz)</td></tr>
-<tr><td>Main failures on the test set</td><td>rare long word (E1), weak "changed unexpectedly" (E3), over-long comma pause (E4)</td><td>TE_FAILURES</td></tr>
+<tr><td>Phrase structure</td><td>pause at the E4 comma (546 ms), no pitch reset after it (<i>six</i> 215 → <i>so</i> 219 Hz)</td><td>shorter pause at the T4 comma (546 ms) followed by a pitch reset (208 → 270 Hz)</td></tr>
+<tr><td>Main failures on the test set</td><td>short, breathy function words; fast "twenty twenty" (E4); a word-boundary slip in E2b; the muffled first test voice (§5.0)</td><td>TE_FAILURES</td></tr>
 </table>
 <h3>8.2 Limitations</h3>
 <ul>
@@ -397,8 +423,8 @@ STRESS_TABLES
 training set (§4) and English prosody generalises poorly.</li>
 <li><b>No listening test</b>: quality statements rely on ASR and acoustic measurements. Whisper is weak on Telugu, so Telugu
 intelligibility is under-measured.</li>
-<li><b>Universal vocoder, not fine-tuned</b>: copy-synthesis already costs 11.6 % CER on English validation speech; the vocoder
-bounds the quality.</li>
+<li><b>Universal vocoder, not fine-tuned</b>: copy-synthesis costs 11.6 % CER on English validation speech, but its spectrum
+matches the recordings within ~1 dB (§5.0); recording quality varies by Svarah speaker and bounds what each voice can sound like.</li>
 <li><b>Telugu G2P is orthographic</b>: it transcribes the script; it does not model schwa reduction, loanword pronunciations
 (ఫ as /f/), or sandhi. It was not reviewed by a native speaker.</li>
 <li><b>English abbreviations and acronyms are not expanded</b> ("Dr.", "IIIT"; stress sentence SE06).</li>
@@ -407,14 +433,14 @@ bounds the quality.</li>
 </ul>
 <h3>8.3 Possible improvements (from the test sentences)</h3>
 <ul>
-<li><b>Pause modelling</b> (E4): cap or predict pause durations from punctuation type, or fine-tune the duration predictor on
-read speech; the 824 ms comma pause is learned from spontaneous Svarah pauses.</li>
+<li><b>Voice and data selection by recording quality</b> (§5.0): select or weight training speakers by measured clarity, not only
+by amount of audio; the test-voice choice alone removed most English ASR errors.</li>
+<li><b>Function words and number sequences</b> (E4): minimum durations for unstressed vowels, or a duration floor per phone class.</li>
 <li><b>Early stopping / checkpoint selection</b> on validation loss (English ~7–10k steps).</li>
-<li><b>Rare and long words</b> (E1): syllable-aware duration smoothing, or more data with long words; a pronunciation lexicon for
-domain terms.</li>
+<li><b>Rare and long words</b>: a pronunciation lexicon for domain terms (E1 is now recognised, but relies on g2p_en).</li>
 <li><b>Text normalisation</b>: abbreviations, acronyms (spelled letter by letter), ordinals in English dates ("12th November").</li>
-<li><b>Vocoder fine-tuning</b> on each language's data (HiFi-GAN fine-tuned on ground-truth-aligned mels) — the largest expected
-quality gain given the measured copy-synthesis gap <span class="tag est">estimated</span>.</li>
+<li><b>Vocoder fine-tuning</b> on each language's data (HiFi-GAN fine-tuned on ground-truth-aligned mels) — a smaller gain than first
+expected, since copy-synthesis already matches the recordings' spectrum (§5.0) <span class="tag est">estimated</span>.</li>
 <li><b>Telugu</b>: native-speaker review of the G2P rules; frame-level pitch with CWT (as in the paper) for richer intonation.</li>
 </ul>
 

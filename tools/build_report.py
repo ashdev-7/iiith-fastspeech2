@@ -21,29 +21,29 @@ PDF = os.path.join(ROOT, "Report", "Technical_Report.pdf")
 # Results/<Lang>/variance_raw/<ID>.json (word duration = sum of its phones; word pitch = max phone F0).
 ANALYSIS = {
     "E1": [
-        "<i>antidisestablishmentarianism</i> takes 1,614 ms, 31 % of the 5.22 s sentence, with uniformly short phones (no pause before or after it).",
-        "Pitch has several similar peaks (≈ 152 Hz on <i>antidisestablishmentarianism</i>, <i>movement</i>, <i>considerable</i>) and falls to its minimum on the last word <i>proceedings</i> (121 Hz): a flat, list-like contour with final declination.",
-        "<i>proceedings</i> is the longest word after E1's long word (824 ms) and its final vowel is lengthened 1.4× — a clear phrase-final cue; no pause is predicted because the sentence has no internal punctuation.",
+        "<i>antidisestablishmentarianism</i> takes 1,962 ms, 31 % of the 6.32 s sentence, with uniformly short phones and no pause before or after it.",
+        "Pitch has several similar peaks (<i>considerable</i> 250 Hz, <i>antidisestablishmentarianism</i> 243, <i>movement</i> 239, <i>momentum</i> 232 Hz) and falls to its minimum on the last word <i>proceedings</i> (199 Hz): a flat, list-like contour with final declination (first third 216 → last third 200 Hz).",
+        "<i>proceedings</i> is the longest word after the long word (929 ms) and its final vowel is lengthened 1.3×, a phrase-final cue. No pause is predicted, because the sentence has no internal punctuation.",
     ],
     "E2a": [
-        "<i>conduct</i> (noun, <code>K AA1 N D AH0 K T</code>): first syllable 278 ms vs second 255 ms (ratio 1.09) — durational prominence on the stressed first syllable; pitch is flat on the word (125–127 Hz), so the stress is cued by duration only.",
-        "Main accent on <i>orchestra's</i> (157 Hz), secondary on <i>ceremony</i> (154 Hz), then a fall to 120 Hz on <i>audience</i>.",
-        "The final vowel is short (0.7× the mean) because <i>audience</i> ends in /s/; the word as a whole is long (580 ms).",
+        "<i>conduct</i> (noun, <code>K AA1 N D AH0 K T</code>): first syllable 313 ms vs second 325 ms (ratio 0.96). That is relatively more weight on the first syllable than the verb in E2b gets (0.82), but not an absolute first-syllable dominance. Pitch rises across the word (199 → 222 Hz on its vowels), so in this voice the noun stress is cued weakly, by relative duration only.",
+        "Main accent on <i>orchestra's</i> (241 Hz) and <i>ceremony</i> (234 Hz), then a fall to 190 Hz on <i>audience</i>.",
+        "The final vowel is short (0.7× the mean) because <i>audience</i> ends in /s/; the word as a whole is long (615 ms). <i>conduct</i> as a noun is 639 ms, the longest word of the sentence.",
     ],
     "E2b": [
-        "<i>conduct</i> (verb, <code>K AA0 N D AH1 K T</code>): first syllable 175 ms vs second 209 ms (ratio 0.84, reversed relative to E2a), and the pitch peak moves to the stressed second vowel (AH1 144 Hz vs AA0 136 Hz). Duration and pitch both mark the verb stress.",
-        "The word is 383 ms against 534 ms as a noun: the verb is less prominent in its phrase than the subject noun phrase of E2a.",
-        "Sentence peak on <i>researchers</i> (160 Hz); declination to <i>method</i> (125 Hz) with 1.3× final lengthening.",
+        "<i>conduct</i> (verb, <code>K AA0 N D AH1 K T</code>): first syllable 209 ms vs second 255 ms (ratio 0.82, shifted towards the second syllable relative to E2a's 0.96), with the higher pitch on the stressed second vowel (AH1 215 Hz vs AA0 209 Hz).",
+        "The word is 464 ms against 639 ms as a noun: the verb is less prominent in its phrase than the subject noun of E2a. The homograph contrast is carried mainly by duration.",
+        "Peaks on <i>evaluate</i> (240 Hz) and <i>researchers</i> (235 Hz); declination to <i>method</i> (202 Hz) with 1.5× final lengthening. <i>to evaluate</i> is fast (128 ms for <i>to</i>), where the ASR heard \"experimental evaluation\".",
     ],
     "E3": [
-        "The split word is pronounced as <i>rhythm</i> (<code>R IH1 DH AH0 M</code>, 302 ms) with the sentence's highest pitch (195–198 Hz on <i>rhythm of</i>): a strong initial accent.",
-        "<i>changed</i> carries the lowest pitch (127 Hz), and <i>unexpectedly</i> is very long (940 ms) with a final vowel of 221 ms (3.7× the mean vowel) — the strongest final lengthening of the ten sentences, which may sound drawn out.",
-        "No pause is predicted between <i>rhythm</i> and <i>of</i>; the original double space in the text has no effect after normalisation.",
+        "The split word is pronounced as <i>rhythm</i> (<code>R IH1 DH AH0 M</code>, 383 ms) with the sentence's highest pitch (270 Hz, and 261 Hz on <i>of</i>): a strong initial accent.",
+        "<i>changed</i> is low (213 Hz); <i>unexpectedly</i> is very long (1,115 ms), with a final vowel of 244 ms (2.9× the mean vowel), the strongest final lengthening of the ten sentences.",
+        "No pause is predicted between <i>rhythm</i> and <i>of</i>; the double space in the text has no effect after normalisation.",
     ],
     "E4": [
-        "Numbers are read as words with growing durations (<i>ten</i> 186, <i>forty</i> 279, <i>five</i> 360 ms; <i>twelve</i> 406, <i>November</i> 383, <i>six</i> 383 ms): list-like, each number group ends long. <i>AM</i> (letter names) takes 244 ms.",
-        "The comma yields an <b>824 ms pause</b> (13 % of the sentence). After it there is no pitch reset (<i>so</i> 136 Hz, continuing the falling line), and the contour declines to the sentence minimum on <i>time</i> (120 Hz); the highest pitch is on <i>meeting</i> (204 Hz).",
-        "<i>andaroo</i> (<code>AE0 N D AA1 R UW0</code>) gets 430 ms with stress on the second syllable; final lengthening 1.9× on <i>time</i>.",
+        "Numbers are read as words with growing durations (<i>ten</i> 232, <i>forty</i> 325, <i>five</i> 383 ms; <i>twelve</i> 453, <i>November</i> 476, <i>six</i> 418 ms): list-like, each number group ends long, while <i>twenty twenty</i> is fast (244 + 221 ms). <i>AM</i> takes 453 ms with the letter-name duration rule (244 ms without it).",
+        "The comma yields a <b>546 ms pause</b> (7.6 % of the sentence; 824 ms with the former voice, so the speaker embedding changes pause length). After it there is no pitch reset (<i>six</i> 215 → <i>so</i> 219 Hz), and the contour declines to the sentence minimum on <i>time</i> (194 Hz); the highest pitch is on <i>meeting</i> (267 Hz).",
+        "<i>andaroo</i> (<code>AE0 N D AA1 R UW0</code>) gets 557 ms with stress on the second syllable; final lengthening 1.8× on <i>time</i>.",
     ],
     "T1": [
         "<span class=\"te\">న్యూరోఫార్మకోలాజికల్</span> lasts 1,695 ms (32 % of 5.27 s) and carries the sentence's highest pitch (313 Hz): the long loanword is the focus of the sentence-initial phrase.",
