@@ -101,3 +101,39 @@ def test_acronyms():
     assert w["UK"]["phones"] == ["Y", "UW1", "K", "EY1"] and w["UK"]["duration_scale"] > 1
     assert w["IIIT"]["phones"] == ["AY1", "AY1", "AY1", "T", "IY1"]
     assert w["Hyderabad"]["source"] != "letter names"
+
+
+@pytest.mark.parametrize("src,expected", [
+    ("approximately 1,247 researchers", "approximately one thousand two hundred forty seven researchers"),
+    ("born in 1947", "born in nineteen forty seven"),
+    ("on November 12, 2026", "on November twelfth, twenty twenty six"),
+    ("on 12 November 2026", "on twelve November twenty twenty six"),   # assignment E4 order: unchanged
+])
+def test_thousands_separators_and_month_day(src, expected):
+    assert normalize(src)[0] == expected
+
+
+def _phones_of(text, token):
+    pytest.importorskip("g2p_en")
+    from text.english_frontend import text_to_phones
+    lex = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "fastspeech2", "lexicon", "librispeech-lexicon.txt")
+    phones, tr = text_to_phones(text, lex)
+    return phones, [w["phones"] for w in tr["words"] if w["token"] == token]
+
+
+def test_read_tense_and_process():
+    """g2p_en's homograph table maps past-tense 'read' to R IY1 D and gives the verb 'process' the
+    procession sense; both are corrected. A past-time word in the clause marks 'read' as past."""
+    _, r = _phones_of("I read the book yesterday, and today I will read another chapter.", "read")
+    assert r == [["R", "EH1", "D"], ["R", "IY1", "D"]]
+    assert _phones_of("I read books every day.", "read")[1] == [["R", "IY1", "D"]]
+    assert _phones_of("I have read it.", "read")[1] == [["R", "EH1", "D"]]
+    assert _phones_of("We can process millions of records.", "process")[1][0][:4] == ["P", "R", "AA1", "S"]
+
+
+def test_no_pause_after_title_abbreviation():
+    phones, dr = _phones_of("Dr. Williams asked. Then he left.", "Dr")
+    assert dr == [["D", "AA1", "K", "T", "ER0"]]
+    assert phones[:6] == ["D", "AA1", "K", "T", "ER0", "W"]   # no sp between "Dr." and "Williams"
+    assert "sp" in phones                                      # the sentence period still pauses

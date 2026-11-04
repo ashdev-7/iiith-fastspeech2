@@ -259,7 +259,7 @@ def main(args):
     spk_id = speakers[args.speaker]
     sentences = [dict(it, set="assignment") for it in json.load(open(
         os.path.join(REPO, "tests", "test_sentences.json"), encoding="utf-8"))["items"] if it["lang"] == lang]
-    stress_path = os.path.join(REPO, "Evaluation", "stress_sentences.json")
+    stress_path = args.stress_file or os.path.join(REPO, "Evaluation", "stress_sentences.json")
     if os.path.exists(stress_path):
         sentences += [dict(it, set="stress") for it in json.load(open(stress_path, encoding="utf-8"))["items"]
                       if it["lang"] == lang]
@@ -387,6 +387,7 @@ if __name__ == "__main__":
     ap.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
     ap.add_argument("--gv_ratio", default=None, help="gv_ratio.json (GV post-filter, fastspeech2/postfilter.py)")
     ap.add_argument("--gv_strength", type=float, default=0.0)
+    ap.add_argument("--stress_file", default=None, help="extra sentences (default Evaluation/stress_sentences.json)")
     ap.add_argument("--prosody_fall", action="store_true", help="terminal-fall rule on test/stress sentences")
     ap.add_argument("--prosody_stress", type=float, default=0.0, help="lexical-stress rule strength on test/stress sentences")
     ap.add_argument("--speaker", required=True, help="test voice for the test/stress/control sentences")

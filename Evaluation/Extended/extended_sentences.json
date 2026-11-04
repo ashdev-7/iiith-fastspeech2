@@ -1,0 +1,187 @@
+{
+ "source": "Extended evaluation set supplied by the author (beyond the assignment); the assignment's test sentences are unchanged in tests/test_sentences.json",
+ "items": [
+  {
+   "id": "XE01",
+   "lang": "en",
+   "canonical": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "canonical_sha256": "c78c6eb0bc0a905d36e4373f0bf9c4adbd35b813932a30008e7b85c3ebe1fc18",
+   "category": "Long, uncommon words",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE02",
+   "lang": "en",
+   "canonical": "The orchestra's conduct during the ceremony was praised, while the researchers will conduct another experiment tomorrow.",
+   "canonical_sha256": "8918b12830c035cb0f155c4a2da0a2e9c38b3111dfab3d2a79ce70402980d700",
+   "category": "Homographs, stress",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE03",
+   "lang": "en",
+   "canonical": "She sells seashells beside the seashore, but the shells she sells are surely not the same.",
+   "canonical_sha256": "183d6cb23d534b99bd3299493d1fba574f5ccc6710e4b04cb02889d77752ab7e",
+   "category": "Sibilants, articulation",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE04",
+   "lang": "en",
+   "canonical": "At 10:45 AM on November 12, 2026, approximately 1,247 researchers will gather for the international conference.",
+   "canonical_sha256": "6716a68d0c1feb273aafb899d8765398e61c3aa4a23109347dccce8306dac4ad",
+   "category": "Numbers, time, dates",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE05",
+   "lang": "en",
+   "canonical": "The rhythmic patterns of the extraordinarily talented musician changed unexpectedly during the performance.",
+   "canonical_sha256": "2327dde7fb648c865380a6db6ac362e6304f0c8de7e2f265d9fae678301b4680",
+   "category": "Consonant clusters, pronunciation",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE06",
+   "lang": "en",
+   "canonical": "Dr. Williams asked whether the temperature would reach 37.5 degrees Celsius by 8:30 p.m.",
+   "canonical_sha256": "08bd6d090539a00ab98307242ff3470a6e5fafa2276916b130e64b64b81c68ff",
+   "category": "Abbreviations, decimals",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE07",
+   "lang": "en",
+   "canonical": "Although artificial intelligence can process millions of calculations per second, human creativity remains remarkably difficult to replicate.",
+   "canonical_sha256": "c07aeeffbbf8c3366af8d9eb5c4f16a4289afff252c7cb5c90a97c68e0eb4fea",
+   "category": "Long sentence, prosody",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE08",
+   "lang": "en",
+   "canonical": "I read the book yesterday, and today I will read another chapter before going to sleep.",
+   "canonical_sha256": "4398fdd0c7f8029ee38988c7287dd3e4a1fffd71f2a87c13a41207770a9364bf",
+   "category": "Homographs, tense-dependent pronunciation",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE09",
+   "lang": "en",
+   "canonical": "Wait! Are you seriously suggesting that we should rebuild the entire system from scratch?",
+   "canonical_sha256": "ae39f5f4ee1d416777af846e8f9ddd17a769d263a45f9bb80ade48b784fcf082",
+   "category": "Questions, emotional intonation",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XE10",
+   "lang": "en",
+   "canonical": "The quick brown fox jumps over the lazy dog while five extraordinary musicians quietly rehearse their final symphony.",
+   "canonical_sha256": "df17371ce8d7f6d94b67c972654c5b395146ad0a3f357e71f7020c7e000a0c6b",
+   "category": "Phonetic coverage, fluency",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT01",
+   "lang": "te",
+   "canonical": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "canonical_sha256": "08eeef71d6d6ef69707f45333bc3e71cdb0174da6333c6ff0bc04288161fa3fc",
+   "category": "Long Sanskrit-derived technical vocabulary",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT02",
+   "lang": "te",
+   "canonical": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది, కానీ ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "canonical_sha256": "d4381ce7fc62045bdc556c03c4b40cdecff5a9ac990ee8fc5afc0f7c83cecc07",
+   "category": "Homographs: పట్టు",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT03",
+   "lang": "te",
+   "canonical": "పులి అడవిలో నిశ్శబ్దంగా నడిచింది, కానీ దాని గర్జనతో అడవి మొత్తం ఒక్కసారిగా ఉలిక్కిపడింది.",
+   "canonical_sha256": "22650a929521371db737c2e541d9735b211599477932dfc1c2fafe791fba2025",
+   "category": "Consonant combinations, long sentence",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT04",
+   "lang": "te",
+   "canonical": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది.",
+   "canonical_sha256": "f252095098e4b953f46ca624476557505e168ede1a1652dfde118b351c632c65",
+   "category": "Dates, numbers, time",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT05",
+   "lang": "te",
+   "canonical": "క్షణక్షణానికి మారుతున్న పరిస్థితులను గమనిస్తూ శాస్త్రవేత్తలు పరిశోధనను కొనసాగించారు.",
+   "canonical_sha256": "6a66a544a4ad2b8b34afee294c80f711344dbcaae81eeb1aca51910e62cb08f9",
+   "category": "క్ష, శ, త్ర combinations",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT06",
+   "lang": "te",
+   "canonical": "హైదరాబాద్‌లోని విశ్వవిద్యాలయంలో కంప్యూటర్ సైన్స్ విద్యార్థులు కృత్రిమ మేధస్సుపై చర్చించారు.",
+   "canonical_sha256": "e580f84fee524c5e73aaba37cb30c880298fcb3bcf7108137ed2fdfdbbe4d849",
+   "category": "Compound words, pronunciation",
+   "nfc": true,
+   "non_ascii_controls": [
+    "0x200c"
+   ]
+  },
+  {
+   "id": "XT07",
+   "lang": "te",
+   "canonical": "అమ్మ చెప్పిన కథలోని చిన్నారి ప్రతిరోజూ ఉదయాన్నే పక్షుల కిలకిలారావాలను వింటూ పెరిగింది.",
+   "canonical_sha256": "a563ce3243b6a25cfafaec64bb7d18faca2b9e0efaaaa2259f62722fa655bc8b",
+   "category": "Natural conversational Telugu",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT08",
+   "lang": "te",
+   "canonical": "వర్షం పడుతున్నప్పటికీ, రేపటి ప్రయాణం కోసం మేము అవసరమైన వస్తువులన్నింటినీ సిద్ధం చేసుకున్నాము.",
+   "canonical_sha256": "9911c2db4bcd186bade4ef572f07e92f9475553c29c441c4a961bc8b7bb4ebab",
+   "category": "Prosody, sentence rhythm",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT09",
+   "lang": "te",
+   "canonical": "నిజంగా మనం సాధించాలనుకున్న లక్ష్యాన్ని చేరుకోవడానికి క్రమశిక్షణ, సహనం, పట్టుదల అవసరం కాదా?",
+   "canonical_sha256": "f4aa8ed961d562144b627b889fc2c3e7ffe6e1b343289c8f6de62e58a66e793c",
+   "category": "Question intonation, emphasis",
+   "nfc": true,
+   "non_ascii_controls": []
+  },
+  {
+   "id": "XT10",
+   "lang": "te",
+   "canonical": "శ్రీకాకుళం నుంచి తిరుపతికి వెళ్లే రైలులో ప్రయాణిస్తున్న ప్రయాణికులకు రేపు ఉదయం ప్రత్యేక ప్రకటన చేయబడుతుంది.",
+   "canonical_sha256": "08b71c9da23782ad14485ebada58c02ccb60d4585e71c2b730d8a2eecb36ad26",
+   "category": "Repeated syllables, long-form pronunciation",
+   "nfc": true,
+   "non_ascii_controls": []
+  }
+ ]
+}

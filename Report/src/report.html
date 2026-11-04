@@ -143,7 +143,11 @@ concatenation is a lexicon word and the first part is not; a word-final "oo" in 
 checked phone by phone): "%" → "percent" and "&amp;" → "and" (the symbols were silently dropped); an hour with a.m./p.m. and no
 minutes ("9 a.m." → "nine AM"; was "nine uh em"); all-capital acronyms: two letters are spelled (UK, US), three to six use
 CMUdict if it lists them (NASA, BBC) and are spelled otherwise (IIIT was read "eye-it", stress sentence SE06), with the AM/PM
-letter-duration rule.</li>
+letter-duration rule. From the extended evaluation set (§7.4): numbers with thousands separators are quantities, not years
+("1,247" was read "twelve forty seven"); "Month day" dates take the ordinal ("November twelfth"; the assignment's "12 November"
+is unchanged); no pause after title abbreviations ("Dr. Williams"); two errors in g2p_en's homograph table corrected (past-tense
+<i>read</i> was mapped to /riːd/, and the verb <i>process</i> to the procession sense), and a non-infinitive <i>read</i> with a
+past-time word in its clause ("yesterday", "ago", "last") is past, which the POS tagger cannot infer.</li>
 <li><b>Alignment</b>: MFA's pretrained <code>english_us_arpa</code> acoustic model with the LibriSpeech lexicon + g2p_en for
 out-of-vocabulary words (6,388 words, 0 without pronunciation) <span class="tag meas">measured</span>.</li>
 </ul>

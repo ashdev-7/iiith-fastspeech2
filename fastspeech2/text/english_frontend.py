@@ -27,6 +27,19 @@ import re
 
 from text.numbers import normalize_numbers
 
+_MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
+_month_day_re = re.compile(r"\b(" + _MONTHS + r")\s+([0-9]{1,2})\b(?![:.,]?[0-9])")
+# Titles whose period is an abbreviation mark, not the end of a phrase: no pause after them.
+ABBREVIATIONS = {"dr", "mr", "mrs", "ms", "prof", "st", "jr", "sr", "vs", "mt"}
+# Corrections to g2p_en's homograph table (pron_if_pos, other_pron, POS prefixes). g2p_en maps "read"
+# tagged VBD to R IY1 D (inverted) and gives the verb "process" the rare sense pro-CESS ("to walk in a
+# procession"); "process" therefore uses the lexicon (PRO-cess) for every part of speech.
+HOMOGRAPH_OVERRIDES = {"read": (["R", "EH1", "D"], ["R", "IY1", "D"], ("VBD", "VBN"))}
+NOT_HOMOGRAPHS = {"process"}
+# "read" is the one common verb whose present and past are spelled alike but pronounced differently; the
+# tagger cannot use time words ("I read the book yesterday" -> VBP). A non-infinitive "read" with a
+# past-time word in the same clause (between punctuation marks) is therefore read as past (R EH1 D).
+PAST_TIME_WORDS = {"yesterday", "ago", "last", "earlier", "previously", "once"}
 _hour_ampm_re = re.compile(r"\b(1[0-2]|0?[1-9])\s*([AaPp])\.?\s*[Mm]\b\.?")
 _time_re = re.compile(r"\b([01]?\d|2[0-3]):([0-5]\d)(?:\s*([AaPp])\.?\s*[Mm]\b\.?)?")
 _punct = set(",;.:!?-\"()[]")
@@ -55,6 +68,10 @@ def _number_words(n):
     return normalize_numbers(str(n))
 
 
+def _ordinal_suffix(n):
+    return "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+
+
 def _expand_time(m):
     hour, minute, ampm = int(m.group(1)), int(m.group(2)), m.group(3)
     words = [_number_words(hour)]
@@ -75,6 +92,10 @@ def normalize(text):
     out = _time_re.sub(_expand_time, text)
     if out != text:
         rules.append("time")
+    o1 = _month_day_re.sub(lambda m: "{} {}{}".format(m.group(1), m.group(2), _ordinal_suffix(int(m.group(2)))), out)
+    if o1 != out:
+        rules.append("month day ordinal")
+    out = o1
     o2 = _hour_ampm_re.sub(lambda m: "{} {}M".format(_number_words(int(m.group(1))), m.group(2).upper()), out)
     if o2 != out:
         rules.append("hour a.m./p.m.")
@@ -156,12 +177,25 @@ def text_to_phones(text, lexicon_path):
     words = [t for t in tokens if t[0].isalpha()]
     g2p = _get_g2p()
     tags = dict()
-    if any(w.lower() in g2p.homograph2features for w in words):
+    if any(w.lower() in g2p.homograph2features and w.lower() not in NOT_HOMOGRAPHS for w in words):
         from nltk import pos_tag
         tags = {i: tag for i, (_, tag) in enumerate(pos_tag(words))}
 
-    phones, scales, word_trace, wi = [], [], [], 0
+    clause_of, clause_words, c = {}, {}, 0  # word index -> clause number; clause -> its lower-case words
     for tok in tokens:
+        if tok in _punct:
+            c += 1
+        elif tok[0].isalpha():
+            clause_of[len(clause_of)] = c
+            clause_words.setdefault(c, set()).add(tok.lower())
+    phones, scales, word_trace, wi = [], [], [], 0
+    prev = None
+    for tok in tokens:
+        after_abbrev = tok == "." and prev is not None and prev.lower() in ABBREVIATIONS
+        prev = tok
+        if after_abbrev:
+            word_trace.append({"token": tok, "source": "abbreviation period (no pause)", "phones": []})
+            continue
         if not tok[0].isalpha():
             if tok in _punct or not tok.strip():
                 if phones and phones[-1] != "sp":
@@ -178,7 +212,14 @@ def text_to_phones(text, lexicon_path):
             pron, source = [p for ch in tok for p in LETTER_NAMES[ch]], "letter names"
         elif tok.isupper() and 3 <= len(tok) <= 6:
             pron, source = g2p.cmu[low][0], "CMUdict (acronym)"
-        elif low in g2p.homograph2features:
+        elif low in HOMOGRAPH_OVERRIDES:
+            pron1, pron2, pos1 = HOMOGRAPH_OVERRIDES[low]
+            past = tags[wi].startswith(pos1) or (
+                low == "read" and tags[wi] != "VB" and clause_words[clause_of[wi]] & PAST_TIME_WORDS)
+            pron = pron1 if past else pron2
+            source = "homograph override (POS {}{})".format(
+                tags[wi], ", past-time word in clause" if past and not tags[wi].startswith(pos1) else "")
+        elif low in g2p.homograph2features and low not in NOT_HOMOGRAPHS:
             pron1, pron2, pos1 = g2p.homograph2features[low]
             pron = pron1 if tags[wi].startswith(pos1) else pron2
             source = "g2p_en homograph (POS {})".format(tags[wi])

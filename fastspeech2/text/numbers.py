@@ -13,7 +13,14 @@ _ordinal_re = re.compile(r"[0-9]+(st|nd|rd|th)")
 _number_re = re.compile(r"[0-9]+")
 
 
+_thousands_re = re.compile(r"^[0-9]{1,3}(,[0-9]{3})+$")
+
+
 def _remove_commas(m):
+    # A number written with thousands separators ("1,247") is a quantity, never a year: read it as a
+    # cardinal here, so that _expand_number's year rule (1000-2999 in pairs) does not apply. (project change)
+    if _thousands_re.match(m.group(1)):
+        return _inflect.number_to_words(int(m.group(1).replace(",", "")), andword="").replace(",", "")
     return m.group(1).replace(",", "")
 
 

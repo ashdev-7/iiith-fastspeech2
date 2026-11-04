@@ -106,8 +106,8 @@ def words_with_times(raw, trace):
     return out
 
 
-def analyse_lang(lang):
-    base = os.path.join(ROOT, "Results", lang)
+def analyse_lang(lang, base=None):
+    base = base or os.path.join(ROOT, "Results", lang)
     trace = json.load(open(os.path.join(base, "frontend_trace.json"), encoding="utf-8"))
     report = {}
     for sid, tr in trace.items():
@@ -145,9 +145,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lang", required=True, choices=["English", "Telugu"])
     ap.add_argument("--ref_dir")
+    ap.add_argument("--base", help="a Results-layout folder (default Results/<lang>)")
     ap.add_argument("--json")
     a = ap.parse_args()
-    rep = analyse_lang(a.lang)
+    rep = analyse_lang(a.lang, a.base)
     for sid, r in rep.items():
         s = r["sentence"]
         print("\n== {}  {}".format(sid, "  ".join("{}={}".format(k, v) for k, v in s.items())))
