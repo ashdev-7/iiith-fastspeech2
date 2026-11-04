@@ -151,8 +151,35 @@ def test_per_phone_duration_control(tmp_path):
         base, scaled = model(*args), model(*args, d_control=scale)
     d0, d1 = base[5][0], scaled[5][0]
     assert torch.allclose(d1[[0, 1, 4]], d0[[0, 1, 4]])
-    assert torch.allclose(d1[2:4], d0[2:4] * 1.6)
+    assert torch.allclose(d1[2:4], torch.round(d0[2:4] * 1.6))  # per-phone factors give whole frames
     assert int(scaled[9][0]) == int(sum(int(x) for x in d1))  # mel length = sum of the expanded durations
+
+
+def test_per_phone_pitch_energy_controls_and_prosody_second_pass(tmp_path):
+    """(1, L) p_control / e_control tensors scale only the chosen phones, in physical units; the prosody
+    rules' second pass returns per-phone tensors that the model accepts."""
+    import prosody_rules
+    torch.manual_seed(0)
+    pre, mc, _ = _configs("en", tmp_path)
+    model = FastSpeech2(pre, mc).to(device).eval()
+    with torch.no_grad():
+        model.variance_adaptor.duration_predictor.linear_layer.bias.fill_(1.6)
+    hz = lambda z: z * 40.0 + 180.0  # noqa: E731
+    seq = torch.tensor([[5, 6, 7, 8, 9]], device=device)
+    args = (torch.tensor([0], device=device), seq, torch.tensor([5], device=device), 5)
+    pc = torch.tensor([[1.0, 1.1, 1.0, 0.9, 1.0]], device=device)
+    with torch.no_grad():
+        base, up = model(*args), model(*args, p_control=pc, e_control=pc)
+    assert torch.allclose(hz(up[2]), hz(base[2]) * pc, atol=1e-3)
+    assert torch.allclose(up[3] * 20.0 + 30.0, (base[3] * 20.0 + 30.0) * pc, atol=1e-3)
+    phones = ["K", "AA1", "N", "D", "AH0"]
+    words = [{"token": "w", "phones": phones}]
+    p_c, e_c, d_c, log = prosody_rules.second_pass_controls(model, base, phones, words, "w.", "en", True, 1.0,
+                                                            (1.0, 1.0, 1.0))
+    assert p_c.shape == e_c.shape == d_c.shape == (1, 5)
+    with torch.no_grad():
+        out = model(*args, p_control=p_c, e_control=e_c, d_control=d_c)
+    assert int(out[9][0]) == int(out[5][0].sum())
 
 
 def test_to_device_casts_float64_features():

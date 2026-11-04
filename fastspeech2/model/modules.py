@@ -86,8 +86,10 @@ class VarianceAdaptor(nn.Module):
         The reference multiplied the normalised value (p*c), which scales the distance from the CORPUS
         mean: for a voice below the mean (p < 0), c = 1.2 LOWERED the pitch (measured: 126 -> 113 Hz).
         control == 1 (training, default inference) leaves the prediction unchanged. (M12)"""
-        if control == 1.0:
+        if not torch.is_tensor(control) and control == 1.0:
             return prediction
+        if torch.is_tensor(control):  # per-phone factors, shape (B, L) like the prediction (prosody rules)
+            control = control.to(prediction.dtype)
         return ((prediction * std + mean) * control - mean) / std
 
     def get_pitch_embedding(self, x, target, mask, control):
@@ -146,6 +148,8 @@ class VarianceAdaptor(nn.Module):
                 (torch.round(torch.exp(log_duration_prediction) - 1) * d_control),
                 min=0,
             )
+            if torch.is_tensor(d_control):  # per-phone factors: whole frames, not truncated in expand()
+                duration_rounded = torch.round(duration_rounded)
             x, mel_len = self.length_regulator(x, duration_rounded, max_len)
             mel_mask = get_mask_from_lengths(mel_len)
 

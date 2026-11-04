@@ -18,6 +18,7 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `09_vocoder_ft_en`, `09_vocoder_ft_te` (`fs2-09-vocoder-ft-<lang>`) | GPU T4 | 01, 02, 03 | HiFi-GAN fine-tuning on ground-truth-aligned mels (smoke run first, watchdog), then test sentences, diagnosis and full evaluation with the fine-tuned vocoder (not adopted, report §5.0b) |
 | `10_combos_en` (`fs2-10-combos-en`) | CPU | 02, 03 en, 09 en | Whisper scores of the final English configuration (universal vocoder + GV post-filter) on the test and stress sentences |
 | `11_adapt_en` (`fs2-11-adapt-en`) | CPU | 02, 03 en | Speaker adaptation of the English decoder to the test voice on its training clips only (`fastspeech2/adapt_speaker.py`), early-stopped on its validation clips; post-filter re-estimated; test and stress sentences rendered and Whisper-scored |
+| `12_prosody_en` (`fs2-12-prosody-en`) | CPU | 02, 03 en | Lexical-stress realisation in the English data and the model (`fastspeech2/stress_stats.py`); test and stress sentences with the prosody rules (`fastspeech2/prosody_rules.py`) off / terminal fall / fall + stress 0.5 / fall + stress 1.0, rendered and Whisper-scored |
 
 `03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
 by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.

@@ -27,7 +27,8 @@ from plotting import TITLE_RENDERING, find_font, plot_variances
 from text import text_to_sequence
 from text.symbols import get_symbols
 from utils.config import load_configs
-import postfilter  # noqa: E402
+import postfilter
+import prosody_rules  # noqa: E402
 from utils.model import get_vocoder, vocoder_infer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -112,6 +113,7 @@ def main(args):
     report["gv_postfilter"] = {"ratio_file": args.gv_ratio, "strength": args.gv_strength} if gv_ratio else None
     report["device"] = str(device) + (" ({})".format(torch.cuda.get_device_name(0)) if device.type == "cuda" else "")
     report["vocoder"] = os.path.basename(args.vocoder) if args.vocoder else "generator_universal"
+    report["prosody_rules"] = {"terminal_fall": args.prosody_fall, "stress_strength": args.prosody_stress}
     for it in items:
         item_id, text = it["id"], it["canonical"]
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != it["canonical_sha256"]:
@@ -130,10 +132,18 @@ def main(args):
             assert len(scales) == len(seq), (len(scales), len(seq))
             d_control = torch.tensor([scales], device=device, dtype=torch.float32) * args.duration_control
 
+        p_control, e_control = args.pitch_control, args.energy_control
+
         def acoustic():
             with torch.no_grad():
-                return model(spk, texts, src_lens, len(seq), p_control=args.pitch_control,
-                             e_control=args.energy_control, d_control=d_control)
+                return model(spk, texts, src_lens, len(seq), p_control=p_control,
+                             e_control=e_control, d_control=d_control)
+
+        if args.prosody_fall or args.prosody_stress:  # optional prosody rules (fastspeech2/prosody_rules.py)
+            p_control, e_control, d_control, rule_log = prosody_rules.second_pass_controls(
+                model, acoustic(), phones, trace["words"], text, lang, args.prosody_fall, args.prosody_stress,
+                (args.pitch_control, args.energy_control, d_control))
+            trace["prosody_rules"] = rule_log
 
         if not warmed_up:  # first call pays CUDA/cuDNN initialisation; keep it out of the timings
             acoustic()
@@ -223,4 +233,6 @@ if __name__ == "__main__":
     parser.add_argument("--duration_control", type=float, default=1.0)
     parser.add_argument("--gv_ratio", default=None, help="gv_ratio.json from postfilter_eval.py (GV post-filter)")
     parser.add_argument("--gv_strength", type=float, default=0.0, help="0 = off, 1 = full variance match")
+    parser.add_argument("--prosody_fall", action="store_true", help="terminal-fall rule (prosody_rules.py)")
+    parser.add_argument("--prosody_stress", type=float, default=0.0, help="lexical-stress rule strength, 0..1")
     main(parser.parse_args())

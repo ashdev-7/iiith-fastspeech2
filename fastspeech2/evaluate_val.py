@@ -56,7 +56,7 @@ def _t(x, dtype=torch.float32):
 POSTFILTER = None  # (ratio, strength) when --gv_ratio/--gv_strength are given (fastspeech2/postfilter.py)
 
 
-def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None, scales=None):
+def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None, scales=None, rules=None):
     """Free-running synthesis. Returns dict with mel (T, 80), wav int16, variances and timings."""
     dev = dev or device
     pre_cfg, model_cfg, _ = configs
@@ -69,6 +69,12 @@ def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0
     t0 = _now(dev)
     with torch.no_grad():
         out = model(spk, texts, src_lens, len(seq), p_control=controls[0], e_control=controls[1], d_control=d_control)
+        if rules is not None:  # prosody rules: second pass with per-phone controls (prosody_rules.py)
+            import prosody_rules
+            pc, ec, dc, rules["log"] = prosody_rules.second_pass_controls(
+                model, out, rules["phones"], rules["words"], rules["text"], rules["lang"], rules["fall"],
+                rules["stress"], (controls[0], controls[1], d_control))
+            out = model(spk, texts, src_lens, len(seq), p_control=pc, e_control=ec, d_control=dc)
     t1 = _now(dev)
     mel_len = int(out[9][0].item())
     res = {"p": out[2][0, :len(seq)].cpu().numpy(), "e": out[3][0, :len(seq)].cpu().numpy(),
@@ -265,7 +271,11 @@ def main(args):
         try:
             phones, trace = frontend(text, lang)
             seq = text_to_sequence("{" + " ".join(phones) + "}", [], lang)
-            r = synthesize(model, vocoder, configs, spk_id, seq, scales=trace.get("duration_scale"))
+            rules = ({"phones": phones, "words": trace["words"], "text": text, "lang": lang, "fall": args.prosody_fall,
+                      "stress": args.prosody_stress} if (args.prosody_fall or args.prosody_stress) else None)
+            r = synthesize(model, vocoder, configs, spk_id, seq, scales=trace.get("duration_scale"), rules=rules)
+            if rules:
+                rec["prosody_rules"] = rules["log"]
             rec.update({"model_input": trace["model_input"], "phones": " ".join(phones), "audio_s": (
                 len(r["wav"]) / sr) if r["wav"] is not None else 0, "wav": r["wav"]})
             if it["set"] == "stress" and r["wav"] is not None:
@@ -377,6 +387,8 @@ if __name__ == "__main__":
     ap.add_argument("--vocoder", default=None, help="fine-tuned HiFi-GAN generator (default: universal)")
     ap.add_argument("--gv_ratio", default=None, help="gv_ratio.json (GV post-filter, fastspeech2/postfilter.py)")
     ap.add_argument("--gv_strength", type=float, default=0.0)
+    ap.add_argument("--prosody_fall", action="store_true", help="terminal-fall rule on test/stress sentences")
+    ap.add_argument("--prosody_stress", type=float, default=0.0, help="lexical-stress rule strength on test/stress sentences")
     ap.add_argument("--speaker", required=True, help="test voice for the test/stress/control sentences")
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--max_utts", type=int, default=0, help="validation utterances (0 = all)")
