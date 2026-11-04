@@ -1,0 +1,17 @@
+{
+  "id": "ashdev07/fs2-15-stress-stats",
+  "title": "fs2-15-stress-stats",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [
+    "ashdev07/fs2-02-data",
+    "ashdev07/fs2-03-train-en"
+  ]
+}

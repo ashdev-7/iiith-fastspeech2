@@ -23,10 +23,10 @@ def tally(acc, key, res):
     a = acc.setdefault(key, {"clips": 0, "words": 0, "realised": 0, "pitch": 0, "duration": 0, "energy": 0, "chance": 0.0})
     n, ok, cues = res
     a["clips"] += 1
-    a["words"] += n
-    a["realised"] += ok
+    a["words"] += int(n)
+    a["realised"] += int(ok)
     for k, v in cues.items():
-        a[k] += v
+        a[k] += float(v) if k == "chance" else int(v)
 
 
 def main(a):
@@ -69,8 +69,8 @@ def main(a):
     res = {"checkpoint_step": step, "speaker": a.speaker, "skipped_clips": skipped, "results": acc,
            "definition": R.stress_realised.__doc__}
     os.makedirs(a.out_dir, exist_ok=True)
-    json.dump(res, open(os.path.join(a.out_dir, "stress_stats.json"), "w"), indent=1)
-    print(json.dumps(res, indent=1))
+    json.dump(res, open(os.path.join(a.out_dir, "stress_stats.json"), "w"), indent=1, default=lambda o: o.item())
+    print(json.dumps(res, indent=1, default=lambda o: o.item()))
 
 
 if __name__ == "__main__":

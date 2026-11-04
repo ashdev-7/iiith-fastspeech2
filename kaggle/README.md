@@ -21,6 +21,7 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `12_prosody_en` (`fs2-12-prosody-en`) | CPU | 02, 03 en | Lexical-stress realisation in the English data and the model (`fastspeech2/stress_stats.py`); test and stress sentences with the prosody rules (`fastspeech2/prosody_rules.py`) off / terminal fall / fall + stress 0.5 / fall + stress 1.0, rendered and Whisper-scored |
 | `13_data_accounting` (`fs2-13-data-accounting`) | CPU | 01, 02 | Selected vs used utterances and hours per split, after alignment and preprocessing; train/val overlap of the used sets (`Evaluation/Data/accounting.json`) |
 | `14_extended` (`fs2-14-extended`) | CPU | 02, 03 en, 03 te | Extended evaluation set (`Evaluation/Extended/extended_sentences.json`, 10 + 10 sentences beyond the assignment): renders with plots and Whisper scores, with and without the prosody rules |
+| `15_stress_stats` (`fs2-15-stress-stats`) | CPU | 02, 03 en | Re-run of job 12's stress-realisation measurement (job 12 failed writing its JSON) |
 
 `03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
 by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.
