@@ -6,6 +6,8 @@ Normalisation (model input only):
     00 -> "o'clock");
   * other numbers: the reference's inflect-based normalize_numbers (years 1000-2999 are read in
     pairs, e.g. 2026 -> "twenty twenty six"; days are cardinal, as written: "12 November" -> "twelve");
+  * an hour followed by a.m./p.m. without minutes ("9 a.m.") -> "nine AM";
+  * "%" -> "percent", "&" -> "and";
   * hyphens between letters -> space (inflect writes "forty-five"; the reference split it into a pause);
   * whitespace runs collapse to one space.
 Pronunciation:
@@ -17,12 +19,15 @@ Pronunciation:
   * out-of-vocabulary words -> g2p_en (CMUdict, then its neural model); a word-final "oo" spelling
     is /uː/ in English (bamboo, shampoo, kangaroo), so a final OW that g2p_en guesses for it becomes UW
     ("andaroo" -> ... R UW, not ... R OW);
+  * acronyms (all-capital tokens): 2 letters are read as letter names (UK, US, AI); 3-6 letters use their
+    CMUdict entry if it has one (NASA, BBC) and letter names otherwise (IIIT, FBI), with the AM/PM duration scale;
   * punctuation -> "sp", as in the reference.
 """
 import re
 
 from text.numbers import normalize_numbers
 
+_hour_ampm_re = re.compile(r"\b(1[0-2]|0?[1-9])\s*([AaPp])\.?\s*[Mm]\b\.?")
 _time_re = re.compile(r"\b([01]?\d|2[0-3]):([0-5]\d)(?:\s*([AaPp])\.?\s*[Mm]\b\.?)?")
 _punct = set(",;.:!?-\"()[]")
 _token_re = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)*|[^\sA-Za-z]")
@@ -34,6 +39,13 @@ LETTER_WORDS = {"AM": ["EY1", "EH1", "M"], "PM": ["P", "IY1", "EH1", "M"]}
 # AM 244 ms, so the two letters merged into one glide (Whisper heard "pm"). Their predicted durations
 # are scaled by this factor at inference (per-phone duration control; trace "duration_scale").
 LETTER_DURATION_SCALE = 1.6
+LETTER_NAMES = {
+    "A": ["EY1"], "B": ["B", "IY1"], "C": ["S", "IY1"], "D": ["D", "IY1"], "E": ["IY1"], "F": ["EH1", "F"],
+    "G": ["JH", "IY1"], "H": ["EY1", "CH"], "I": ["AY1"], "J": ["JH", "EY1"], "K": ["K", "EY1"], "L": ["EH1", "L"],
+    "M": ["EH1", "M"], "N": ["EH1", "N"], "O": ["OW1"], "P": ["P", "IY1"], "Q": ["K", "Y", "UW1"], "R": ["AA1", "R"],
+    "S": ["EH1", "S"], "T": ["T", "IY1"], "U": ["Y", "UW1"], "V": ["V", "IY1"], "W": ["D", "AH1", "B", "AH0", "L", "Y", "UW0"],
+    "X": ["EH1", "K", "S"], "Y": ["W", "AY1"], "Z": ["Z", "IY1"],
+}
 
 _lexicon = None
 _g2p = None
@@ -63,6 +75,14 @@ def normalize(text):
     out = _time_re.sub(_expand_time, text)
     if out != text:
         rules.append("time")
+    o2 = _hour_ampm_re.sub(lambda m: "{} {}M".format(_number_words(int(m.group(1))), m.group(2).upper()), out)
+    if o2 != out:
+        rules.append("hour a.m./p.m.")
+    o3 = re.sub(r"\s*%", " percent", o2)
+    o3 = re.sub(r"\s*&\s*", " and ", o3)
+    if o3 != o2:
+        rules.append("symbols")
+    out = o3
     t2 = normalize_numbers(out)
     if t2 != out:
         rules.append("numbers")
@@ -154,6 +174,10 @@ def text_to_phones(text, lexicon_path):
         low = tok.lower()
         if tok in LETTER_WORDS:
             pron, source = LETTER_WORDS[tok], "letter names"
+        elif tok.isupper() and len(tok) == 2 or (tok.isupper() and 3 <= len(tok) <= 6 and low not in g2p.cmu):
+            pron, source = [p for ch in tok for p in LETTER_NAMES[ch]], "letter names"
+        elif tok.isupper() and 3 <= len(tok) <= 6:
+            pron, source = g2p.cmu[low][0], "CMUdict (acronym)"
         elif low in g2p.homograph2features:
             pron1, pron2, pos1 = g2p.homograph2features[low]
             pron = pron1 if tags[wi].startswith(pos1) else pron2

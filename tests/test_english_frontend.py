@@ -78,3 +78,26 @@ def test_am_pm_are_letter_names():
     am = next(w for w in tr2["words"] if w["token"] == "AM")
     assert am["duration_scale"] > 1
     assert sum(1 for x in tr2["duration_scale"] if x != 1.0) == len(am["phones"])
+
+
+@pytest.mark.parametrize("src,expected", [
+    ("at 9 a.m.", "at nine AM"), ("from 7 pm", "from seven PM"), ("10 AM", "ten AM"),
+    ("20% off", "twenty percent off"), ("R&D", "R and D"), ("I am here", "I am here"),
+])
+def test_hour_ampm_and_symbols(src, expected):
+    assert normalize(src)[0] == expected
+
+
+def test_acronyms():
+    """Two capitals are spelled (UK); 3-6 use CMUdict if listed (NASA is a word) and are spelled otherwise
+    (IIIT, as in stress sentence SE06, was read as "eye-it")."""
+    pytest.importorskip("g2p_en")
+    from text.english_frontend import text_to_phones
+    lex = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "fastspeech2", "lexicon", "librispeech-lexicon.txt")
+    _, tr = text_to_phones("NASA and the UK at IIIT Hyderabad.", lex)
+    w = {x["token"]: x for x in tr["words"]}
+    assert w["NASA"]["phones"] == ["N", "AE1", "S", "AH0"]
+    assert w["UK"]["phones"] == ["Y", "UW1", "K", "EY1"] and w["UK"]["duration_scale"] > 1
+    assert w["IIIT"]["phones"] == ["AY1", "AY1", "AY1", "T", "IY1"]
+    assert w["Hyderabad"]["source"] != "letter names"
