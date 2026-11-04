@@ -331,6 +331,20 @@ from scratch because the reference ships only the generator (<code>fastspeech2/v
 universal HiFi-GAN is kept for both languages. The likely reason is the short adversarial training with discriminators started from
 scratch (HiFi-GAN fine-tuning normally starts from trained discriminators and runs far longer); the weekly GPU quota did not allow a
 longer run <span class="tag est">estimated</span>.</p>
+<p><b>Remedy 3 — speaker adaptation of the decoder (tried, not adopted).</b> The trained model was fine-tuned on the test voice's
+29 <b>training</b> clips only (encoder frozen; D = decoder, output projection, postnet and speaker embedding; V = D plus the variance
+adaptor; Adam 5·10<sup>−5</sup>, batch 8), with the step chosen on its 9 validation clips (<code>fastspeech2/adapt_speaker.py</code>,
+Kaggle <code>fs2-11-adapt-en</code>, <code>Evaluation/Adaptation/</code>). The training mel loss fell from 0.47 to 0.38, but the
+held-out clips improved only up to step 100–150 and then got worse: with 2.7 min of one voice the decoder memorises rather than
+adapts.</p>
+<table>
+<tr><th>English, test voice, post-filter 1.0</th><th class="n">free MCD (val.)</th><th class="n">HNR (dB)</th><th class="n">shimmer (%)</th><th class="n">E2b / E4 CER</th><th class="n">SE02 / SE06 CER</th></tr>
+<tr><td>No adaptation (used)</td><td class="n">36.7</td><td class="n">17.6</td><td class="n">7.9</td><td class="n">10.9 / 5.7 %</td><td class="n">0 / 39.5 %</td></tr>
+<tr><td>D, best step 100</td><td class="n">36.5</td><td class="n">17.3</td><td class="n">7.8</td><td class="n">10.9 / 14.3 %</td><td class="n">0 / 53.5 %</td></tr>
+<tr><td>V, best step 150</td><td class="n">36.2</td><td class="n">17.6</td><td class="n">7.6</td><td class="n">14.1 / 4.3 %</td><td class="n">7.3 / 46.5 %</td></tr>
+</table>
+<p>The gains (≤ 0.5 MCD on 9 clips) are within noise, the voice-quality measures do not move, and Whisper is better on some sentences
+and worse on others, so the unadapted model is kept. Free MCD is measured without the post-filter; CERs are Whisper-normalised.</p>
 
 <h3>5.1 English</h3>
 <table>
@@ -486,7 +500,8 @@ by amount of audio; the test-voice choice alone removed most English ASR errors.
 <li><b>Text normalisation</b>: abbreviations, acronyms (spelled letter by letter), ordinals in English dates ("12th November").</li>
 <li><b>Against over-smoothing</b> (largest remaining English gap): a decoder loss that does not average (Laplacian/Gaussian mixture
 output, or an adversarial post-net), which needs retraining; or a longer vocoder fine-tune that starts from trained discriminators
-(§5.0b) <span class="tag est">estimated</span>.</li>
+(§5.0b) <span class="tag est">estimated</span>. Speaker adaptation needs more than 2.7 min of the target voice, or
+parameter-efficient adaptation (conditional layer norm, as in AdaSpeech) that cannot memorise 29 clips.</li>
 <li><b>Telugu</b>: native-speaker review of the G2P rules; frame-level pitch with CWT (as in the paper) for richer intonation.</li>
 </ul>
 

@@ -1,0 +1,178 @@
+{
+ "job": "fs2-11-adapt-en",
+ "code_commit": "760e66d432542dd9a2963908b6bb075a1f812537",
+ "speaker": "svarah_8a8e2655",
+ "note": "Speaker adaptation on the voice's 29 training clips, early stopping on its 9 validation clips. Not adopted (overfits; no consistent gain).",
+ "variants": {
+  "D": {
+   "adapt": {
+    "speaker": "svarah_8a8e2655",
+    "parts": "decoder",
+    "lr": 5e-05,
+    "batch_size": 8,
+    "train_clips": 29,
+    "val_clips": 9,
+    "base_step": 17949,
+    "start": {
+     "mcd_free": 36.71077666596409,
+     "mcd_oracle": 34.50395627595859,
+     "gv_free": 0.7573958569102817,
+     "gv_oracle": 0.8192092710071139,
+     "pitch_r": 0.4713949175353354,
+     "step": 0
+    },
+    "best": {
+     "mcd_free": 36.500374486252696,
+     "mcd_oracle": 34.24848858804146,
+     "gv_free": 0.7690291669633653,
+     "gv_oracle": 0.8400254249572754,
+     "pitch_r": 0.4716151073034189,
+     "step": 100
+    }
+   },
+   "postfilter_eval": {
+    "0.0": {
+     "gv_ratio": 0.805,
+     "flux_ratio": 0.63,
+     "mcd_dtw": 36.477,
+     "hnr_db": 17.0,
+     "jitter_pct": 0.4,
+     "shimmer_pct": 8.37
+    },
+    "0.5": {
+     "gv_ratio": 0.927,
+     "flux_ratio": 0.675,
+     "mcd_dtw": 37.327,
+     "hnr_db": 17.4,
+     "jitter_pct": 0.39,
+     "shimmer_pct": 7.66
+    },
+    "1.0": {
+     "gv_ratio": 1.06,
+     "flux_ratio": 0.721,
+     "mcd_dtw": 38.436,
+     "hnr_db": 17.3,
+     "jitter_pct": 0.39,
+     "shimmer_pct": 7.82
+    }
+   },
+   "whisper_cer_norm": {
+    "pf0": {
+     "E1": 0.0,
+     "E2a": 0.0,
+     "E2b": 0.109,
+     "E3": 0.0,
+     "E4": 0.243,
+     "SE01": 0.0,
+     "SE02": 0.0,
+     "SE03": 0.0,
+     "SE04": 0.0,
+     "SE05": 0.164,
+     "SE06": 0.535,
+     "SE07": 0.018,
+     "SE08": 0.0
+    },
+    "pf1": {
+     "E1": 0.0,
+     "E2a": 0.0,
+     "E2b": 0.109,
+     "E3": 0.0,
+     "E4": 0.143,
+     "SE01": 0.0,
+     "SE02": 0.0,
+     "SE03": 0.0,
+     "SE04": 0.0,
+     "SE05": 0.091,
+     "SE06": 0.535,
+     "SE07": 0.018,
+     "SE08": 0.0
+    }
+   }
+  },
+  "V": {
+   "adapt": {
+    "speaker": "svarah_8a8e2655",
+    "parts": "decoder_var",
+    "lr": 5e-05,
+    "batch_size": 8,
+    "train_clips": 29,
+    "val_clips": 9,
+    "base_step": 17949,
+    "start": {
+     "mcd_free": 36.71077666596409,
+     "mcd_oracle": 34.50395627595859,
+     "gv_free": 0.7573958569102817,
+     "gv_oracle": 0.8192092710071139,
+     "pitch_r": 0.4713949175353354,
+     "step": 0
+    },
+    "best": {
+     "mcd_free": 36.23044878937855,
+     "mcd_oracle": 34.48573747777074,
+     "gv_free": 0.7900121874279447,
+     "gv_oracle": 0.8531922565566169,
+     "pitch_r": 0.47678882361960945,
+     "step": 150
+    }
+   },
+   "postfilter_eval": {
+    "0.0": {
+     "gv_ratio": 0.776,
+     "flux_ratio": 0.637,
+     "mcd_dtw": 36.866,
+     "hnr_db": 17.3,
+     "jitter_pct": 0.42,
+     "shimmer_pct": 8.58
+    },
+    "0.5": {
+     "gv_ratio": 0.882,
+     "flux_ratio": 0.675,
+     "mcd_dtw": 37.566,
+     "hnr_db": 17.5,
+     "jitter_pct": 0.39,
+     "shimmer_pct": 7.71
+    },
+    "1.0": {
+     "gv_ratio": 0.994,
+     "flux_ratio": 0.714,
+     "mcd_dtw": 38.46,
+     "hnr_db": 17.6,
+     "jitter_pct": 0.39,
+     "shimmer_pct": 7.64
+    }
+   },
+   "whisper_cer_norm": {
+    "pf0": {
+     "E1": 0.0,
+     "E2a": 0.0,
+     "E2b": 0.141,
+     "E3": 0.0,
+     "E4": 0.043,
+     "SE01": 0.0,
+     "SE02": 0.091,
+     "SE03": 0.0,
+     "SE04": 0.0,
+     "SE05": 0.091,
+     "SE06": 0.442,
+     "SE07": 0.018,
+     "SE08": 0.0
+    },
+    "pf1": {
+     "E1": 0.0,
+     "E2a": 0.0,
+     "E2b": 0.141,
+     "E3": 0.0,
+     "E4": 0.043,
+     "SE01": 0.0,
+     "SE02": 0.073,
+     "SE03": 0.0,
+     "SE04": 0.0,
+     "SE05": 0.091,
+     "SE06": 0.465,
+     "SE07": 0.018,
+     "SE08": 0.0
+    }
+   }
+  }
+ }
+}
