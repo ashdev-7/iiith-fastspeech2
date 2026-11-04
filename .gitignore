@@ -21,3 +21,4 @@ kaggle.json
 access_token
 .env
 Report/src/report.built.html
+fastspeech2/hifigan/generator_universal.pth.tar

@@ -29,6 +29,7 @@ from text.symbols import get_symbols
 from utils.config import load_configs
 import postfilter
 import prosody_rules  # noqa: E402
+import clarity  # noqa: E402
 from utils.model import get_vocoder, vocoder_infer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -113,12 +114,21 @@ def main(args):
     report["gv_postfilter"] = {"ratio_file": args.gv_ratio, "strength": args.gv_strength} if gv_ratio else None
     report["device"] = str(device) + (" ({})".format(torch.cuda.get_device_name(0)) if device.type == "cuda" else "")
     report["vocoder"] = os.path.basename(args.vocoder) if args.vocoder else "generator_universal"
-    report["prosody_rules"] = {"terminal_fall": args.prosody_fall, "stress_strength": args.prosody_stress}
+    report["prosody_rules"] = {"terminal_fall": args.prosody_fall, "stress_strength": args.prosody_stress,
+                               "phrasing": args.prosody_phrasing}
+    noise_profile = clarity.load_profile(args.denoise_profile) if args.denoise_profile else None
+    report["clarity"] = {"long_word_scale": args.long_word_scale, "heavy_word_pause": args.heavy_word_pause,
+                         "denoise_profile": args.denoise_profile, "edge_fade": args.edge_fade}
     for it in items:
         item_id, text = it["id"], it["canonical"]
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != it["canonical_sha256"]:
             raise SystemExit("{}: test text does not match its recorded sha256".format(item_id))
         phones, trace = frontend(text, lang)
+        if args.long_word_scale != 1.0 or args.heavy_word_pause:  # clarity.py
+            phones, trace, scales = clarity.prepare(phones, trace, lang, long_word_scale=args.long_word_scale,
+                                                    heavy_pause=args.heavy_word_pause)
+        else:
+            scales = trace.get("duration_scale")
         seq = text_to_sequence("{" + " ".join(phones) + "}", [], lang)
         trace["phones"], trace["ids"] = phones, seq
         traces[item_id] = trace
@@ -127,10 +137,9 @@ def main(args):
         src_lens = torch.tensor([len(seq)], device=device)
         spk = torch.tensor([speakers[args.speaker]], device=device).long()
         d_control = args.duration_control
-        scales = trace.get("duration_scale")
-        if scales and any(x != 1.0 for x in scales):  # per-phone duration control (letter names)
+        if scales is not None and any(x != 1.0 for x in scales):  # per-phone duration control
             assert len(scales) == len(seq), (len(scales), len(seq))
-            d_control = torch.tensor([scales], device=device, dtype=torch.float32) * args.duration_control
+            d_control = torch.tensor([list(scales)], device=device, dtype=torch.float32) * args.duration_control
 
         p_control, e_control = args.pitch_control, args.energy_control
 
@@ -139,10 +148,10 @@ def main(args):
                 return model(spk, texts, src_lens, len(seq), p_control=p_control,
                              e_control=e_control, d_control=d_control)
 
-        if args.prosody_fall or args.prosody_stress:  # optional prosody rules (fastspeech2/prosody_rules.py)
+        if args.prosody_fall or args.prosody_stress or args.prosody_phrasing:  # prosody_rules.py
             p_control, e_control, d_control, rule_log = prosody_rules.second_pass_controls(
                 model, acoustic(), phones, trace["words"], text, lang, args.prosody_fall, args.prosody_stress,
-                (args.pitch_control, args.energy_control, d_control))
+                (args.pitch_control, args.energy_control, d_control), phrasing=args.prosody_phrasing)
             trace["prosody_rules"] = rule_log
 
         if not warmed_up:  # first call pays CUDA/cuDNN initialisation; keep it out of the timings
@@ -160,6 +169,11 @@ def main(args):
         mel_tf = postnet_mel[0, :mel_len]
         if gv_ratio is not None:  # optional GV post-filter (fastspeech2/postfilter.py)
             mel_tf = postfilter.apply(mel_tf, gv_ratio, args.gv_strength)
+        if noise_profile is not None:  # optional mel-domain denoising (clarity.py)
+            mel_tf = clarity.denoise(mel_tf, noise_profile)
+        lead = 0
+        if args.edge_fade:  # silence lead-in, fade-out and tail (clarity.py)
+            mel_tf, lead = clarity.edges(mel_tf)
         mel = mel_tf.transpose(0, 1).unsqueeze(0)
         t0 = _now(device)
         wav = vocoder_infer(mel, vocoder, model_config, preprocess_config)[0]
@@ -174,10 +188,11 @@ def main(args):
         pitch_hz = p_pred[0, : len(seq)].cpu().numpy() * pitch_std + pitch_mean
         energy = e_pred[0, : len(seq)].cpu().numpy() * energy_std + energy_mean
         f0_period = frame_ms
-        f0 = generated_f0(wav, sr, f0_period)
+        f0 = generated_f0(wav[lead * hop:(lead + mel_len) * hop], sr, f0_period)  # aligned with the phones
         rms = float(np.sqrt(np.mean((wav.astype(np.float64) / 32768.0) ** 2)))
         checks = {"sum_d_equals_mel_len": int(durs.sum()) == mel_len, "len_d_equals_phones": len(durs) == len(phones),
                   "wav_samples": int(len(wav)), "mel_frames_x_hop": mel_len * hop,
+                  "edge_frames": int(mel.shape[2] - mel_len),
                   "wav_finite": bool(np.all(np.isfinite(wav))), "wav_rms": rms, "wav_not_silent": rms > 1e-3,
                   "zero_duration_phones": int((durs == 0).sum())}
         rec = {"id": item_id, "lang": lang, "original_text": text, "model_input": trace["model_input"],
@@ -235,4 +250,10 @@ if __name__ == "__main__":
     parser.add_argument("--gv_strength", type=float, default=0.0, help="0 = off, 1 = full variance match")
     parser.add_argument("--prosody_fall", action="store_true", help="terminal-fall rule (prosody_rules.py)")
     parser.add_argument("--prosody_stress", type=float, default=0.0, help="lexical-stress rule strength, 0..1")
+    parser.add_argument("--prosody_phrasing", action="store_true",
+                        help="boundary lengthening, pause minimums, '!' emphasis, question tunes (prosody_rules.py)")
+    parser.add_argument("--long_word_scale", type=float, default=1.0, help="duration factor for words with >= 4 vowels")
+    parser.add_argument("--heavy_word_pause", action="store_true", help="70 ms micro-pause before words with >= 4 vowels")
+    parser.add_argument("--denoise_profile", default=None, help="noise_profile.json (clarity.py); omit = off")
+    parser.add_argument("--edge_fade", action="store_true", help="silence lead-in and fade-out before the vocoder")
     main(parser.parse_args())

@@ -62,6 +62,7 @@ LETTER_NAMES = {
 
 _lexicon = None
 _g2p = None
+VOWELS = set("AA AE AH AO AW AY EH ER EY IH IY OW OY UH UW".split())
 
 
 def _number_words(n):
@@ -141,14 +142,68 @@ def fix_final_oo(word, pron):
     return pron, False
 
 
-def load_lexicon(path):
-    lex = {}
+def _strip(p):
+    return p.rstrip("012")
+
+
+def careful_variant(variants):
+    """The citation (careful-speech) form among a word's lexicon pronunciations.
+
+    The reference takes the first listed pronunciation, which for several hundred words is a casual
+    reduction (the lexicon lists both): a dropped T/D ("thousand" TH AW1 Z AH0 N, "twenty" T W EH1 N IY0,
+    "parliamentary", "second"), a flapped T ("thirty" TH ER1 D IY0), g-dropping ("going" G OW1 IH0 N) or
+    a leading HH before W ("one" HH W AH1 N). Read speech uses the full form, and the reduced forms are
+    the ones listeners mishear. Returns (pronunciation, rule or None); any other difference keeps the first."""
+    first = variants[0]
+    for q in variants[1:]:
+        if len(q) == len(first) + 1:
+            for i in range(len(q)):
+                if q[:i] + q[i + 1:] == first and q[i] in ("T", "D"):
+                    return q, "restored dropped " + q[i]
+        if len(q) == len(first):
+            diff = [i for i in range(len(q)) if q[i] != first[i]]
+            if len(diff) == 1 and first[-2:] == ["IH0", "N"] and diff[0] == len(q) - 1 and q[-1] == "NG":
+                return q, "-ing (not -in)"
+            core = [i for i in range(len(q)) if _strip(q[i]) != _strip(first[i])]
+            if len(core) == 1 and first[core[0]] == "D" and q[core[0]] == "T" and all(
+                    _strip(q[i]) not in ("D", "T") or i == core[0] for i in diff):
+                return q, "unflapped T"
+        if first[:2] == ["HH", "W"] and q == first[1:]:
+            return q, "W (not HH W)"
+    return first, None
+
+
+def load_lexicon(path, careful=True):
+    """word -> (pronunciation, careful-variant rule or None). careful=False: first pronunciation (reference)."""
+    variants = {}
     with open(path, encoding="utf-8") as f:
         for line in f:
             parts = line.split()
             if len(parts) >= 2:
-                lex.setdefault(parts[0].lower(), parts[1:])  # first pronunciation, as in the reference
-    return lex
+                variants.setdefault(parts[0].lower(), []).append(parts[1:])
+    if not careful:
+        return {w: (v[0], None) for w, v in variants.items()}
+    return {w: careful_variant(v) for w, v in variants.items()}
+
+
+COMPOUND_MIN_LETTERS, COMPOUND_MIN_PART = 12, 4
+
+
+def compound_split(word, lexicon):
+    """A long out-of-lexicon word as the fewest lexicon words, each >= COMPOUND_MIN_PART letters
+    ("antidisestablishmentarianism" -> anti + disestablishment + arianism); None if impossible.
+    Lexicon pronunciations of the parts are more reliable than g2p_en's guess for the whole word."""
+    if len(word) < COMPOUND_MIN_LETTERS or not word.isalpha() or word in lexicon:
+        return None
+    best = {0: []}
+    for i in range(len(word)):
+        if i not in best:
+            continue
+        for j in range(i + COMPOUND_MIN_PART, len(word) + 1):
+            if word[i:j] in lexicon and (j not in best or len(best[i]) + 1 < len(best[j])):
+                best[j] = best[i] + [word[i:j]]
+    parts = best.get(len(word))
+    return parts if parts and len(parts) >= 2 else None
 
 
 def _get_g2p():
@@ -224,20 +279,37 @@ def text_to_phones(text, lexicon_path):
             pron = pron1 if tags[wi].startswith(pos1) else pron2
             source = "g2p_en homograph (POS {})".format(tags[wi])
         elif low in _lexicon:
-            pron, source = _lexicon[low], "lexicon"
+            pron, careful = _lexicon[low]
+            source = "lexicon" + (" (careful variant: {})".format(careful) if careful else "")
+        elif compound_split(low, _lexicon):
+            parts = compound_split(low, _lexicon)
+            pron = [p for part in parts for p in _lexicon[part][0]]
+            source = "compound of lexicon words: " + " + ".join(parts)
         else:
             pron = [p for p in g2p(tok) if re.match(r"^[A-Z]+[012]?$", p)]
             source = "g2p_en (out of lexicon)"
             pron, fixed = fix_final_oo(tok, pron)
             if fixed:
                 source += ", final 'oo' -> UW"
+        start = len(phones)
         phones.extend(pron)
         scale = LETTER_DURATION_SCALE if source == "letter names" else 1.0
         scales.extend([scale] * len(pron))
-        word_trace.append({"token": tok, "source": source, "phones": list(pron)})
+        word_trace.append({"token": tok, "source": source, "phones": list(pron), "_start": start})
         if scale != 1.0:
             word_trace[-1]["duration_scale"] = scale
         wi += 1
+    # "the" before a vowel is DH IY0 ("the orchestra", "the international"); DH AH0 + vowel is a hiatus
+    # the model blurs into one syllable.
+    for k, w in enumerate(word_trace):
+        nxt = word_trace[k + 1] if k + 1 < len(word_trace) else None
+        if (w["token"].lower() == "the" and w["phones"] == ["DH", "AH0"] and nxt is not None and "_start" in nxt
+                and nxt["phones"] and _strip(nxt["phones"][0]) in VOWELS):
+            w["phones"] = ["DH", "IY0"]
+            phones[w["_start"] + 1] = "IY0"
+            w["source"] += " ('the' before a vowel)"
+    for w in word_trace:
+        w.pop("_start", None)
     while phones and phones[-1] == "sp":
         phones.pop()
         scales.pop()

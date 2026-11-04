@@ -66,3 +66,39 @@ def test_stress_realised_counts_and_chance():
     bad = R.stress_realised(ph, words, [0, 1, 0, 0, 3, 0, 0, 0, 0, 1], [0, 2, 0, 0, 9, 0, 0, 0, 0, 1], [1, 9, 1, 1, 4, 1, 1, 1, 1, 1])
     assert good[:2] == (1, 1) and bad[:2] == (1, 0)      # "the" has no stressed vowel: not counted
     assert bad[2]["duration"] == 1 and good[2]["chance"] == pytest.approx(0.5)
+
+
+def _sentence(words_phones):
+    words, phones = [], []
+    for tok, ph in words_phones:
+        words.append({"token": tok, "phones": ph})
+        phones += ph
+    return phones, words
+
+
+def test_phrasing_boundaries_exclamation_and_question_rise():
+    phones, words = _sentence([("Wait", ["W", "EY1", "T"]), ("!", ["sp"]), ("Are", ["AA1", "R"]),
+                               ("you", ["Y", "UW1"]), ("sure", ["SH", "UH1", "R"]), ("?", ["sp"])])
+    pitch = np.full(len(phones), 200.0)
+    energy = np.full(len(phones), 50.0)
+    dur = np.full(len(phones), 6.0)
+    dur[3] = 5                                                   # the "!" pause: 5 frames predicted
+    pf, ef, df, log = R.factors(phones, words, "Wait! Are you sure?", pitch, energy, dur, "en",
+                                fall=True, stress=0, phrasing=True)
+    assert dur[3] * df[3] == pytest.approx(R.PAUSE_MIN_FRAMES["!"])        # pause raised to its minimum
+    assert df[1] == df[2] == pytest.approx(R.PRE_BOUNDARY) and df[0] == 1  # rhyme of "Wait" lengthened
+    assert pf[1] == pytest.approx(R.EMPHASIS_PITCH) and ef[1] == pytest.approx(R.EMPHASIS_ENERGY)
+    assert pf[9] * 200 == pytest.approx(R.RISE_RATIO * 200)               # yes/no question: final rise
+    assert {x["rule"] for x in log} == {"boundary", "exclamation_emphasis", "question_rise"}
+
+
+def test_wh_question_falls_and_micro_pause_is_exact():
+    phones, words = _sentence([("Why", ["W", "AY1"]), ("<pause>", ["sp"]), ("Monday", ["M", "AH1", "N", "D", "EY2"])])
+    pitch = np.array([200, 200, 0, 200, 200, 200, 200, 260.0])
+    dur = np.array([5, 9, 3, 4, 5, 4, 4, 9.0])
+    pf, _, df, log = R.factors(phones, words, "Why Monday?", pitch, np.full(8, 50.0), dur, "en",
+                               fall=True, stress=0, phrasing=True)
+    assert dur[2] * df[2] == pytest.approx(R.MICRO_PAUSE_FRAMES)
+    assert pf[7] < 1                                                      # wh-question: statement fall
+    pf, _, _, _ = R.factors(phones, words, "Why Monday?", pitch, np.full(8, 50.0), dur, "en", fall=True, stress=0)
+    assert pf[7] == 1                                                     # without phrasing: as before

@@ -137,3 +137,36 @@ def test_no_pause_after_title_abbreviation():
     assert dr == [["D", "AA1", "K", "T", "ER0"]]
     assert phones[:6] == ["D", "AA1", "K", "T", "ER0", "W"]   # no sp between "Dr." and "Williams"
     assert "sp" in phones                                      # the sentence period still pauses
+
+
+def test_careful_variant():
+    """The citation form is preferred only for these reductions; any other variant keeps the first."""
+    from text.english_frontend import careful_variant
+    assert careful_variant([["TH", "AW1", "Z", "AH0", "N"], ["TH", "AW1", "Z", "AH0", "N", "D"]])[0][-1] == "D"
+    assert careful_variant([["T", "W", "EH1", "N", "IY0"], ["T", "W", "EH1", "N", "T", "IY0"]])[1] == "restored dropped T"
+    assert careful_variant([["TH", "ER1", "D", "IY0"], ["TH", "ER1", "T", "IY2"]])[0] == ["TH", "ER1", "T", "IY2"]
+    assert careful_variant([["G", "OW1", "IH0", "N"], ["G", "OW1", "IH0", "NG"]])[0][-1] == "NG"
+    assert careful_variant([["HH", "W", "AH1", "N"], ["W", "AH1", "N"]])[0] == ["W", "AH1", "N"]
+    conduct = [["K", "AA1", "N", "D", "AH0", "K", "T"], ["K", "AH0", "N", "D", "AH1", "K", "T"]]
+    assert careful_variant(conduct) == (conduct[0], None)          # stress variants: untouched
+    assert careful_variant([["F", "AO1", "R"], ["F", "ER0"]]) == (["F", "AO1", "R"], None)
+
+
+def test_compound_split():
+    from text.english_frontend import compound_split
+    lex = {"anti": 1, "disestablishment": 1, "arianism": 1, "dis": 1, "establishment": 1}
+    assert compound_split("antidisestablishmentarianism", lex) == ["anti", "disestablishment", "arianism"]
+    assert compound_split("establishment", lex) is None            # in the lexicon
+    assert compound_split("antidisestablishmentxyz", lex) is None   # a piece is missing
+    assert compound_split("antianti", lex) is None                  # shorter than 12 letters
+
+
+def test_the_before_vowel_careful_forms_and_compounds():
+    phones, the = _phones_of("The orchestra played the music.", "The")
+    assert the == [["DH", "IY0"]] and _phones_of("The orchestra played the music.", "the")[1] == [["DH", "AH0"]]
+    assert phones[:3] == ["DH", "IY0", "AO1"]
+    _, w = _phones_of("At eight thirty, one thousand people came.", "thousand")
+    assert w == [["TH", "AW1", "Z", "AH0", "N", "D"]]
+    assert _phones_of("At eight thirty.", "thirty")[1] == [["TH", "ER1", "T", "IY2"]]
+    _, big = _phones_of("The antidisestablishmentarianism movement.", "antidisestablishmentarianism")
+    assert big[0][:4] == ["AE1", "N", "T", "AY0"] and big[0][-4:] == ["IH2", "Z", "AH0", "M"]

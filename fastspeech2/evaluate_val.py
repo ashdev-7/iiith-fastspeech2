@@ -54,9 +54,11 @@ def _t(x, dtype=torch.float32):
 
 
 POSTFILTER = None  # (ratio, strength) when --gv_ratio/--gv_strength are given (fastspeech2/postfilter.py)
+CLARITY = {"profile": None, "edges": False}  # mel post-processing for test/stress sentences (clarity.py)
 
 
-def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None, scales=None, rules=None):
+def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0), dev=None, scales=None, rules=None,
+               clarity_post=False):
     """Free-running synthesis. Returns dict with mel (T, 80), wav int16, variances and timings."""
     dev = dev or device
     pre_cfg, model_cfg, _ = configs
@@ -73,7 +75,7 @@ def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0
             import prosody_rules
             pc, ec, dc, rules["log"] = prosody_rules.second_pass_controls(
                 model, out, rules["phones"], rules["words"], rules["text"], rules["lang"], rules["fall"],
-                rules["stress"], (controls[0], controls[1], d_control))
+                rules["stress"], (controls[0], controls[1], d_control), phrasing=rules.get("phrasing", False))
             out = model(spk, texts, src_lens, len(seq), p_control=pc, e_control=ec, d_control=dc)
     t1 = _now(dev)
     mel_len = int(out[9][0].item())
@@ -86,6 +88,12 @@ def synthesize(model, vocoder, configs, speaker_id, seq, controls=(1.0, 1.0, 1.0
     if POSTFILTER is not None:
         import postfilter
         mel = postfilter.apply(mel, POSTFILTER[0], POSTFILTER[1])
+    if clarity_post:
+        import clarity
+        if CLARITY["profile"] is not None:
+            mel = clarity.denoise(mel, CLARITY["profile"])
+        if CLARITY["edges"]:
+            mel = clarity.edges(mel)[0]
     res["mel"] = mel.cpu().numpy()
     if vocoder is None:  # mel only (speaker adaptation validation)
         res["wav"], res["vocoder_s"] = None, 0.0
@@ -182,6 +190,13 @@ def main(args):
         import postfilter
         POSTFILTER = (postfilter.load_ratio(args.gv_ratio), args.gv_strength)
     report["gv_postfilter"] = {"ratio_file": os.path.basename(args.gv_ratio), "strength": args.gv_strength} if POSTFILTER else None
+    if args.denoise_profile:
+        import clarity
+        CLARITY["profile"] = clarity.load_profile(args.denoise_profile)
+    CLARITY["edges"] = args.edge_fade
+    report["sentence_settings"] = {k: getattr(args, k) for k in (
+        "prosody_fall", "prosody_stress", "prosody_phrasing", "duration_control", "long_word_scale",
+        "heavy_word_pause", "denoise_profile", "edge_fade")}
     report["vocoder"] = os.path.basename(args.vocoder) if args.vocoder else "generator_universal"
     ds = Dataset("val.txt", pre_cfg, train_cfg, sort=False, drop_last=False)
     n = len(ds) if args.max_utts <= 0 else min(args.max_utts, len(ds))
@@ -270,10 +285,18 @@ def main(args):
         rec = {"id": it["id"], "set": it["set"], "category": it.get("category"), "text": text}
         try:
             phones, trace = frontend(text, lang)
+            scales = trace.get("duration_scale")
+            if args.long_word_scale != 1.0 or args.heavy_word_pause:
+                import clarity
+                phones, trace, scales = clarity.prepare(phones, trace, lang, long_word_scale=args.long_word_scale,
+                                                        heavy_pause=args.heavy_word_pause)
+                scales = list(scales)
             seq = text_to_sequence("{" + " ".join(phones) + "}", [], lang)
+            any_rule = args.prosody_fall or args.prosody_stress or args.prosody_phrasing
             rules = ({"phones": phones, "words": trace["words"], "text": text, "lang": lang, "fall": args.prosody_fall,
-                      "stress": args.prosody_stress} if (args.prosody_fall or args.prosody_stress) else None)
-            r = synthesize(model, vocoder, configs, spk_id, seq, scales=trace.get("duration_scale"), rules=rules)
+                      "stress": args.prosody_stress, "phrasing": args.prosody_phrasing} if any_rule else None)
+            r = synthesize(model, vocoder, configs, spk_id, seq, controls=(1.0, 1.0, args.duration_control),
+                           scales=scales, rules=rules, clarity_post=True)
             if rules:
                 rec["prosody_rules"] = rules["log"]
             rec.update({"model_input": trace["model_input"], "phones": " ".join(phones), "audio_s": (
@@ -390,6 +413,12 @@ if __name__ == "__main__":
     ap.add_argument("--stress_file", default=None, help="extra sentences (default Evaluation/stress_sentences.json)")
     ap.add_argument("--prosody_fall", action="store_true", help="terminal-fall rule on test/stress sentences")
     ap.add_argument("--prosody_stress", type=float, default=0.0, help="lexical-stress rule strength on test/stress sentences")
+    ap.add_argument("--prosody_phrasing", action="store_true", help="phrasing rule (prosody_rules.py rule 3)")
+    ap.add_argument("--duration_control", type=float, default=1.0, help="test/stress sentences only")
+    ap.add_argument("--long_word_scale", type=float, default=1.0, help="clarity.py, test/stress sentences only")
+    ap.add_argument("--heavy_word_pause", action="store_true", help="clarity.py, test/stress sentences only")
+    ap.add_argument("--denoise_profile", default=None, help="clarity.py noise_profile.json, test/stress sentences only")
+    ap.add_argument("--edge_fade", action="store_true", help="clarity.py, test/stress sentences only")
     ap.add_argument("--speaker", required=True, help="test voice for the test/stress/control sentences")
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--max_utts", type=int, default=0, help="validation utterances (0 = all)")
