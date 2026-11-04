@@ -62,7 +62,7 @@ ANALYSIS = {
     ],
     "T3": [
         "Peak on <span class=\"te\">పులి</span> (321 Hz, the topic).",
-        "The broken word <span class=\"te\">అడ  విలో</span> (for <span class=\"te\">అడవిలో</span>) gets no pause (<span class=\"te\">అడ</span> 186 ms, <span class=\"te\">విలో</span> 279 ms, contiguous), but pitch rises from 217 Hz on <span class=\"te\">అడ</span> to 274 Hz on <span class=\"te\">విలో</span>: the model treats <span class=\"te\">విలో</span> as a new word onset, so the split is partly audible as a prosodic break.",
+        "The broken word <span class=\"te\">అడ  విలో</span> (for <span class=\"te\">అడవిలో</span>) gives exactly the phone sequence of <span class=\"te\">అడవిలో</span> (<code>a dd a v i l oo</code>; checked), because the Telugu input has no word-boundary symbol: the model receives the intended word. It is spoken without a pause (<span class=\"te\">అడ</span> 186 ms, <span class=\"te\">విలో</span> 279 ms, contiguous), with pitch rising from 217 to 274 Hz across the word.",
         "<span class=\"te\">నిశ్శబ్దంగా</span> is long (778 ms; geminate <code>sh sh</code> and the cluster <code>b d</code>); <span class=\"te\">నడిచింది</span> ends the sentence at the pitch minimum (194 Hz) with 2.1× final lengthening.",
     ],
     "T4": [

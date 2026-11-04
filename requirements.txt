@@ -1,5 +1,5 @@
-# Python >= 3.10. Training/inference were run on Kaggle (exact versions: Results/environment.txt,
-# written by the Kaggle jobs). Lower bounds reflect the APIs the code uses.
+# Python >= 3.10. Training/inference were run on Kaggle with Python 3.13 (exact package versions: the
+# environment.txt each Kaggle job writes to its output). Lower bounds reflect the APIs the code uses.
 torch>=2.1
 numpy>=1.24
 scipy>=1.10

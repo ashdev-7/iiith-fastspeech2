@@ -267,6 +267,14 @@ vs 0.394 on 20 validation clips each) <span class="tag meas">measured</span>. To
 each wav was transcribed with Whisper large-v3 and compared with the frontend's normalised text; CER is shown both raw and
 after Whisper's English text normaliser (numbers, spellings), which removes pure formatting differences ("10:45" vs "ten
 forty five").</p>
+<p><b>Test text, as provided.</b> The ten sentences are taken character for character from the text layer of the assignment PDF
+(PyMuPDF), which matches the rendered page; they are stored with their Unicode code points and SHA-256 in
+<code>tests/test_sentences.json</code>, and every inference run refuses a sentence whose hash differs. The PDF-to-Word copy of the
+assignment has a damaged Telugu text layer (vowel signs detached or reordered, e.g. "విశ్లషే ించారు" for "విశ్లేషించారు"), so it was not
+used. Spacing in the given text is kept as is, including "rhyth  m" (E3) and "అడ  విలో" (T3); the frontends only decide how such
+text is pronounced (§1.2), and <code>frontend_trace.json</code> records the original text next to the normalised model input. For
+"rhyth  m" the English frontend joins the pieces (otherwise "m" is read as the letter name); for "అడ  విలో" no rule is needed, because
+Telugu phones carry no word boundary and the split gives exactly the phones of అడవిలో.</p>
 
 <h3>5.0 Choice of the English test voice, and where quality is lost <span class="tag meas">measured</span></h3>
 <p>The first English outputs (voice <code>svarah_71f88d2a</code>, chosen because it has the most training audio) sounded muffled on
@@ -292,7 +300,7 @@ sentences (means over E1–E4): spectral centre of gravity 300 → 620 Hz, jitte
 (normalised) on E1 / E3 / E4 from 15 / 17 / 40 % to 0 / 0 / 3 %. The selection rule was changed after listening to the first outputs; it is
 an objective rule on training recordings, and the earlier outputs remain in the repository history (commit <code>8f5ae5f</code>).</p>
 
-<h3>5.0b Over-smoothing: diagnosis and two remedies <span class="tag meas">measured</span></h3>
+<h3>5.0b Over-smoothing: diagnosis and three remedies <span class="tag meas">measured</span></h3>
 <p>The band-energy comparison above is coarse: it cannot see whether spectral <i>detail</i> is preserved. Measuring the variance of
 each log-mel bin over time ("global variance", GV) and the mean frame-to-frame change (flux) on the same held-out clips shows the
 classic FastSpeech 2 weakness: the decoder, trained with an L1/L2 loss, predicts conditional averages. English free-running mels keep
@@ -496,6 +504,9 @@ what each voice can sound like.</li>
 by amount of audio; the test-voice choice alone removed most English ASR errors.</li>
 <li><b>Function words and number sequences</b> (E4): minimum durations for unstressed vowels, or a duration floor per phone class.</li>
 <li><b>Early stopping / checkpoint selection</b> on validation loss (English ~7–10k steps).</li>
+<li><b>Word-boundary and sentence-end symbols in the input</b>: neither frontend marks word boundaries or the end of the
+sentence (as in the reference), so the model cannot distinguish "అడ విలో" from "అడవిలో", ASR merges words in Telugu, and the
+end of a statement is only implicit (the rising end of E3); adding such symbols needs retraining <span class="tag est">estimated</span>.</li>
 <li><b>Rare and long words</b>: a pronunciation lexicon for domain terms (E1 is now recognised, but relies on g2p_en).</li>
 <li><b>Text normalisation</b>: abbreviations, acronyms (spelled letter by letter), ordinals in English dates ("12th November").</li>
 <li><b>Against over-smoothing</b> (largest remaining English gap): a decoder loss that does not average (Laplacian/Gaussian mixture
@@ -507,13 +518,13 @@ parameter-efficient adaptation (conditional layer norm, as in AdaSpeech) that ca
 
 <!-- =============================================================== -->
 <h2 id="s9">9. Reproducibility</h2>
-<p><b>Software</b> (as run on Kaggle): Python 3.13.15, PyTorch 2.11.0 (CUDA 12.8 on T4; CPU build for data jobs), librosa,
+<p><b>Software</b> (as run on Kaggle): Python 3.13, PyTorch 2.11.0 (CUDA 12.8 on T4; CPU build for data jobs), librosa,
 pyworld, tgt, g2p_en, MFA 3.4.3 (conda-forge, via micromamba), transformers 5.16.1 (evaluation only). Full package lists are in
 each job's <code>environment.txt</code>; <code>requirements.txt</code> lists the minimum versions. Data: Svarah and IndicTTS Telugu from
 Hugging Face at pinned revisions (<code>data/ingest.py</code>).</p>
 <p><b>Configuration</b>: <code>English/config.yaml</code>, <code>Telugu/config.yaml</code> (preprocess / model / train sections; step values as
 used), and the exact configs as run in <code>Results/&lt;Lang&gt;/train_config_used.yaml</code>.</p>
-<p><b>Commands</b> (data root <code>D</code>; Telugu shown, English analogous):</p>
+<p><b>Commands</b> (data root <code>D</code>; Telugu shown, then the English lines that differ):</p>
 <pre>cd fastspeech2
 python -m data.ingest --lang te --cache /tmp/hf --out D                  # needs a Hugging Face token
 python -m data.select_split --manifest_dir D/manifests/te --train_hours 5 --val_hours 1
@@ -525,7 +536,13 @@ python Telugu/preprocess.py --data_root D
 python Telugu/train.py      --data_root D --max_minutes 480
 python Telugu/inference.py  --data_root D --checkpoint Telugu/checkpoints/te_model.pth.tar --speaker te_female --out_dir Results/Telugu
 python fastspeech2/evaluate_val.py --config Telugu/config.yaml --data_root D \
-       --checkpoint Telugu/checkpoints/te_model.pth.tar --speaker te_female --out_dir Evaluation/Telugu</pre>
+       --checkpoint Telugu/checkpoints/te_model.pth.tar --speaker te_female --out_dir Evaluation/Telugu
+
+# English (pretrained MFA aligner above; 210-minute budget = 17,949 steps; test voice and GV post-filter of 5.0/5.0b)
+python English/preprocess.py --data_root D
+python English/train.py      --data_root D --max_minutes 210
+python English/inference.py  --data_root D --checkpoint English/checkpoints/en_model.pth.tar --speaker svarah_8a8e2655 \
+       --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 --out_dir Results/English</pre>
 <p><b>Checkpoints</b>: GitHub release v1.0 (<code>en_model.pth.tar</code>, <code>te_model.pth.tar</code>; SHA-256 in
 <code>&lt;Lang&gt;/checkpoints/README.md</code>). Inference alone needs only a checkpoint and the <code>stats.json</code> / <code>speakers.json</code>
 in <code>Results/&lt;Lang&gt;/</code>. <b>Kaggle jobs</b> (<code>kaggle/</code>) reproduce every stage, and each records the commit it ran.

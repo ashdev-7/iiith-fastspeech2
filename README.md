@@ -118,6 +118,12 @@ python Telugu/inference.py --data_root D --checkpoint Telugu/checkpoints/te_mode
 # 6. Optional: objective evaluation
 python fastspeech2/evaluate_val.py --config Telugu/config.yaml --data_root D \
     --checkpoint Telugu/checkpoints/te_model.pth.tar --speaker te_female --out_dir Evaluation/Telugu
+
+# English: steps 3-5 (after step 1 with --lang en and the pretrained-aligner command in step 2)
+python English/preprocess.py --data_root D
+python English/train.py --data_root D --max_minutes 210          # 17,949 steps in the reported run
+python English/inference.py --data_root D --checkpoint English/checkpoints/en_model.pth.tar \
+    --speaker svarah_8a8e2655 --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 --out_dir Results/English
 ```
 
 Tests: `pytest` (tests that need torch, g2p_en or MFA are skipped where those are missing; every
