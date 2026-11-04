@@ -7,7 +7,7 @@ HiFi-GAN (universal) as the vocoder:
 | | English | Telugu |
 |---|---|---|
 | Data | [Svarah](https://huggingface.co/datasets/ai4bharat/Svarah) (Indian-accented English, 110 train speakers) | [IndicTTS Telugu](https://huggingface.co/datasets/SPRINGLab/IndicTTS_Telugu) (2 speakers) |
-| Train / validation | 4.87 h / 0.98 h (3077 / 742 utterances) | 4.96 h / 1.02 h selected; 2140 / 446 utterances after alignment |
+| Train / validation | 4.87 h / 0.98 h (3077 / 742 utterances) | 4.90 h / 1.01 h (2140 / 446 utterances; 4.96 h / 1.02 h selected, 28 clips not aligned) |
 | Text front end | lexicon + g2p_en, homograph POS rule, time/number normalisation | rule-based Telugu G2P, Telugu numbers/ordinals/times, English loanwords in Latin script |
 | Training | 17,949 steps, 1 × T4, 3.5 h | 55,524 steps, 2 × T4, 8 h |
 | Test voice | `svarah_8a8e2655` (clearest recordings, report §5.0); GV post-filter at inference (§5.0b) | `te_female` (better HiFi-GAN copy-synthesis) |

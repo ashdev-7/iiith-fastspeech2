@@ -73,7 +73,7 @@ values; no listening test (MOS) was run.
 <h3>Results at a glance</h3>
 <table>
 <tr><th></th><th>English (Svarah)</th><th>Telugu (IndicTTS)</th></tr>
-<tr><td>Training data used (train / validation)</td><td>4.87 h / 0.98 h, 110 / 109 speakers <span class="tag meas">measured</span></td><td>4.96 h / 1.02 h, 2 speakers <span class="tag meas">measured</span></td></tr>
+<tr><td>Training data used (train / validation)</td><td>4.87 h / 0.98 h, 110 / 109 speakers <span class="tag meas">measured</span></td><td>4.90 h / 1.01 h, 2 speakers (4.96 / 1.02 h selected) <span class="tag meas">measured</span></td></tr>
 <tr><td>Training</td><td>17,949 steps, 3.5 h on 1 × T4</td><td>55,524 steps, 8 h on 2 × T4</td></tr>
 <tr><td>Validation loss (total), best → final</td><td class="n">2.651 (7k) → 2.686</td><td class="n">1.970 (16k) → 1.974</td></tr>
 <tr><td>Validation duration MAE / Pearson r (log)</td><td class="n">2.81 frames / 0.58</td><td class="n">1.06 frames / 0.85</td></tr>
@@ -190,8 +190,12 @@ between train and validation; duplicate audio is excluded. All checks passed (0 
 <tr><td>Not aligned by MFA</td><td class="n">0</td><td class="n">28 (1.1 %), in 4 clusters of consecutive ids</td></tr>
 <tr><td>Rejected in preprocessing</td><td class="n">2 (≤ 1 voiced frame)</td><td class="n">0</td></tr>
 <tr><td>Used for training / validation</td><td class="n">3,077 / 742</td><td class="n">2,140 / 446</td></tr>
+<tr><td>Hours used, train / validation (selected audio)</td><td class="n">4.87 / 0.98 h</td><td class="n">4.90 / 1.01 h</td></tr>
+<tr><td>Same, after leading/trailing silence trimming (mel frames)</td><td class="n">4.53 / 0.92 h</td><td class="n">4.21 / 0.87 h</td></tr>
+<tr><td>Overlap of the used sets: ids / transcripts</td><td class="n">0 / 0</td><td class="n">0 / 0</td></tr>
 </table>
-<p class="small">The unaligned Telugu clips are clustered (ids te_0091x–0092x, te_0233x, te_0264x), which suggests transcript/audio
+<p class="small">Hours and overlaps of the used sets: Kaggle <code>fs2-13-data-accounting</code>, <code>Evaluation/Data/accounting.json</code>.
+The unaligned Telugu clips are clustered (ids te_0091x–0092x, te_0233x, te_0264x), which suggests transcript/audio
 mismatches in those ranges rather than random failures <span class="tag est">estimated</span>; they were excluded, not repaired.
 Svarah validation speakers also appear in training (different recordings): the split is by recording, not by speaker,
 so the validation set measures generalisation to new sentences, not to new voices.</p>

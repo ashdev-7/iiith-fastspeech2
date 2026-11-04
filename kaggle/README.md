@@ -19,6 +19,7 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `10_combos_en` (`fs2-10-combos-en`) | CPU | 02, 03 en, 09 en | Whisper scores of the final English configuration (universal vocoder + GV post-filter) on the test and stress sentences |
 | `11_adapt_en` (`fs2-11-adapt-en`) | CPU | 02, 03 en | Speaker adaptation of the English decoder to the test voice on its training clips only (`fastspeech2/adapt_speaker.py`), early-stopped on its validation clips; post-filter re-estimated; test and stress sentences rendered and Whisper-scored |
 | `12_prosody_en` (`fs2-12-prosody-en`) | CPU | 02, 03 en | Lexical-stress realisation in the English data and the model (`fastspeech2/stress_stats.py`); test and stress sentences with the prosody rules (`fastspeech2/prosody_rules.py`) off / terminal fall / fall + stress 0.5 / fall + stress 1.0, rendered and Whisper-scored |
+| `13_data_accounting` (`fs2-13-data-accounting`) | CPU | 01, 02 | Selected vs used utterances and hours per split, after alignment and preprocessing; train/val overlap of the used sets (`Evaluation/Data/accounting.json`) |
 
 `03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
 by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.

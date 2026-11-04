@@ -1,0 +1,89 @@
+{
+ "job": "fs2-13-data-accounting",
+ "code_commit": "f738dd949b3a46b49a747071ecf6fafc205890e0",
+ "en": {
+  "ok": true,
+  "train": {
+   "selected_utts": 3079,
+   "selected_hours": 4.8716,
+   "used_utts": 3077,
+   "used_ids_not_in_manifest": 0,
+   "used_hours_raw": 4.871,
+   "used_hours_trimmed_mel": 4.5261,
+   "used_speakers": 110,
+   "dropped_ids": [
+    "281474976887177_f3253_chunk_8",
+    "281474976894267_f3266_chunk_13"
+   ]
+  },
+  "val": {
+   "selected_utts": 742,
+   "selected_hours": 0.9825,
+   "used_utts": 742,
+   "used_ids_not_in_manifest": 0,
+   "used_hours_raw": 0.9825,
+   "used_hours_trimmed_mel": 0.9211,
+   "used_speakers": 109,
+   "dropped_ids": []
+  },
+  "overlap_ids": 0,
+  "overlap_transcripts": 0,
+  "minutes": 0.21
+ },
+ "te": {
+  "ok": true,
+  "train": {
+   "selected_utts": 2164,
+   "selected_hours": 4.96,
+   "used_utts": 2140,
+   "used_ids_not_in_manifest": 0,
+   "used_hours_raw": 4.896,
+   "used_hours_trimmed_mel": 4.2108,
+   "used_speakers": 2,
+   "dropped_ids": [
+    "te_00111",
+    "te_00141",
+    "te_00162",
+    "te_00191",
+    "te_00915",
+    "te_00918",
+    "te_00920",
+    "te_01066",
+    "te_01072",
+    "te_02330",
+    "te_02331",
+    "te_02332",
+    "te_02333",
+    "te_02638",
+    "te_02640",
+    "te_02641",
+    "te_02643",
+    "te_02646",
+    "te_02647",
+    "te_02648",
+    "te_02649",
+    "te_02651",
+    "te_02652",
+    "te_02654"
+   ]
+  },
+  "val": {
+   "selected_utts": 450,
+   "selected_hours": 1.02,
+   "used_utts": 446,
+   "used_ids_not_in_manifest": 0,
+   "used_hours_raw": 1.0065,
+   "used_hours_trimmed_mel": 0.8703,
+   "used_speakers": 2,
+   "dropped_ids": [
+    "te_00921",
+    "te_00927",
+    "te_00929",
+    "te_01062"
+   ]
+  },
+  "overlap_ids": 0,
+  "overlap_transcripts": 0,
+  "minutes": 0.16
+ }
+}

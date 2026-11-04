@@ -168,10 +168,10 @@ def test_per_phone_pitch_energy_controls_and_prosody_second_pass(tmp_path):
     seq = torch.tensor([[5, 6, 7, 8, 9]], device=device)
     args = (torch.tensor([0], device=device), seq, torch.tensor([5], device=device), 5)
     pc = torch.tensor([[1.0, 1.1, 1.0, 0.9, 1.0]], device=device)
-    with torch.no_grad():
-        base, up = model(*args), model(*args, p_control=pc, e_control=pc)
+    with torch.no_grad():  # separate calls: energy is predicted after the pitch embedding is added
+        base, up, e_up = model(*args), model(*args, p_control=pc), model(*args, e_control=pc)
     assert torch.allclose(hz(up[2]), hz(base[2]) * pc, atol=1e-3)
-    assert torch.allclose(up[3] * 20.0 + 30.0, (base[3] * 20.0 + 30.0) * pc, atol=1e-3)
+    assert torch.allclose(e_up[3] * 20.0 + 30.0, (base[3] * 20.0 + 30.0) * pc, atol=1e-3)
     phones = ["K", "AA1", "N", "D", "AH0"]
     words = [{"token": "w", "phones": phones}]
     p_c, e_c, d_c, log = prosody_rules.second_pass_controls(model, base, phones, words, "w.", "en", True, 1.0,
