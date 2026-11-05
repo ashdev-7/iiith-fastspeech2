@@ -24,6 +24,8 @@ LONG_WORD_VOWELS = 4
 NOISE_TEXTS = ["Yes, of course, we can talk about it later.", "First, open the box; then, take out the papers.",
                "Well, I think so, but, honestly, I am not sure."]
 SILENCES = {"sp", "spn", "sil"}
+FUNCTION_WORDS = set("the a an of to in on at for by with from and or but as this that these those his her its "
+                     "their our my your".split())
 
 
 def _vowels(phones, idx, lang):
@@ -32,15 +34,25 @@ def _vowels(phones, idx, lang):
 
 
 def prepare(phones, trace, lang, tempo=1.0, long_word_scale=1.0, heavy_pause=False):
-    """Returns (phones, trace, factors): phones/trace with "<pause>" micro-pauses inserted before long words
-    (when heavy_pause), and per-phone duration factors (trace duration_scale x tempo x long-word scale)."""
+    """Returns (phones, trace, factors). With heavy_pause, a "<pause>" micro-pause is inserted before each long
+    word, ahead of its preceding function words ("during <pause> the parliamentary"; the model lengthens the
+    vowel before a pause, so "the <pause> parliamentary" would give a drawn-out "the"); none at the sentence
+    start or next to an existing pause. factors: per-phone duration factors (duration_scale x tempo x long-word
+    scale)."""
     import prosody_rules
     scales = list(trace.get("duration_scale") or [1.0] * len(phones))
     words = trace["words"]
     if heavy_pause:
         spans = prosody_rules.align_words(phones, words)
-        heavy = {idx[0] for _, idx in spans if _vowels(phones, idx, lang) >= LONG_WORD_VOWELS and idx[0] > 0}
-        heavy = {j for j in heavy if phones[j - 1] not in SILENCES}
+        heavy = set()
+        for k, (_, idx) in enumerate(spans):
+            if _vowels(phones, idx, lang) < LONG_WORD_VOWELS:
+                continue
+            while k > 0 and spans[k - 1][0].lower() in FUNCTION_WORDS:  # pause before "the parliamentary",
+                k -= 1                                                    # never between "the" and its noun
+            j = spans[k][1][0]
+            if j > 0 and phones[j - 1] not in SILENCES:
+                heavy.add(j)
         if heavy:
             ph, sc = [], []
             for j, p in enumerate(phones):

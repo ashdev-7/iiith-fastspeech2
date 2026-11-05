@@ -95,10 +95,11 @@ def test_phrasing_boundaries_exclamation_and_question_rise():
 def test_wh_question_falls_and_micro_pause_is_exact():
     phones, words = _sentence([("Why", ["W", "AY1"]), ("<pause>", ["sp"]), ("Monday", ["M", "AH1", "N", "D", "EY2"])])
     pitch = np.array([200, 200, 0, 200, 200, 200, 200, 260.0])
-    dur = np.array([5, 9, 3, 4, 5, 4, 4, 9.0])
+    dur = np.array([5, 30, 3, 4, 5, 4, 4, 9.0])
     pf, _, df, log = R.factors(phones, words, "Why Monday?", pitch, np.full(8, 50.0), dur, "en",
                                fall=True, stress=0, phrasing=True)
     assert dur[2] * df[2] == pytest.approx(R.MICRO_PAUSE_FRAMES)
+    assert dur[1] * df[1] == pytest.approx(R.MICRO_PAUSE_PREV_VOWEL_MAX)  # drawn-out vowel before it capped
     assert pf[7] < 1                                                      # wh-question: statement fall
     pf, _, _, _ = R.factors(phones, words, "Why Monday?", pitch, np.full(8, 50.0), dur, "en", fall=True, stress=0)
     assert pf[7] == 1                                                     # without phrasing: as before

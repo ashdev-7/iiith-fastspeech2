@@ -6,19 +6,21 @@ torch = pytest.importorskip("torch")
 import clarity as C  # noqa: E402
 import prosody_rules as R  # noqa: E402
 
-PHONES = ["DH", "AH0", "P", "AA2", "R", "L", "AH0", "M", "EH1", "N", "T", "ER0", "IY0", "sp", "N", "OW1"]
-TRACE = {"words": [{"token": "the", "phones": ["DH", "AH0"]},
-                   {"token": "parliamentary", "phones": PHONES[2:13]},
+PHONES = ["S", "EH1", "D", "DH", "AH0", "P", "AA2", "R", "L", "AH0", "M", "EH1", "N", "T", "ER0", "IY0", "sp", "N", "OW1"]
+TRACE = {"words": [{"token": "said", "phones": ["S", "EH1", "D"]}, {"token": "the", "phones": ["DH", "AH0"]},
+                   {"token": "parliamentary", "phones": PHONES[5:16]},
                    {"token": ",", "phones": ["sp"]}, {"token": "no", "phones": ["N", "OW1"]}],
-         "duration_scale": [1.0] * 16}
+         "duration_scale": [1.0] * 19}
 
 
-def test_prepare_inserts_pause_before_long_words_and_scales_them():
+def test_prepare_pauses_before_the_function_word_and_scales_long_words():
     phones, trace, f = C.prepare(PHONES, TRACE, "en", long_word_scale=1.25, heavy_pause=True)
-    assert phones[2] == "sp" and phones[3:14] == PHONES[2:13] and len(phones) == len(PHONES) + 1
-    assert [w["token"] for w in trace["words"]][:3] == ["the", "<pause>", "parliamentary"]
-    assert len(f) == len(phones) and np.all(f[3:14] == 1.25) and f[0] == 1 and f[2] == 1
-    assert R.align_words(phones, trace["words"])[1][1] == list(range(3, 14))   # still aligned
+    assert phones[3] == "sp" and phones[4:6] == ["DH", "AH0"] and len(phones) == len(PHONES) + 1
+    assert [w["token"] for w in trace["words"]][:4] == ["said", "<pause>", "the", "parliamentary"]
+    assert len(f) == len(phones) and np.all(f[6:17] == 1.25) and np.all(f[:6] == 1)
+    assert R.align_words(phones, trace["words"])[2][1] == list(range(6, 17))   # still aligned
+    start = {"words": TRACE["words"][1:], "duration_scale": [1.0] * 16}        # long word at sentence start:
+    assert C.prepare(PHONES[3:], start, "en", heavy_pause=True)[0] == PHONES[3:]       # no pause
     same, _, f2 = C.prepare(PHONES, TRACE, "en")                                 # defaults: no change
     assert same == PHONES and np.all(f2 == 1)
 

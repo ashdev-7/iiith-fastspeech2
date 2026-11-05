@@ -148,6 +148,15 @@ def main(args):
                 return model(spk, texts, src_lens, len(seq), p_control=p_control,
                              e_control=e_control, d_control=d_control)
 
+        controlled = (args.prosody_fall or args.prosody_stress or args.prosody_phrasing or args.pitch_control != 1.0
+                      or args.energy_control != 1.0 or args.duration_control != 1.0 or args.long_word_scale != 1.0)
+        raw_pred = None
+        if controlled:  # the model's own predictions for the same phones, for the plots and the analysis
+            with torch.no_grad():
+                o = model(spk, texts, src_lens, len(seq))
+            raw_pred = {"duration_frames": o[5][0, :len(seq)].cpu().numpy().astype(int).tolist(),
+                        "pitch_hz": (o[2][0, :len(seq)].cpu().numpy() * pitch_std + pitch_mean).tolist(),
+                        "energy": (o[3][0, :len(seq)].cpu().numpy() * energy_std + energy_mean).tolist()}
         if args.prosody_fall or args.prosody_stress or args.prosody_phrasing:  # prosody_rules.py
             p_control, e_control, d_control, rule_log = prosody_rules.second_pass_controls(
                 model, acoustic(), phones, trace["words"], text, lang, args.prosody_fall, args.prosody_stress,
@@ -203,6 +212,10 @@ def main(args):
                "energy_unit": "frame L2 norm of the STFT magnitude (arbitrary units)",
                "frame_ms": frame_ms, "generated_f0_hz": f0.tolist(), "generated_f0_period_ms": f0_period,
                "speaker": args.speaker, "checkpoint_step": step, "checks": checks}
+        if raw_pred is not None:
+            rec["model_prediction"] = raw_pred
+            rec["model_prediction_note"] = ("the model's predictions for the same phones with no controls; "
+                                            "duration_frames/pitch_hz/energy above are the final values used")
         with open(os.path.join(out, "variance_raw", "{}.json".format(item_id)), "w", encoding="utf-8") as f:
             json.dump(rec, f, ensure_ascii=False, indent=1)
         np.savez(os.path.join(out, "variance_raw", "{}.npz".format(item_id)), duration_frames=durs, pitch_hz=pitch_hz,

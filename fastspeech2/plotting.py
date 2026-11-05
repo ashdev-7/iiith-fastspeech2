@@ -88,8 +88,12 @@ def _phone_axis(ax, phones, starts, durs, frame_ms):
 
 
 def plot_variances(rec, out_dir, telugu_font=None):
-    """rec: dict from variance_raw/<ID>.json. Writes duration/, pitch/, energy/ PNGs; returns paths."""
+    """rec: dict from variance_raw/<ID>.json. Writes duration/, pitch/, energy/ PNGs; returns paths.
+    When inference-time controls were used, rec["model_prediction"] holds the model's own predictions for the
+    same phones (no controls); they are drawn dashed/hollow next to the final values."""
     item_id, text = rec["id"], rec["original_text"]
+    raw = rec.get("model_prediction")
+    final = "final (after inference-time controls)" if raw else "predicted"
     phones = rec["phones"]
     durs = np.array(rec["duration_frames"], dtype=float)
     frame_ms = rec["frame_ms"]
@@ -100,7 +104,11 @@ def plot_variances(rec, out_dir, telugu_font=None):
     # Duration: bar per phone (frames), secondary axis in ms.
     fig, ax = plt.subplots(figsize=(width, 4))
     x = np.arange(len(phones))
-    ax.bar(x, durs, color="#3a6ea5")
+    ax.bar(x, durs, color="#3a6ea5", label=final + " duration")
+    if raw:
+        ax.plot(x, raw["duration_frames"], "o", mfc="none", mec="black", ms=4,
+                label="model prediction (no controls)")
+        ax.legend(fontsize=7, loc="upper right")
     ax.set_xticks(x)
     ax.set_xticklabels(phones, rotation=90, fontsize=7)
     ax.set_xlim(-0.6, len(phones) - 0.4)
@@ -115,7 +123,9 @@ def plot_variances(rec, out_dir, telugu_font=None):
     # Pitch: phone-level prediction in Hz as steps, plus F0 of the generated audio.
     fig, ax = plt.subplots(figsize=(width, 4))
     pitch = np.array(rec["pitch_hz"], dtype=float)
-    _steps(ax, starts, durs, pitch, frame_ms, "predicted F0 per phone (Hz)", "#c0392b")
+    _steps(ax, starts, durs, pitch, frame_ms, final + " F0 per phone (Hz)", "#c0392b")
+    if raw:
+        _steps(ax, starts, durs, raw["pitch_hz"], frame_ms, "model prediction (no controls)", "black", ls="--", lw=1.2)
     if rec.get("generated_f0_hz") is not None:
         f0 = np.array(rec["generated_f0_hz"], dtype=float)
         f0[f0 <= 0] = np.nan
@@ -130,7 +140,9 @@ def plot_variances(rec, out_dir, telugu_font=None):
     # Energy: phone-level prediction (frame L2 norm of the STFT magnitude, arbitrary units).
     fig, ax = plt.subplots(figsize=(width, 4))
     energy = np.array(rec["energy"], dtype=float)
-    _steps(ax, starts, durs, energy, frame_ms, "predicted energy per phone", "#27ae60")
+    _steps(ax, starts, durs, energy, frame_ms, final + " energy per phone", "#27ae60")
+    if raw:
+        _steps(ax, starts, durs, raw["energy"], frame_ms, "model prediction (no controls)", "black", ls="--", lw=1.2)
     ax.set_ylabel("energy: frame L2 STFT magnitude (a.u.)")
     _phone_axis(ax, phones, starts, durs, frame_ms)
     ax.legend(fontsize=7, loc="upper right")
@@ -139,12 +151,13 @@ def plot_variances(rec, out_dir, telugu_font=None):
     return paths
 
 
-def _steps(ax, starts, durs, values, frame_ms, label, color):
+def _steps(ax, starts, durs, values, frame_ms, label, color, ls="-", lw=2.5):
     first = True
     for s, d, v in zip(starts, durs, values):
         if d <= 0:
             continue  # zero-duration phones occupy no time
-        ax.hlines(v, s * frame_ms, (s + d) * frame_ms, colors=color, lw=2.5, label=label if first else None)
+        ax.hlines(v, s * frame_ms, (s + d) * frame_ms, colors=color, lw=lw, linestyles=ls,
+                  label=label if first else None)
         first = False
 
 

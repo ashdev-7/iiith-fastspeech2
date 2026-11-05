@@ -110,6 +110,10 @@ def phrasing_factors(phones, words, text, pitch, dur, lang, median):
         if pi is not None and punct == "<pause>":
             df[pi] = MICRO_PAUSE_FRAMES / max(dur[pi], 1.0)
             log.append({"rule": "micro_pause", "phone": pi, "frames": MICRO_PAUSE_FRAMES})
+            # the model lengthens the vowel before any pause; a micro-pause is not a phrase end
+            for j in (spans[-1][1] if spans else []):
+                if is_vowel(phones[j], lang) and dur[j] > MICRO_PAUSE_PREV_VOWEL_MAX:
+                    df[j] = MICRO_PAUSE_PREV_VOWEL_MAX / dur[j]
             continue
         if not spans:
             continue
@@ -147,6 +151,7 @@ def phrasing_factors(phones, words, text, pitch, dur, lang, median):
 
 
 MICRO_PAUSE_FRAMES = 6
+MICRO_PAUSE_PREV_VOWEL_MAX = 15   # frames (174 ms)
 
 
 def factors(phones, words, text, pitch_hz, energy, dur_frames, lang, fall=True, stress=1.0, phrasing=False):
