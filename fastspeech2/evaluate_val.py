@@ -125,14 +125,31 @@ def f0_stats(wav, sr, frame_ms):
     return float(np.median(v)) if len(v) else None
 
 
+# Pinned ASR revisions (evaluation only; never used for training or synthesis).
+#   vasista22/whisper-telugu-large-v2: whisper-large-v2 fine-tuned on Telugu (Speech Lab, IIT Madras; Apache-2.0).
+#   Its model card lists CSTD IIIT-H, ULCA, Shrutilipi, Microsoft Speech Corpus, FLEURS train+dev and Babel as
+#   training data: not IndicTTS, so it has not heard the Telugu training voices. FLEURS-te test WER 9.65.
+ASR_REVISIONS = {"openai/whisper-large-v3": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+                 "openai/whisper-large-v2": "ae4642769ce2ad8fc292556ccea8e901f1530655",
+                 "vasista22/whisper-telugu-large-v2": "ba19a24bf6530de184860de2b8ba968595b9b18a"}
+# Fine-tunes saved with transformers 4.27 have no language table in generation_config.json, so
+# generate(language=...) fails; they take the generation config of the base model (same tokenizer).
+ASR_BASE = {"vasista22/whisper-telugu-large-v2": "openai/whisper-large-v2"}
+
+
 def load_asr(name):
-    from transformers import pipeline
-    kw = {"model": name, "device": 0 if torch.cuda.is_available() else -1, "chunk_length_s": 30}
+    from transformers import GenerationConfig, pipeline
+    kw = {"model": name, "revision": ASR_REVISIONS.get(name), "device": 0 if torch.cuda.is_available() else -1,
+          "chunk_length_s": 30}
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
     try:
-        return pipeline("automatic-speech-recognition", dtype=dtype, **kw)
+        asr = pipeline("automatic-speech-recognition", dtype=dtype, **kw)
     except TypeError:  # older transformers
-        return pipeline("automatic-speech-recognition", torch_dtype=dtype, **kw)
+        asr = pipeline("automatic-speech-recognition", torch_dtype=dtype, **kw)
+    if name in ASR_BASE:
+        base = ASR_BASE[name]
+        asr.model.generation_config = GenerationConfig.from_pretrained(base, revision=ASR_REVISIONS[base])
+    return asr
 
 
 def transcribe(asr, wavs, sr, lang, batch_size=8):
@@ -377,7 +394,7 @@ def main(args):
                 w.writerow([r["id"], r["speaker"], r["reference"], r["synth_hyp"], round(r["synth"]["cer"], 4),
                             r["copy_hyp"], round(r["copy"]["cer"], 4)])
         report["intelligibility"] = {} if not asr_rows else {
-            "asr_model": args.asr_model, "utterances": len(asr_rows),
+            "asr_model": args.asr_model, "asr_revision": ASR_REVISIONS.get(args.asr_model), "utterances": len(asr_rows),
             "synthesis": M.corpus_rates([r["synth"] for r in asr_rows]),
             "copy_synthesis_ceiling": M.corpus_rates([r["copy"] for r in asr_rows]),
             "reference_text": "the validation transcript (.lab text used for alignment)"}
