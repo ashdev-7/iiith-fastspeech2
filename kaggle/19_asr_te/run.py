@@ -1,4 +1,4 @@
-"""Kaggle job 19 (GPU): Telugu intelligibility with a Telugu ASR model.
+"""Kaggle job 19 (CPU; the weekly GPU quota was used up): Telugu intelligibility with a Telugu ASR model.
 Whisper large-v3 is unreliable on Telugu (33 % CER even on copy-synthesis of real recordings; several test
 transcripts above 100 % CER). This job re-measures with vasista22/whisper-telugu-large-v2 (pinned revision in
 evaluate_val.ASR_REVISIONS; its training data does not include IndicTTS), same metric and same protocol:

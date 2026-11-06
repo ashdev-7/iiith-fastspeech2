@@ -25,7 +25,7 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `16_clarity` (`fs2-16-clarity`) | CPU | 02, 03 en, 03 te | Clear-speech options (`fastspeech2/clarity.py`, phrasing rule): English variants and Telugu fall / edge-fade variants rendered and Whisper-scored |
 | `17_final_en` (`fs2-17-final-en`) | CPU | 02, 03 en | Final English configuration: `Results/English` and the extended English set rendered and Whisper-scored |
 | `18_aligner_check` (`fs2-18-aligner-check`) | CPU | 01, 02, 03 te | Telugu MFA aligner retrained on the training clips only; validation clips aligned with it; alignments and the model's validation duration scores compared with the reported ones (`tools/aligner_check.py`) |
-| `19_asr_te` (`fs2-19-asr-te`) | GPU T4 | 02, 03 te | Telugu intelligibility re-measured with a Telugu ASR model (`vasista22/whisper-telugu-large-v2`, pinned; not trained on IndicTTS): validation synthesis vs copy-synthesis ceiling, assignment, extended and stress sentences |
+| `19_asr_te` (`fs2-19-asr-te`) | CPU | 02, 03 te | Telugu intelligibility re-measured with a Telugu ASR model (`vasista22/whisper-telugu-large-v2`, pinned; not trained on IndicTTS): validation synthesis vs copy-synthesis ceiling, assignment, extended and stress sentences |
 
 `03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
 by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.
