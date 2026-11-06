@@ -6,27 +6,27 @@
   "words": [
    {
     "token": "The",
-    "source": "lexicon",
+    "source": "lexicon ('the' before a vowel)",
     "phones": [
      "DH",
-     "AH0"
+     "IY0"
     ]
    },
    {
     "token": "antidisestablishmentarianism",
-    "source": "g2p_en (out of lexicon)",
+    "source": "compound of lexicon words: anti + disestablishment + arianism",
     "phones": [
-     "AE2",
+     "AE1",
      "N",
      "T",
      "AY0",
      "D",
      "IH0",
      "S",
-     "AH0",
+     "IH0",
      "S",
      "T",
-     "AE2",
+     "AE1",
      "B",
      "L",
      "IH0",
@@ -35,12 +35,12 @@
      "AH0",
      "N",
      "T",
-     "EH1",
+     "AE1",
      "R",
      "IY0",
      "AH0",
      "N",
-     "IH0",
+     "IH2",
      "Z",
      "AH0",
      "M"
@@ -67,6 +67,13 @@
      "EY1",
      "N",
      "D"
+    ]
+   },
+   {
+    "token": "<pause>",
+    "source": "clarity micro-pause",
+    "phones": [
+     "sp"
     ]
    },
    {
@@ -111,6 +118,13 @@
     ]
    },
    {
+    "token": "<pause>",
+    "source": "clarity micro-pause",
+    "phones": [
+     "sp"
+    ]
+   },
+   {
     "token": "the",
     "source": "lexicon",
     "phones": [
@@ -120,7 +134,7 @@
    },
    {
     "token": "parliamentary",
-    "source": "lexicon",
+    "source": "lexicon (careful variant: restored dropped T)",
     "phones": [
      "P",
      "AA2",
@@ -130,6 +144,7 @@
      "M",
      "EH1",
      "N",
+     "T",
      "ER0",
      "IY0"
     ]
@@ -242,22 +257,30 @@
    1.0,
    1.0,
    1.0,
+   1.0,
+   1.0,
+   1.0,
    1.0
   ],
+  "clarity": {
+   "tempo": 1.0,
+   "long_word_scale": 1.25,
+   "heavy_word_pause": true
+  },
   "phones": [
    "DH",
-   "AH0",
-   "AE2",
+   "IY0",
+   "AE1",
    "N",
    "T",
    "AY0",
    "D",
    "IH0",
    "S",
-   "AH0",
+   "IH0",
    "S",
    "T",
-   "AE2",
+   "AE1",
    "B",
    "L",
    "IH0",
@@ -266,12 +289,12 @@
    "AH0",
    "N",
    "T",
-   "EH1",
+   "AE1",
    "R",
    "IY0",
    "AH0",
    "N",
-   "IH0",
+   "IH2",
    "Z",
    "AH0",
    "M",
@@ -286,6 +309,7 @@
    "EY1",
    "N",
    "D",
+   "sp",
    "K",
    "AH0",
    "N",
@@ -309,6 +333,7 @@
    "ER1",
    "IH0",
    "NG",
+   "sp",
    "DH",
    "AH0",
    "P",
@@ -319,6 +344,7 @@
    "M",
    "EH1",
    "N",
+   "T",
    "ER0",
    "IY0",
    "P",
@@ -333,18 +359,18 @@
   ],
   "ids": [
    91,
-   73,
-   71,
+   112,
+   70,
    119,
    133,
    85,
    90,
    108,
    131,
-   73,
+   108,
    131,
    133,
-   71,
+   70,
    88,
    117,
    108,
@@ -353,12 +379,12 @@
    73,
    119,
    133,
-   94,
+   70,
    130,
    112,
    73,
    119,
-   108,
+   110,
    146,
    73,
    118,
@@ -373,6 +399,7 @@
    102,
    119,
    90,
+   357,
    116,
    73,
    119,
@@ -396,6 +423,7 @@
    98,
    108,
    120,
+   357,
    91,
    73,
    129,
@@ -406,6 +434,7 @@
    118,
    94,
    119,
+   133,
    97,
    112,
    129,
@@ -417,6 +446,78 @@
    108,
    120,
    146
+  ],
+  "prosody_rules": [
+   {
+    "rule": "lexical_stress",
+    "word": "antidisestablishmentarianism",
+    "phone": 2,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.193,
+    "duration": 1.21
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "movement",
+    "phone": 31,
+    "strength": 1.0,
+    "pitch": 1.085,
+    "energy": 1.371,
+    "duration": 1.282
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "considerable",
+    "phone": 46,
+    "strength": 1.0,
+    "pitch": 1.013,
+    "energy": 1.449,
+    "duration": 1.158
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "momentum",
+    "phone": 56,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.5,
+    "duration": 1.072
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "during",
+    "phone": 62,
+    "strength": 1.0,
+    "pitch": 1.1
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "parliamentary",
+    "phone": 74,
+    "strength": 1.0,
+    "pitch": 1.112,
+    "energy": 1.104,
+    "duration": 1.257
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "proceedings",
+    "phone": 83,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.5
+   },
+   {
+    "rule": "micro_pause",
+    "phone": 41,
+    "frames": 6
+   },
+   {
+    "rule": "micro_pause",
+    "phone": 65,
+    "frames": 6
+   }
   ]
  },
  "E2a": {
@@ -426,10 +527,10 @@
   "words": [
    {
     "token": "The",
-    "source": "lexicon",
+    "source": "lexicon ('the' before a vowel)",
     "phones": [
      "DH",
-     "AH0"
+     "IY0"
     ]
    },
    {
@@ -468,6 +569,13 @@
      "ER1",
      "IH0",
      "NG"
+    ]
+   },
+   {
+    "token": "<pause>",
+    "source": "clarity micro-pause",
+    "phones": [
+     "sp"
     ]
    },
    {
@@ -522,10 +630,10 @@
    },
    {
     "token": "the",
-    "source": "lexicon",
+    "source": "lexicon ('the' before a vowel)",
     "phones": [
      "DH",
-     "AH0"
+     "IY0"
     ]
    },
    {
@@ -598,11 +706,17 @@
    1.0,
    1.0,
    1.0,
+   1.0,
    1.0
   ],
+  "clarity": {
+   "tempo": 1.0,
+   "long_word_scale": 1.25,
+   "heavy_word_pause": true
+  },
   "phones": [
    "DH",
-   "AH0",
+   "IY0",
    "AO1",
    "R",
    "K",
@@ -623,6 +737,7 @@
    "ER1",
    "IH0",
    "NG",
+   "sp",
    "DH",
    "AH0",
    "S",
@@ -644,7 +759,7 @@
    "B",
    "AY1",
    "DH",
-   "AH0",
+   "IY0",
    "AA1",
    "D",
    "IY0",
@@ -654,7 +769,7 @@
   ],
   "ids": [
    91,
-   73,
+   112,
    78,
    130,
    116,
@@ -675,6 +790,7 @@
    98,
    108,
    120,
+   357,
    91,
    73,
    131,
@@ -696,13 +812,74 @@
    88,
    86,
    91,
-   73,
+   112,
    66,
    90,
    112,
    73,
    119,
    131
+  ],
+  "prosody_rules": [
+   {
+    "rule": "terminal_fall",
+    "phone": 47,
+    "from_hz": 196.0,
+    "to_hz": 181.6
+   },
+   {
+    "rule": "terminal_fall",
+    "phone": 48,
+    "from_hz": 188.1,
+    "to_hz": 181.6
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "orchestra's",
+    "phone": 2,
+    "strength": 1.0,
+    "pitch": 1.065,
+    "energy": 1.171
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "conduct",
+    "phone": 12,
+    "strength": 1.0,
+    "pitch": 1.105,
+    "energy": 1.5,
+    "duration": 1.137
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "during",
+    "phone": 19,
+    "strength": 1.0,
+    "pitch": 1.009,
+    "energy": 1.041,
+    "duration": 1.072
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "ceremony",
+    "phone": 26,
+    "strength": 1.0,
+    "pitch": 1.037,
+    "energy": 1.13,
+    "duration": 1.4
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "audience",
+    "phone": 45,
+    "strength": 1.0,
+    "duration": 1.011
+   },
+   {
+    "rule": "micro_pause",
+    "phone": 22,
+    "frames": 6
+   }
   ]
  },
  "E2b": {
@@ -754,6 +931,13 @@
     ]
    },
    {
+    "token": "<pause>",
+    "source": "clarity micro-pause",
+    "phones": [
+     "sp"
+    ]
+   },
+   {
     "token": "an",
     "source": "lexicon",
     "phones": [
@@ -776,6 +960,13 @@
      "AH0",
      "N",
      "T"
+    ]
+   },
+   {
+    "token": "<pause>",
+    "source": "clarity micro-pause",
+    "phones": [
+     "sp"
     ]
    },
    {
@@ -896,8 +1087,15 @@
    1.0,
    1.0,
    1.0,
+   1.0,
+   1.0,
    1.0
   ],
+  "clarity": {
+   "tempo": 1.0,
+   "long_word_scale": 1.25,
+   "heavy_word_pause": true
+  },
   "phones": [
    "DH",
    "AH0",
@@ -918,6 +1116,7 @@
    "AH1",
    "K",
    "T",
+   "sp",
    "AE1",
    "N",
    "IH0",
@@ -931,6 +1130,7 @@
    "AH0",
    "N",
    "T",
+   "sp",
    "T",
    "AH0",
    "IH0",
@@ -976,6 +1176,7 @@
    74,
    116,
    133,
+   357,
    70,
    119,
    108,
@@ -989,6 +1190,7 @@
    73,
    119,
    133,
+   357,
    133,
    73,
    108,
@@ -1013,6 +1215,65 @@
    134,
    73,
    90
+  ],
+  "prosody_rules": [
+   {
+    "rule": "lexical_stress",
+    "word": "researchers",
+    "phone": 3,
+    "strength": 1.0,
+    "pitch": 1.09,
+    "energy": 1.5,
+    "duration": 1.4
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "conduct",
+    "phone": 16,
+    "strength": 1.0,
+    "pitch": 1.03
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "experiment",
+    "phone": 26,
+    "strength": 1.0,
+    "pitch": 1.017,
+    "duration": 1.175
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "evaluate",
+    "phone": 38,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.064,
+    "duration": 1.313
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "proposed",
+    "phone": 50,
+    "strength": 1.0,
+    "energy": 1.032
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "method",
+    "phone": 54,
+    "strength": 1.0,
+    "duration": 1.384
+   },
+   {
+    "rule": "micro_pause",
+    "phone": 19,
+    "frames": 6
+   },
+   {
+    "rule": "micro_pause",
+    "phone": 33,
+    "frames": 6
+   }
   ]
  },
  "E3": {
@@ -1052,10 +1313,10 @@
    },
    {
     "token": "the",
-    "source": "lexicon",
+    "source": "lexicon ('the' before a vowel)",
     "phones": [
      "DH",
-     "AH0"
+     "IY0"
     ]
    },
    {
@@ -1081,6 +1342,13 @@
      "N",
      "JH",
      "D"
+    ]
+   },
+   {
+    "token": "<pause>",
+    "source": "clarity micro-pause",
+    "phones": [
+     "sp"
     ]
    },
    {
@@ -1147,8 +1415,14 @@
    1.0,
    1.0,
    1.0,
+   1.0,
    1.0
   ],
+  "clarity": {
+   "tempo": 1.0,
+   "long_word_scale": 1.25,
+   "heavy_word_pause": true
+  },
   "phones": [
    "DH",
    "AH0",
@@ -1160,7 +1434,7 @@
    "AH0",
    "V",
    "DH",
-   "AH0",
+   "IY0",
    "AO1",
    "R",
    "K",
@@ -1174,6 +1448,7 @@
    "N",
    "JH",
    "D",
+   "sp",
    "AH2",
    "N",
    "IH0",
@@ -1199,7 +1474,7 @@
    73,
    143,
    91,
-   73,
+   112,
    78,
    130,
    116,
@@ -1213,6 +1488,7 @@
    119,
    115,
    90,
+   357,
    75,
    119,
    108,
@@ -1226,6 +1502,49 @@
    90,
    117,
    112
+  ],
+  "prosody_rules": [
+   {
+    "rule": "terminal_fall",
+    "phone": 34,
+    "from_hz": 200.5,
+    "to_hz": 184.6
+   },
+   {
+    "rule": "terminal_fall",
+    "phone": 37,
+    "from_hz": 268.6,
+    "to_hz": 184.6
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "rhythm",
+    "phone": 3,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.023
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "orchestra",
+    "phone": 11,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.5
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "unexpectedly",
+    "phone": 31,
+    "strength": 1.0,
+    "energy": 1.014,
+    "duration": 1.4
+   },
+   {
+    "rule": "micro_pause",
+    "phone": 24,
+    "frames": 6
+   }
   ]
  },
  "E4": {
@@ -1357,23 +1676,25 @@
    },
    {
     "token": "twenty",
-    "source": "lexicon",
+    "source": "lexicon (careful variant: restored dropped T)",
     "phones": [
      "T",
      "W",
      "EH1",
      "N",
+     "T",
      "IY0"
     ]
    },
    {
     "token": "twenty",
-    "source": "lexicon",
+    "source": "lexicon (careful variant: restored dropped T)",
     "phones": [
      "T",
      "W",
      "EH1",
      "N",
+     "T",
      "IY0"
     ]
    },
@@ -1536,8 +1857,15 @@
    1.0,
    1.0,
    1.0,
+   1.0,
+   1.0,
    1.0
   ],
+  "clarity": {
+   "tempo": 1.0,
+   "long_word_scale": 1.25,
+   "heavy_word_pause": true
+  },
   "phones": [
    "DH",
    "AH0",
@@ -1588,11 +1916,13 @@
    "W",
    "EH1",
    "N",
+   "T",
    "IY0",
    "T",
    "W",
    "EH1",
    "N",
+   "T",
    "IY0",
    "S",
    "IH1",
@@ -1669,11 +1999,13 @@
    144,
    94,
    119,
+   133,
    112,
    133,
    144,
    94,
    119,
+   133,
    112,
    131,
    109,
@@ -1699,6 +2031,70 @@
    133,
    86,
    118
+  ],
+  "prosody_rules": [
+   {
+    "rule": "lexical_stress",
+    "word": "meeting",
+    "phone": 3,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "energy": 1.362,
+    "duration": 1.072
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "forty",
+    "phone": 21,
+    "strength": 1.0,
+    "pitch": 1.004
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "November",
+    "phone": 41,
+    "strength": 1.0,
+    "pitch": 1.079,
+    "energy": 1.265,
+    "duration": 1.4
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "twenty",
+    "phone": 47,
+    "strength": 1.0,
+    "duration": 1.313
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "twenty",
+    "phone": 53,
+    "strength": 1.0,
+    "pitch": 1.12,
+    "duration": 1.072
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "andaroo",
+    "phone": 67,
+    "strength": 1.0,
+    "pitch": 1.093,
+    "duration": 1.238
+   },
+   {
+    "rule": "lexical_stress",
+    "word": "arrive",
+    "phone": 74,
+    "strength": 1.0,
+    "pitch": 1.066,
+    "energy": 1.052
+   },
+   {
+    "rule": "boundary",
+    "punct": ",",
+    "pause_phone": 61,
+    "pause_frames": 38
+   }
   ]
  }
 }

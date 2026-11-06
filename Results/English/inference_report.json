@@ -4,33 +4,34 @@
  "speaker": "svarah_8a8e2655",
  "speaker_id": 61,
  "symbol_table_sha256": "c46db8d7e6a7a0907431c5e7fbc39c0151b8e1dfab6eb855e48362db52b7e7ee",
- "telugu_font": "Noto Sans Telugu",
+ "telugu_font": null,
  "controls": {
   "pitch": 1.0,
   "energy": 1.0,
-  "duration": 1.0
+  "duration": 1.1
  },
  "items": {
   "E1": {
    "wav": "test_generated_audios/E1_en.wav",
-   "seconds": 6.316,
-   "phones": 85,
+   "seconds": 8.649,
+   "phones": 88,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 139264,
-    "mel_frames_x_hop": 139264,
+    "wav_samples": 190720,
+    "mel_frames_x_hop": 185856,
+    "edge_frames": 19,
     "wav_finite": true,
-    "wav_rms": 0.12580636608181922,
+    "wav_rms": 0.12047633099481017,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.26829,
-    "vocoder_s": 4.08314,
-    "audio_s": 6.316,
-    "rtf_acoustic": 0.04248,
-    "rtf_total": 0.68897
+    "acoustic_s": 0.37447,
+    "vocoder_s": 5.89814,
+    "audio_s": 8.649,
+    "rtf_acoustic": 0.04329,
+    "rtf_total": 0.7252
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E1_duration.png",
@@ -40,24 +41,25 @@
   },
   "E2a": {
    "wav": "test_generated_audios/E2a_en.wav",
-   "seconds": 4.238,
-   "phones": 50,
+   "seconds": 5.526,
+   "phones": 51,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 93440,
-    "mel_frames_x_hop": 93440,
+    "wav_samples": 121856,
+    "mel_frames_x_hop": 116992,
+    "edge_frames": 19,
     "wav_finite": true,
-    "wav_rms": 0.14139112513942576,
+    "wav_rms": 0.1416856223085167,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.19382,
-    "vocoder_s": 2.55894,
-    "audio_s": 4.238,
-    "rtf_acoustic": 0.04574,
-    "rtf_total": 0.6496
+    "acoustic_s": 0.24385,
+    "vocoder_s": 3.33766,
+    "audio_s": 5.526,
+    "rtf_acoustic": 0.04412,
+    "rtf_total": 0.64808
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E2a_duration.png",
@@ -67,24 +69,25 @@
   },
   "E2b": {
    "wav": "test_generated_audios/E2b_en.wav",
-   "seconds": 4.551,
-   "phones": 56,
+   "seconds": 6.014,
+   "phones": 58,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 100352,
-    "mel_frames_x_hop": 100352,
+    "wav_samples": 132608,
+    "mel_frames_x_hop": 127744,
+    "edge_frames": 19,
     "wav_finite": true,
-    "wav_rms": 0.14564295874514757,
+    "wav_rms": 0.12630588360753853,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.19143,
-    "vocoder_s": 2.81899,
-    "audio_s": 4.551,
-    "rtf_acoustic": 0.04206,
-    "rtf_total": 0.66147
+    "acoustic_s": 0.26753,
+    "vocoder_s": 3.73329,
+    "audio_s": 6.014,
+    "rtf_acoustic": 0.04449,
+    "rtf_total": 0.66525
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E2b_duration.png",
@@ -94,24 +97,25 @@
   },
   "E3": {
    "wav": "test_generated_audios/E3_en.wav",
-   "seconds": 2.879,
-   "phones": 37,
+   "seconds": 4.156,
+   "phones": 38,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 63488,
-    "mel_frames_x_hop": 63488,
+    "wav_samples": 91648,
+    "mel_frames_x_hop": 86784,
+    "edge_frames": 19,
     "wav_finite": true,
-    "wav_rms": 0.1412632949616425,
+    "wav_rms": 0.132065994189778,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.13372,
-    "vocoder_s": 1.6506,
-    "audio_s": 2.879,
-    "rtf_acoustic": 0.04644,
-    "rtf_total": 0.61971
+    "acoustic_s": 0.18812,
+    "vocoder_s": 2.52885,
+    "audio_s": 4.156,
+    "rtf_acoustic": 0.04526,
+    "rtf_total": 0.65369
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E3_duration.png",
@@ -121,24 +125,25 @@
   },
   "E4": {
    "wav": "test_generated_audios/E4_en.wav",
-   "seconds": 7.187,
-   "phones": 79,
+   "seconds": 8.394,
+   "phones": 81,
    "checks": {
     "sum_d_equals_mel_len": true,
     "len_d_equals_phones": true,
-    "wav_samples": 158464,
-    "mel_frames_x_hop": 158464,
+    "wav_samples": 185088,
+    "mel_frames_x_hop": 180224,
+    "edge_frames": 19,
     "wav_finite": true,
-    "wav_rms": 0.1250438147610802,
+    "wav_rms": 0.11680483688578566,
     "wav_not_silent": true,
     "zero_duration_phones": 0
    },
    "timing": {
-    "acoustic_s": 0.30266,
-    "vocoder_s": 4.54112,
-    "audio_s": 7.187,
-    "rtf_acoustic": 0.04211,
-    "rtf_total": 0.674
+    "acoustic_s": 0.36699,
+    "vocoder_s": 5.46647,
+    "audio_s": 8.394,
+    "rtf_acoustic": 0.04372,
+    "rtf_total": 0.69495
    },
    "plots": {
     "duration": "variance_adaptor_plots/duration/E4_duration.png",
@@ -148,15 +153,27 @@
   }
  },
  "gv_postfilter": {
-  "ratio_file": "Results/English/gv_ratio.json",
+  "ratio_file": "/kaggle/temp/repo/Results/English/gv_ratio.json",
   "strength": 1.0
  },
  "device": "cpu",
+ "vocoder": "generator_universal",
+ "prosody_rules": {
+  "terminal_fall": true,
+  "stress_strength": 1.0,
+  "phrasing": true
+ },
+ "clarity": {
+  "long_word_scale": 1.25,
+  "heavy_word_pause": true,
+  "denoise_profile": "/kaggle/temp/repo/Results/English/noise_profile.json",
+  "edge_fade": true
+ },
  "timing_summary": {
   "items": 5,
-  "audio_s": 25.171,
-  "rtf_acoustic": 0.0433,
-  "rtf_total": 0.66516,
+  "audio_s": 32.739,
+  "rtf_acoustic": 0.04401,
+  "rtf_total": 0.68436,
   "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
  },
  "title_rendering": "Latin text only"
