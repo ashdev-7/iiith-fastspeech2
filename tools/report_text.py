@@ -13,10 +13,10 @@ ANALYSIS = {
     "E1": [
         "<b>Duration (model).</b> <i>antidisestablishmentarianism</i> takes 2,020 ms (26 % of the model's 7.74 s) with uniformly short phones; "
         "<i>parliamentary</i> 801 ms, <i>proceedings</i> 882 ms. The final vowel is only 1.1× the mean vowel: little phrase-final lengthening. "
-        "At the two micro-pause positions the model predicts 383 and 464 ms, i.e. it treats every pause symbol as a phrase break; the option "
+        "At the two micro-pause positions the model predicts 383 and 464 ms, as long as phrase-boundary pauses; the option "
         "sets them to 70 ms.",
         "<b>Pitch (model).</b> Several similar peaks (<i>considerable</i> 261, <i>antidisestablishmentarianism</i> 256, <i>movement</i> 248 Hz), "
-        "lowest on <i>during</i> (204 Hz), first third 225 → last third 195 Hz: a flat, list-like contour with declination.",
+        "lowest on <i>during</i> (204 Hz), first third 225 → last third 195 Hz: several peaks of similar height and an overall fall.",
         "<b>Energy (model).</b> Vowels median 63, nasals 43, other consonants 15 a.u., pauses ≈ 3; the final vowel of <i>proceedings</i> is 41.",
         "<b>Options.</b> Long words × 1.25 and everything × 1.10: the long word 2,020 → 2,798 ms, <i>parliamentary</i> 801 → 1,103 ms; the stress "
         "rule raised the stressed vowel of seven words (pitch up to × 1.12, energy up to × 1.5). Whisper recognises the long word exactly.",
@@ -33,7 +33,7 @@ ANALYSIS = {
         "360 / 348 ms; the terminal fall lowers the last two phones to 182 Hz; the micro-pause before <i>the ceremony</i> is 70 ms (model: 255 ms).",
     ],
     "E2b": [
-        "<b>Duration (model).</b> <i>conduct</i> (verb, <code>K AA0 N D AH1 K T</code>): syllables 279 / 279 ms (ratio 1.00, against 0.96 for the "
+        "<b>Duration (model).</b> <i>conduct</i> (verb, <code>K AA0 N D AH1 K T</code>; the input differs from the noun only in the stress digits): syllables 279 / 279 ms (ratio 1.00, against 0.96 for the "
         "noun) and 557 ms in all (noun: 639 ms). In the model's prediction the noun/verb difference is mainly the word's length, not which syllable "
         "is prominent. Final lengthening 1.2× on <i>method</i>.",
         "<b>Pitch (model).</b> Vowels of <i>conduct</i> 215 / 218 Hz (almost level); peaks on <i>will</i> (251 Hz) and <i>researchers</i> "
@@ -56,7 +56,7 @@ ANALYSIS = {
     ],
     "E4": [
         "<b>Duration (model).</b> Numbers read as words with growing durations (<i>ten</i> 232, <i>forty</i> 325, <i>five</i> 395 ms; "
-        "<i>twelve</i> 441, <i>November</i> 464, <i>six</i> 441 ms): each number group ends long, list-like; <i>twenty twenty</i> 337 + 325 ms; "
+        "<i>twelve</i> 441, <i>November</i> 464, <i>six</i> 441 ms): each number group ends on its longest word; <i>twenty twenty</i> 337 + 325 ms; "
         "<i>AM</i> 290 ms. The comma gives a 406 ms pause. After it the function words are very short (<i>should</i> 232 ms with a 70 ms "
         "vowel, <i>on</i> 151 ms); final lengthening 1.8× on <i>time</i>.",
         "<b>Pitch (model).</b> Highest on <i>meeting</i> (268 Hz), lowest on <i>time</i> (188 Hz); no pitch reset after the comma "
@@ -69,8 +69,8 @@ ANALYSIS = {
     ],
     # ------------------------------------------------------------------ Telugu (as submitted, no options)
     "T1": [
-        "<span class=\"te\">న్యూరోఫార్మకోలాజికల్</span> lasts 1,695 ms (32 % of 5.27 s) and carries the sentence's highest pitch (313 Hz): the long loanword is the focus of the sentence-initial phrase.",
-        "Pitch drops to 230 Hz on <span class=\"te\">పరిశోధనలో</span> and stays in a narrow 237–258 Hz band for the rest: a typical Telugu (verb-final) declarative pattern with the main prominence early.",
+        "<span class=\"te\">న్యూరోఫార్మకోలాజికల్</span> lasts 1,695 ms (32 % of 5.27 s) and carries the sentence's highest pitch (313 Hz).",
+        "Pitch drops to 230 Hz on <span class=\"te\">పరిశోధనలో</span> and stays in a narrow 237–258 Hz band for the rest: the F0 maximum is early and the sentence-final verb is low.",
         "The final verb <span class=\"te\">విశ్లేషించారు</span> is long (964 ms; cluster <code>sh l</code>, nasal <code>ny</code> before <code>c</code>) with 1.3× final lengthening; no internal pauses (no internal punctuation).",
     ],
     "T2a": [
@@ -79,9 +79,9 @@ ANALYSIS = {
         "Final vowel 151 ms, 1.8× the mean: strong phrase-final lengthening.",
     ],
     "T2b": [
-        "<span class=\"te\">పట్టు</span> has the same phones and the same duration (337 ms) as in T2a, as it should (the two words are written and pronounced alike), but now carries the sentence's pitch peak (295 Hz vs 242 Hz in T2a): as the modifier in <span class=\"te\">పట్టు చీర</span> (silk saree) it is accented, after a low start on <span class=\"te\">ఆమె</span> (220 Hz).",
+        "<span class=\"te\">పట్టు</span> has the same phones and the same duration (337 ms) as in T2a, as it should (the two words are written and pronounced alike), but now carries the sentence's F0 maximum (295 Hz vs 242 Hz in T2a), directly before <span class=\"te\">చీర</span> and after a low start on <span class=\"te\">ఆమె</span> (220 Hz).",
         "The rest declines from 254 Hz (<span class=\"te\">చీరను</span>) to 202 Hz (<span class=\"te\">వచ్చింది</span>), with 1.7× final lengthening.",
-        "The difference between T2a and T2b is therefore purely prosodic (position and focus), which the model reproduces.",
+        "The input phones of the word are identical in T2a and T2b; the model gives it the same duration and a different F0 depending on its position in the sentence (there is no recording of these sentences to compare with).",
     ],
     "T3": [
         "Peak on <span class=\"te\">పులి</span> (321 Hz, the topic).",
@@ -90,14 +90,14 @@ ANALYSIS = {
     ],
     "T4": [
         "Longest sentence (9.13 s, 120 phones). Numbers are expanded to Telugu words: <span class=\"te\">రెండు వేల ఇరవై ఆరు</span> (302/290/453/267 ms), <span class=\"te\">పన్నెండవ</span> (615 ms), <span class=\"te\">పది నలభై ఐదు</span> (244/418/267 ms), read without hesitation pauses.",
-        "The comma gives a 546 ms pause followed by a clear <b>pitch reset</b>: from ≈ 208 Hz on <span class=\"te\">ప్రారంభమవుతుంది</span> (the longest word, 1,126 ms) up to 270 Hz on <span class=\"te\">సమయానికి</span>: the second clause starts a new intonation phrase.",
+        "The comma gives a 546 ms pause followed by a clear <b>pitch reset</b>: from ≈ 208 Hz on <span class=\"te\">ప్రారంభమవుతుంది</span> (the longest word, 1,126 ms) up to 270 Hz on <span class=\"te\">సమయానికి</span>: the F0 of the second clause starts high again (a reset).",
         "Highest pitch on <span class=\"te\">సమావేశం</span> (272 Hz), lowest on the final <span class=\"te\">ఉంచండి</span> (198 Hz), with 1.5× final lengthening.",
     ],
 }
 # Energy (a.u., per-phone STFT-norm energy; medians by phone class), Telugu: the model's prediction as used.
 _TE_ENERGY = {
     "T1": "Vowels median 79, nasals 65, other consonants 35; the final /u/ of <span class=\"te\">విశ్లేషించారు</span> falls to 15: "
-          "the energy fades over the last syllables, as in a declarative ending.",
+          "the energy falls over the last syllables.",
     "T2a": "Vowels median 82, nasals 72, other consonants 19; the geminate <code>tt tt</code> of <span class=\"te\">పట్టు</span> is the "
            "energy minimum (8.6), the long closure of the stop; the final /i/ drops to 25.",
     "T2b": "Vowels median 84, nasals 88: the /m/ of <span class=\"te\">ఆమె</span> is the strongest phone (139), so the sentence starts "
@@ -159,8 +159,8 @@ TEXT = {
             "senses (written and pronounced alike; only the prosody differs, §6.2); the errors are word-boundary merges "
             "(<span class=\"te\">తాడు పయతని</span> for <span class=\"te\">తాడుపై అతని</span>, <span class=\"te\">ఆమేపట్టు</span>) and "
             "vowel length (<span class=\"te\">ఆమె → ఆమే</span>, <span class=\"te\">చీర → చిర</span>). <b>T3</b>: the split "
-            "<span class=\"te ws\">అడ  విలో</span> is heard as the single word <span class=\"te\">అడవిలో</span>, i.e. joined as a listener "
-            "would join it; the only error is again శ → స. <b>T4</b>: Whisper writes the spoken numbers back as digits (2026, "
+            "<span class=\"te ws\">అడ  విలో</span> is transcribed by Whisper as the single word <span class=\"te\">అడవిలో</span> "
+            "(no pause between the parts, §6.2); the only error is again శ → స. <b>T4</b>: Whisper writes the spoken numbers back as digits (2026, "
             "10.45), which the CER counts as errors, drops the opening <span class=\"te\">ఈ సమావేశం</span>, merges "
             "<span class=\"te\">నవంబర్ పన్నెండవ తేదీ</span> across word boundaries (the syllables are present) and hears "
             "<span class=\"te\">ప్రారంభ</span> without aspiration; the final <span class=\"te\">ఉంచండి</span> is exact.</p>"
@@ -238,8 +238,8 @@ TEXT.update({
         "<b>E3</b>: exact, including the joined <i>rhythm</i>. <b>E4</b>: the numbers, the date and <i>AM</i> are recognised; the last "
         "clause is not (\"Suhant Arashudra I. One time.\"): <i>andaroo</i> is a Telugu word (అందరూ, \"everyone\") that the ASR cannot "
         "know, and the function words after it are short (§5.3). Across the five sentences the clear-speech options make the endings "
-        "complete and the pauses quieter; the remaining audible weaknesses are short unstressed function words and a slightly "
-        "breathy voice quality (§5.2).</p>"
+        "complete and the pauses quieter; on listening (the author's impression; no listening test was run) short unstressed function words and a slightly "
+        "breathy quality remain (§5.2).</p>"
         "<p><b>Found by inspecting the outputs.</b> The first full English run (same checkpoint) read E3 as <code>R AY1 DH</code> + the "
         "letter name <code>EH1 M</code> (\"rythe em\") and ended <i>andaroo</i> in <code>OW</code>. Both were caught in "
         "<code>frontend_trace.json</code> and fixed by general rules, covered by tests (§1.2); the outputs were regenerated with the "
