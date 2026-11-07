@@ -1,0 +1,99 @@
+{
+ "what": "Does the Telugu aligner having seen the validation clips change the validation results? (report 2.2)",
+ "language": "te",
+ "A_val_alignment_agreement": {
+  "clips": 446,
+  "aligned_by_both": 445,
+  "not_aligned_by_one_or_both": 1,
+  "missing_examples": [
+   "te_04766"
+  ],
+  "same_phone_sequence": 363,
+  "phones_compared": 27547,
+  "duration_abs_diff_frames": {
+   "mean": 0.412023087813555,
+   "median": 0.0,
+   "p95": 1.0
+  },
+  "phones_identical_duration_pct": 66.7550005445239,
+  "phones_within_1_frame_pct": 95.40421824518096,
+  "phones_within_2_frames_pct": 98.43540131411768,
+  "boundary_shift_ms": {
+   "mean": 2.6634479253639234,
+   "median": 0.0,
+   "p95": 10.000000000000231
+  }
+ },
+ "A_train_alignment_agreement": {
+  "clips": 2140,
+  "aligned_by_both": 2139,
+  "not_aligned_by_one_or_both": 1,
+  "missing_examples": [
+   "te_02642"
+  ],
+  "same_phone_sequence": 1951,
+  "phones_compared": 157068,
+  "duration_abs_diff_frames": {
+   "mean": 0.3794152850994474,
+   "median": 0.0,
+   "p95": 1.0
+  },
+  "phones_identical_duration_pct": 69.08027096544171,
+  "phones_within_1_frame_pct": 96.0641250923167,
+  "phones_within_2_frames_pct": 98.63625945450379,
+  "boundary_shift_ms": {
+   "mean": 2.625805383655486,
+   "median": 0.0,
+   "p95": 10.000000000000231
+  }
+ },
+ "checkpoint_step": 55524,
+ "B_model_duration_scores": {
+  "reported_targets_all_val": {
+   "utterances": 446,
+   "mae_frames": {
+    "mean": 1.0583,
+    "median": 1.0394,
+    "std": 0.211,
+    "n": 446
+   },
+   "log_r": {
+    "mean": 0.8481,
+    "median": 0.857,
+    "std": 0.0627,
+    "n": 446
+   }
+  },
+  "same_clips_reported_targets": {
+   "utterances": 445,
+   "mae_frames": {
+    "mean": 1.058,
+    "median": 1.0392,
+    "std": 0.2112,
+    "n": 445
+   },
+   "log_r": {
+    "mean": 0.8484,
+    "median": 0.8574,
+    "std": 0.0623,
+    "n": 445
+   }
+  },
+  "same_clips_train_only_aligner": {
+   "utterances": 445,
+   "mae_frames": {
+    "mean": 1.1121,
+    "median": 1.0818,
+    "std": 0.219,
+    "n": 445
+   },
+   "log_r": {
+    "mean": 0.8229,
+    "median": 0.836,
+    "std": 0.0759,
+    "n": 445
+   }
+  },
+  "note": "same metric as evaluate_val.py; the model is the released te_model, unchanged"
+ }
+}

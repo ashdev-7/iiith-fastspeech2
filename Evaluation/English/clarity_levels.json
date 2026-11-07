@@ -1,0 +1,78 @@
+{
+ "files": {
+  "E1_en.wav": {
+   "before": {
+    "quiet_db": -40.25201694927552,
+    "speech_db": -17.506795355190864,
+    "end_db": -42.514998835521425
+   },
+   "after": {
+    "quiet_db": -47.6178701454313,
+    "speech_db": -17.395794760809785,
+    "end_db": -85.54937780382983
+   }
+  },
+  "E2a_en.wav": {
+   "before": {
+    "quiet_db": -47.81195550434692,
+    "speech_db": -16.82728865631549,
+    "end_db": -43.6605219189175
+   },
+   "after": {
+    "quiet_db": -52.40925058816987,
+    "speech_db": -15.781389489680869,
+    "end_db": -85.54937780382983
+   }
+  },
+  "E2b_en.wav": {
+   "before": {
+    "quiet_db": -46.088902777614535,
+    "speech_db": -16.633090969216145,
+    "end_db": -40.617033466924795
+   },
+   "after": {
+    "quiet_db": -53.87035748238641,
+    "speech_db": -16.19664578300005,
+    "end_db": -85.55926331357897
+   }
+  },
+  "E3_en.wav": {
+   "before": {
+    "quiet_db": -48.09543636337859,
+    "speech_db": -16.35470251761016,
+    "end_db": -46.24470098101037
+   },
+   "after": {
+    "quiet_db": -59.30661527000544,
+    "speech_db": -16.272145285724772,
+    "end_db": -85.55926331357897
+   }
+  },
+  "E4_en.wav": {
+   "before": {
+    "quiet_db": -50.69718363334182,
+    "speech_db": -18.19039985063663,
+    "end_db": -39.01709621170996
+   },
+   "after": {
+    "quiet_db": -57.595269481288554,
+    "speech_db": -16.94366830129632,
+    "end_db": -85.55926331357897
+   }
+  }
+ },
+ "mean": {
+  "before": {
+   "quiet_db": -46.6,
+   "speech_db": -17.1,
+   "end_db": -42.4
+  },
+  "after": {
+   "quiet_db": -54.2,
+   "speech_db": -16.5,
+   "end_db": -85.6
+  }
+ },
+ "before": "Evaluation/English/model_only/test_generated_audios",
+ "after": "Results/English/test_generated_audios"
+}

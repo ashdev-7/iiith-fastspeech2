@@ -6,7 +6,7 @@
     {"id": "SE03", "lang": "en", "category": "homograph (wind: noun / verb)", "text": "The wind was strong, so we had to wind the rope tightly."},
     {"id": "SE04", "lang": "en", "category": "Indian names and places", "text": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend."},
     {"id": "SE05", "lang": "en", "category": "rare technical words", "text": "The cryptographic protocol relies on elliptic curve signatures."},
-    {"id": "SE06", "lang": "en", "category": "abbreviations (known gap: no abbreviation expansion)", "text": "Dr. Rao presented the results at IIIT Hyderabad."},
+    {"id": "SE06", "lang": "en", "category": "abbreviations and acronyms", "text": "Dr. Rao presented the results at IIIT Hyderabad."},
     {"id": "SE07", "lang": "en", "category": "long sentence", "text": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring."},
     {"id": "SE08", "lang": "en", "category": "exclamation, very short", "text": "What a wonderful surprise!"},
     {"id": "ST01", "lang": "te", "category": "question intonation", "text": "మీరు రేపు ఉదయం ఆఫీసుకు వస్తారా?", "gloss": "Will you come to the office tomorrow morning?"},

@@ -1,7 +1,7 @@
 """Speaker adaptation: fine-tune the trained multi-speaker model on the TRAINING clips of one voice.
 
 Why: on English the decoder averages over 110 speakers, so the test voice comes out over-smoothed and
-breathier than its own recordings (report 5.0b: HNR natural 16.3 dB, copy-synthesis 16.7, oracle 15.1).
+breathier than its own recordings (report §5.2: HNR natural 16.3 dB, copy-synthesis 16.7, oracle 15.1).
 Fine-tuning only the decoder side (decoder, mel_linear, postnet, speaker embedding; optionally the
 variance adaptor) on that voice's training clips is standard speaker adaptation (AdaSpeech, Chen et al.
 2021). The encoder stays frozen. Data: the voice's clips in train.txt only; its clips in val.txt (never

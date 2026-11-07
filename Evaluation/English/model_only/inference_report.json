@@ -1,0 +1,178 @@
+{
+ "checkpoint": "en_model.pth.tar",
+ "step": 17949,
+ "speaker": "svarah_8a8e2655",
+ "speaker_id": 61,
+ "symbol_table_sha256": "c46db8d7e6a7a0907431c5e7fbc39c0151b8e1dfab6eb855e48362db52b7e7ee",
+ "telugu_font": "Nirmala UI",
+ "controls": {
+  "pitch": 1.0,
+  "energy": 1.0,
+  "duration": 1.0
+ },
+ "items": {
+  "E1": {
+   "wav": "test_generated_audios\\E1_en.wav",
+   "seconds": 6.304,
+   "phones": 86,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 139008,
+    "mel_frames_x_hop": 139008,
+    "edge_frames": 0,
+    "wav_finite": true,
+    "wav_rms": 0.110427167853458,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.21597,
+    "vocoder_s": 2.76802,
+    "audio_s": 6.304,
+    "rtf_acoustic": 0.03426,
+    "rtf_total": 0.47333
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots\\duration\\E1_duration.png",
+    "pitch": "variance_adaptor_plots\\pitch\\E1_pitch.png",
+    "energy": "variance_adaptor_plots\\energy\\E1_energy.png"
+   }
+  },
+  "E2a": {
+   "wav": "test_generated_audios\\E2a_en.wav",
+   "seconds": 4.377,
+   "phones": 50,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 96512,
+    "mel_frames_x_hop": 96512,
+    "edge_frames": 0,
+    "wav_finite": true,
+    "wav_rms": 0.11821546662309015,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.19961,
+    "vocoder_s": 1.99672,
+    "audio_s": 4.377,
+    "rtf_acoustic": 0.0456,
+    "rtf_total": 0.50179
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots\\duration\\E2a_duration.png",
+    "pitch": "variance_adaptor_plots\\pitch\\E2a_pitch.png",
+    "energy": "variance_adaptor_plots\\energy\\E2a_energy.png"
+   }
+  },
+  "E2b": {
+   "wav": "test_generated_audios\\E2b_en.wav",
+   "seconds": 4.551,
+   "phones": 56,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 100352,
+    "mel_frames_x_hop": 100352,
+    "edge_frames": 0,
+    "wav_finite": true,
+    "wav_rms": 0.12141294455613122,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.16942,
+    "vocoder_s": 2.14161,
+    "audio_s": 4.551,
+    "rtf_acoustic": 0.03723,
+    "rtf_total": 0.50779
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots\\duration\\E2b_duration.png",
+    "pitch": "variance_adaptor_plots\\pitch\\E2b_pitch.png",
+    "energy": "variance_adaptor_plots\\energy\\E2b_energy.png"
+   }
+  },
+  "E3": {
+   "wav": "test_generated_audios\\E3_en.wav",
+   "seconds": 2.926,
+   "phones": 37,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 64512,
+    "mel_frames_x_hop": 64512,
+    "edge_frames": 0,
+    "wav_finite": true,
+    "wav_rms": 0.11829652797849331,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.12888,
+    "vocoder_s": 1.3121,
+    "audio_s": 2.926,
+    "rtf_acoustic": 0.04405,
+    "rtf_total": 0.49252
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots\\duration\\E3_duration.png",
+    "pitch": "variance_adaptor_plots\\pitch\\E3_pitch.png",
+    "energy": "variance_adaptor_plots\\energy\\E3_energy.png"
+   }
+  },
+  "E4": {
+   "wav": "test_generated_audios\\E4_en.wav",
+   "seconds": 7.349,
+   "phones": 81,
+   "checks": {
+    "sum_d_equals_mel_len": true,
+    "len_d_equals_phones": true,
+    "wav_samples": 162048,
+    "mel_frames_x_hop": 162048,
+    "edge_frames": 0,
+    "wav_finite": true,
+    "wav_rms": 0.10392455231511911,
+    "wav_not_silent": true,
+    "zero_duration_phones": 0
+   },
+   "timing": {
+    "acoustic_s": 0.25601,
+    "vocoder_s": 3.17789,
+    "audio_s": 7.349,
+    "rtf_acoustic": 0.03484,
+    "rtf_total": 0.46725
+   },
+   "plots": {
+    "duration": "variance_adaptor_plots\\duration\\E4_duration.png",
+    "pitch": "variance_adaptor_plots\\pitch\\E4_pitch.png",
+    "energy": "variance_adaptor_plots\\energy\\E4_energy.png"
+   }
+  }
+ },
+ "gv_postfilter": null,
+ "device": "cpu",
+ "vocoder": "generator_universal",
+ "prosody_rules": {
+  "terminal_fall": false,
+  "stress_strength": 0.0,
+  "phrasing": false
+ },
+ "clarity": {
+  "long_word_scale": 1.0,
+  "heavy_word_pause": false,
+  "denoise_profile": null,
+  "edge_fade": false
+ },
+ "timing_summary": {
+  "items": 5,
+  "audio_s": 25.507,
+  "rtf_acoustic": 0.03802,
+  "rtf_total": 0.48482,
+  "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
+ },
+ "title_rendering": "Latin text only",
+ "note": "Model-only output: no inference-time options (no post-filter, prosody rules or clarity options); same checkpoint, voice and frontend as Results/English. Rendered locally on CPU."
+}

@@ -10,10 +10,12 @@ HiFi-GAN (universal) as the vocoder:
 | Train / validation | 4.87 h / 0.98 h (3077 / 742 utterances) | 4.90 h / 1.01 h (2140 / 446 utterances; 4.96 h / 1.02 h selected, 28 clips not aligned) |
 | Text front end | lexicon + g2p_en, homograph POS rule, time/number normalisation | rule-based Telugu G2P, Telugu numbers/ordinals/times, English loanwords in Latin script |
 | Training | 17,949 steps, 1 × T4, 3.5 h | 55,524 steps, 2 × T4, 8 h |
-| Test voice | `svarah_8a8e2655` (clearest recordings, report §5.0); GV post-filter at inference (§5.0b) | `te_female` (better HiFi-GAN copy-synthesis) |
+| Test voice | `svarah_8a8e2655` (clearest recordings, report §5.1) | `te_female` (better HiFi-GAN copy-synthesis) |
+| Inference | GV post-filter and clear-speech options (report §5.2–5.3); model weights unchanged | the model as trained, no options |
 
 The full write-up is [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf). Every change to the
-reference code is listed, with its reason and test, in [`MODIFICATIONS.md`](MODIFICATIONS.md).
+reference code is listed, with its reason and test, in [`MODIFICATIONS.md`](MODIFICATIONS.md), which starts
+with a one-table summary of the Telugu support.
 
 ## Results
 
@@ -34,7 +36,8 @@ Results/<English|Telugu>/
 ### Objective evaluation (held-out validation set; beyond the required outputs)
 
 Computed by [`fastspeech2/evaluate_val.py`](fastspeech2/evaluate_val.py) on every validation utterance,
-each with its own speaker, on Kaggle (jobs `fs2-04-eval`, `fs2-06-eval-fix`). Definitions are in
+each with its own speaker and without inference-time options, on Kaggle (jobs `fs2-04-eval`,
+`fs2-06-eval-fix`). Definitions are in
 [`fastspeech2/eval_metrics.py`](fastspeech2/eval_metrics.py). Silence phones are excluded from the
 duration, pitch and energy metrics.
 
@@ -53,12 +56,15 @@ duration, pitch and energy metrics.
 reported in papers; comparable only between rows and languages here.
 Copy-synthesis = the ground-truth mel through the same HiFi-GAN, i.e. the best this vocoder and this
 ASR model can do; the gap is what the acoustic model loses.
-† Whisper's Telugu recognition is weak (33 % CER even on copy-synthesis), so the Telugu figure mainly bounds
-the gap (2.7 points) rather than measuring pronunciation.
+† Whisper large-v3 is weak on Telugu (33 % CER even on copy-synthesis of real recordings), so the Telugu
+figure bounds the gap (2.7 points) rather than measuring pronunciation; it also writes some Telugu speech in
+Kannada script, which the report scores after mapping it back to Telugu (§5.5, §7.4).
 
-Extra stress sentences (numbers, questions, homographs, names, abbreviations, long sentences,
-Telugu–English code-mixing) are in [`Evaluation/stress_sentences.json`](Evaluation/stress_sentences.json);
-their audio, Whisper transcripts and a control-factor check are in `Evaluation/`.
+Further sentences beyond the assignment: 16 stress sentences (numbers, questions, homographs, names,
+abbreviations, long sentences, Telugu–English code-mixing; [`Evaluation/stress_sentences.json`](Evaluation/stress_sentences.json))
+and 20 extended sentences ([`Evaluation/Extended/extended_sentences.json`](Evaluation/Extended/extended_sentences.json)),
+scored in the report (§7.3–7.4). `Evaluation/English/model_only/` holds the English test sentences from the
+model alone (no inference-time options), for comparison with `Results/English/`.
 
 ## Checkpoints
 
@@ -80,9 +86,18 @@ Load with `torch.load(path, map_location=..., weights_only=True)["model"]`; plac
 ```bash
 mkdir -p D/preprocessed/en && cp Results/English/stats.json Results/English/speakers.json D/preprocessed/en/
 python English/inference.py --data_root D --checkpoint English/checkpoints/en_model.pth.tar \
-    --speaker svarah_8a8e2655 --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 \
-    --out_dir my_output          # optional: --pitch_control 1.2 --duration_control 0.9
+    --speaker svarah_8a8e2655 --out_dir my_output \
+    --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 \
+    --prosody_fall --prosody_stress 1.0 --prosody_phrasing --duration_control 1.10 \
+    --long_word_scale 1.25 --heavy_word_pause \
+    --denoise_profile Results/English/noise_profile.json --edge_fade
+mkdir -p D/preprocessed/te && cp Results/Telugu/stats.json Results/Telugu/speakers.json D/preprocessed/te/
+python Telugu/inference.py --data_root D --checkpoint Telugu/checkpoints/te_model.pth.tar \
+    --speaker te_female --out_dir my_output_te
 ```
+
+`--sentences file.json` synthesises other text (same format as `tests/test_sentences.json`, with each
+sentence's SHA-256). Leaving out the English options gives the model-only output.
 
 ## Reproducing
 
@@ -122,8 +137,15 @@ python fastspeech2/evaluate_val.py --config Telugu/config.yaml --data_root D \
 # English: steps 3-5 (after step 1 with --lang en and the pretrained-aligner command in step 2)
 python English/preprocess.py --data_root D
 python English/train.py --data_root D --max_minutes 210          # 17,949 steps in the reported run
+python tools/noise_profile.py --config English/config.yaml --data_root D \
+    --checkpoint English/checkpoints/en_model.pth.tar --speaker svarah_8a8e2655 \
+    --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 --out Results/English/noise_profile.json
 python English/inference.py --data_root D --checkpoint English/checkpoints/en_model.pth.tar \
-    --speaker svarah_8a8e2655 --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 --out_dir Results/English
+    --speaker svarah_8a8e2655 --out_dir Results/English \
+    --gv_ratio Results/English/gv_ratio.json --gv_strength 1.0 \
+    --prosody_fall --prosody_stress 1.0 --prosody_phrasing --duration_control 1.10 \
+    --long_word_scale 1.25 --heavy_word_pause \
+    --denoise_profile Results/English/noise_profile.json --edge_fade
 ```
 
 Tests: `pytest` (tests that need torch, g2p_en or MFA are skipped where those are missing; every
@@ -137,8 +159,9 @@ fastspeech2/          the modified reference code, Telugu and English front ends
                       inference, plotting, evaluation
 kaggle/               the Kaggle job definitions and their shared stages (pipeline.py)
 tests/                unit and smoke tests; test_sentences.json = the ten test sentences, checksummed
+tools/                report build, measurement and analysis scripts
 Results/, Evaluation/ outputs (above)
-Report/               Technical_Report.pdf
+Report/               Technical_Report.pdf (source: Report/src/report.html, built by tools/build_report.py)
 ```
 
 ## Data and licences

@@ -8,6 +8,16 @@
   "ratio_file": "gv_ratio.json",
   "strength": 1.0
  },
+ "sentence_settings": {
+  "prosody_fall": true,
+  "prosody_stress": 1.0,
+  "prosody_phrasing": true,
+  "duration_control": 1.1,
+  "long_word_scale": 1.25,
+  "heavy_word_pause": true,
+  "denoise_profile": "/kaggle/temp/repo/Results/English/noise_profile.json",
+  "edge_fade": true
+ },
  "vocoder": "generator_universal",
  "mode": "sentences_only",
  "validation": {
@@ -126,9 +136,81 @@
    "set": "assignment",
    "category": null,
    "text": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "antidisestablishmentarianism",
+     "phone": 2,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.193,
+     "duration": 1.21
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "movement",
+     "phone": 31,
+     "strength": 1.0,
+     "pitch": 1.085,
+     "energy": 1.371,
+     "duration": 1.282
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "considerable",
+     "phone": 46,
+     "strength": 1.0,
+     "pitch": 1.013,
+     "energy": 1.449,
+     "duration": 1.158
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "momentum",
+     "phone": 56,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "during",
+     "phone": 62,
+     "strength": 1.0,
+     "pitch": 1.1
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "parliamentary",
+     "phone": 74,
+     "strength": 1.0,
+     "pitch": 1.112,
+     "energy": 1.104,
+     "duration": 1.257
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "proceedings",
+     "phone": 83,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 41,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 65,
+     "frames": 6
+    }
+   ],
    "model_input": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
-   "phones": "DH AH0 AE2 N T AY0 D IH0 S AH0 S T AE2 B L IH0 SH M AH0 N T EH1 R IY0 AH0 N IH0 Z AH0 M M UW1 V M AH0 N T G EY1 N D K AH0 N S IH1 D ER0 AH0 B AH0 L M OW0 M EH1 N T AH0 M D ER1 IH0 NG DH AH0 P AA2 R L AH0 M EH1 N ER0 IY0 P R AH0 S IY1 D IH0 NG Z",
-   "audio_s": 6.315827664399093,
+   "phones": "DH IY0 AE1 N T AY0 D IH0 S IH0 S T AE1 B L IH0 SH M AH0 N T AE1 R IY0 AH0 N IH2 Z AH0 M M UW1 V M AH0 N T G EY1 N D sp K AH0 N S IH1 D ER0 AH0 B AH0 L M OW0 M EH1 N T AH0 M D ER1 IH0 NG sp DH AH0 P AA2 R L AH0 M EH1 N T ER0 IY0 P R AH0 S IY1 D IH0 NG Z",
+   "audio_s": 8.649433106575964,
    "asr_transcript": "The anti-disestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -152,9 +234,70 @@
    "set": "assignment",
    "category": null,
    "text": "The orchestra's conduct during the ceremony was praised by the audience.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 47,
+     "from_hz": 196.0,
+     "to_hz": 181.6
+    },
+    {
+     "rule": "terminal_fall",
+     "phone": 48,
+     "from_hz": 188.1,
+     "to_hz": 181.6
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "orchestra's",
+     "phone": 2,
+     "strength": 1.0,
+     "pitch": 1.065,
+     "energy": 1.171
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "conduct",
+     "phone": 12,
+     "strength": 1.0,
+     "pitch": 1.105,
+     "energy": 1.5,
+     "duration": 1.137
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "during",
+     "phone": 19,
+     "strength": 1.0,
+     "pitch": 1.009,
+     "energy": 1.041,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "ceremony",
+     "phone": 26,
+     "strength": 1.0,
+     "pitch": 1.037,
+     "energy": 1.13,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "audience",
+     "phone": 45,
+     "strength": 1.0,
+     "duration": 1.011
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 22,
+     "frames": 6
+    }
+   ],
    "model_input": "The orchestra's conduct during the ceremony was praised by the audience.",
-   "phones": "DH AH0 AO1 R K AH0 S T R AH0 Z K AA1 N D AH0 K T D ER1 IH0 NG DH AH0 S EH1 R AH0 M OW2 N IY0 W AA1 Z P R EY1 Z D B AY1 DH AH0 AA1 D IY0 AH0 N S",
-   "audio_s": 4.237641723356009,
+   "phones": "DH IY0 AO1 R K AH0 S T R AH0 Z K AA1 N D AH0 K T D ER1 IH0 NG sp DH AH0 S EH1 R AH0 M OW2 N IY0 W AA1 Z P R EY1 Z D B AY1 DH IY0 AA1 D IY0 AH0 N S",
+   "audio_s": 5.526349206349207,
    "asr_transcript": "The orchestra's conduct during the ceremony was praised by the audience.",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -178,25 +321,84 @@
    "set": "assignment",
    "category": null,
    "text": "The researchers will conduct an experiment to evaluate the proposed method.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "researchers",
+     "phone": 3,
+     "strength": 1.0,
+     "pitch": 1.09,
+     "energy": 1.5,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "conduct",
+     "phone": 16,
+     "strength": 1.0,
+     "pitch": 1.03
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "experiment",
+     "phone": 26,
+     "strength": 1.0,
+     "pitch": 1.017,
+     "duration": 1.175
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "evaluate",
+     "phone": 38,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.064,
+     "duration": 1.313
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "proposed",
+     "phone": 50,
+     "strength": 1.0,
+     "energy": 1.032
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "method",
+     "phone": 54,
+     "strength": 1.0,
+     "duration": 1.384
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 19,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 33,
+     "frames": 6
+    }
+   ],
    "model_input": "The researchers will conduct an experiment to evaluate the proposed method.",
-   "phones": "DH AH0 R IY1 S ER0 CH ER0 Z W AH0 L K AA0 N D AH1 K T AE1 N IH0 K S P EH1 R AH0 M AH0 N T T AH0 IH0 V AE1 L Y UW0 EY2 T DH AH0 P R AH0 P OW1 Z D M EH1 TH AH0 D",
-   "audio_s": 4.551111111111111,
-   "asr_transcript": "The researchers will conduct an experimental evaluation of the proposed method.",
+   "phones": "DH AH0 R IY1 S ER0 CH ER0 Z W AH0 L K AA0 N D AH1 K T sp AE1 N IH0 K S P EH1 R AH0 M AH0 N T sp T AH0 IH0 V AE1 L Y UW0 EY2 T DH AH0 P R AH0 P OW1 Z D M EH1 TH AH0 D",
+   "audio_s": 6.013968253968254,
+   "asr_transcript": "The researchers will conduct an experiment to evaluate the proposed method.",
    "asr_vs_model_input": {
-    "cer": 0.109375,
-    "wer": 0.2727272727272727,
+    "cer": 0.0,
+    "wer": 0.0,
     "ref_chars": 64,
     "ref_words": 11,
-    "char_edits": 7,
-    "word_edits": 3
+    "char_edits": 0,
+    "word_edits": 0
    },
    "asr_vs_original_whisper_norm": {
-    "cer": 0.109375,
-    "wer": 0.2727272727272727,
+    "cer": 0.0,
+    "wer": 0.0,
     "ref_chars": 64,
     "ref_words": 11,
-    "char_edits": 7,
-    "word_edits": 3
+    "char_edits": 0,
+    "word_edits": 0
    }
   },
   {
@@ -204,9 +406,52 @@
    "set": "assignment",
    "category": null,
    "text": "The rhyth  m of the orchestra changed unexpectedly.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 34,
+     "from_hz": 200.5,
+     "to_hz": 184.6
+    },
+    {
+     "rule": "terminal_fall",
+     "phone": 37,
+     "from_hz": 268.6,
+     "to_hz": 184.6
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "rhythm",
+     "phone": 3,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.023
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "orchestra",
+     "phone": 11,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "unexpectedly",
+     "phone": 31,
+     "strength": 1.0,
+     "energy": 1.014,
+     "duration": 1.4
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 24,
+     "frames": 6
+    }
+   ],
    "model_input": "The rhyth m of the orchestra changed unexpectedly.",
-   "phones": "DH AH0 R IH1 DH AH0 M AH0 V DH AH0 AO1 R K AH0 S T R AH0 CH EY1 N JH D AH2 N IH0 K S P EH1 K T IH0 D L IY0",
-   "audio_s": 2.8792743764172335,
+   "phones": "DH AH0 R IH1 DH AH0 M AH0 V DH IY0 AO1 R K AH0 S T R AH0 CH EY1 N JH D sp AH2 N IH0 K S P EH1 K T IH0 D L IY0",
+   "audio_s": 4.156371882086168,
    "asr_transcript": "The rhythm of the orchestra changed unexpectedly.",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -230,25 +475,89 @@
    "set": "assignment",
    "category": null,
    "text": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "meeting",
+     "phone": 3,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.362,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "forty",
+     "phone": 21,
+     "strength": 1.0,
+     "pitch": 1.004
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "November",
+     "phone": 41,
+     "strength": 1.0,
+     "pitch": 1.079,
+     "energy": 1.265,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "twenty",
+     "phone": 47,
+     "strength": 1.0,
+     "duration": 1.313
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "twenty",
+     "phone": 53,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "andaroo",
+     "phone": 67,
+     "strength": 1.0,
+     "pitch": 1.093,
+     "duration": 1.238
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "arrive",
+     "phone": 74,
+     "strength": 1.0,
+     "pitch": 1.066,
+     "energy": 1.052
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 61,
+     "pause_frames": 38
+    }
+   ],
    "model_input": "The meeting will start at ten forty five AM on twelve November twenty twenty six, so andaroo should arrive on time.",
-   "phones": "DH AH0 M IY1 T IH0 NG W AH0 L S T AA1 R T AE1 T T EH1 N F AO1 R T IY0 F AY1 V EY1 EH1 M AA1 N T W EH1 L V N OW0 V EH1 M B ER0 T W EH1 N IY0 T W EH1 N IY0 S IH1 K S sp S OW1 AE0 N D AA1 R UW0 SH UH1 D ER0 AY1 V AA1 N T AY1 M",
-   "audio_s": 7.186575963718821,
-   "asr_transcript": "The meeting will start at 10.45 am on 12 November 2026, so and our should arrive on time.",
+   "phones": "DH AH0 M IY1 T IH0 NG W AH0 L S T AA1 R T AE1 T T EH1 N F AO1 R T IY0 F AY1 V EY1 EH1 M AA1 N T W EH1 L V N OW0 V EH1 M B ER0 T W EH1 N T IY0 T W EH1 N T IY0 S IH1 K S sp S OW1 AE0 N D AA1 R UW0 SH UH1 D ER0 AY1 V AA1 N T AY1 M",
+   "audio_s": 8.394013605442177,
+   "asr_transcript": "The meeting will start at 10.45 a.m. on 12 November 2026. Suhant Arashudra I. One time.",
    "asr_vs_model_input": {
-    "cer": 0.3978494623655914,
-    "wer": 0.42857142857142855,
+    "cer": 0.4731182795698925,
+    "wer": 0.6190476190476191,
     "ref_chars": 93,
     "ref_words": 21,
-    "char_edits": 37,
-    "word_edits": 9
+    "char_edits": 44,
+    "word_edits": 13
    },
    "asr_vs_original_whisper_norm": {
-    "cer": 0.05714285714285714,
-    "wer": 0.1111111111111111,
+    "cer": 0.17142857142857143,
+    "wer": 0.3888888888888889,
     "ref_chars": 70,
     "ref_words": 18,
-    "char_edits": 4,
-    "word_edits": 2
+    "char_edits": 12,
+    "word_edits": 7
    }
   },
   {
@@ -256,9 +565,18 @@
    "set": "stress",
    "category": "time and numbers",
    "text": "The train leaves at 7:30 PM from platform 3.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "seven",
+     "phone": 13,
+     "strength": 1.0,
+     "duration": 1.137
+    }
+   ],
    "model_input": "The train leaves at seven thirty PM from platform three.",
-   "phones": "DH AH0 T R EY1 N L IY1 V Z AE1 T S EH1 V AH0 N TH ER1 D IY0 P IY1 EH1 M F ER0 M P L AE1 T F AO2 R M TH R IY1",
-   "audio_s": 3.7964625850340137,
+   "phones": "DH AH0 T R EY1 N L IY1 V Z AE1 T S EH1 V AH0 N TH ER1 T IY2 P IY1 EH1 M F ER0 M P L AE1 T F AO2 R M TH R IY1",
+   "audio_s": 4.365351473922902,
    "asr_transcript": "The train leaves at 7.30 pm from Platform 3.",
    "asr_vs_model_input": {
     "cer": 0.34782608695652173,
@@ -282,9 +600,61 @@
    "set": "stress",
    "category": "question intonation",
    "text": "Did you remember to bring the documents for tomorrow's interview?",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "remember",
+     "phone": 8,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.146
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "documents",
+     "phone": 21,
+     "strength": 1.0,
+     "pitch": 1.097
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "tomorrow's",
+     "phone": 36,
+     "strength": 1.0,
+     "pitch": 1.12
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "interview",
+     "phone": 40,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.216
+    },
+    {
+     "rule": "question_rise",
+     "phone": 40,
+     "from_hz": 209.8,
+     "to_hz": 228.2
+    },
+    {
+     "rule": "question_rise",
+     "phone": 43,
+     "from_hz": 204.0,
+     "to_hz": 248.9
+    },
+    {
+     "rule": "question_rise",
+     "phone": 46,
+     "from_hz": 187.4,
+     "to_hz": 269.7
+    }
+   ],
    "model_input": "Did you remember to bring the documents for tomorrow's interview?",
-   "phones": "D IH0 D Y UW1 R IH0 M EH1 M B ER0 T AH0 B R IH1 NG DH AH0 D AA1 K Y AH0 M AH0 N T S F AO1 R T AH0 M AA1 R OW2 Z IH1 N ER0 V Y UW2",
-   "audio_s": 3.599092970521542,
+   "phones": "D IH0 D Y UW1 R IH0 M EH1 M B ER0 T AH0 B R IH1 NG DH AH0 D AA1 K Y AH0 M AH0 N T S F AO1 R T AH0 M AA1 R OW2 Z IH1 N T ER0 V Y UW2",
+   "audio_s": 4.260861678004535,
    "asr_transcript": "Did you remember to bring the documents for tomorrow's interview?",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -308,9 +678,30 @@
    "set": "stress",
    "category": "homograph (wind: noun / verb)",
    "text": "The wind was strong, so we had to wind the rope tightly.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 37,
+     "from_hz": 199.7,
+     "to_hz": 175.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "tightly",
+     "phone": 34,
+     "strength": 1.0,
+     "duration": 1.356
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 14,
+     "pause_frames": 25
+    }
+   ],
    "model_input": "The wind was strong, so we had to wind the rope tightly.",
    "phones": "DH AH0 W AY1 N D W AA1 Z S T R AO1 NG sp S OW1 W IY1 HH AE1 D T AH0 W AY1 N D DH AH0 R OW1 P T AY1 T L IY0",
-   "audio_s": 3.7848526077097504,
+   "audio_s": 4.493061224489796,
    "asr_transcript": "The wind was strong, so we had to wind the rope tightly.",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -334,9 +725,52 @@
    "set": "stress",
    "category": "Indian names and places",
    "text": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 48,
+     "from_hz": 200.6,
+     "to_hz": 180.6
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Priya",
+     "phone": 2,
+     "strength": 1.0,
+     "pitch": 1.082,
+     "energy": 1.118
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Venkatesh",
+     "phone": 13,
+     "strength": 1.0,
+     "pitch": 1.006,
+     "energy": 1.14
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "travelled",
+     "phone": 17,
+     "strength": 1.0,
+     "pitch": 1.117
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Hyderabad",
+     "phone": 29,
+     "strength": 1.0,
+     "duration": 1.4
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 22,
+     "frames": 6
+    }
+   ],
    "model_input": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend.",
-   "phones": "P R IY1 AH0 AE1 N D V EH2 N K AA0 T EH1 SH T R AE1 V AH0 L D F ER0 M HH AY0 D EH1 R AH0 B AE2 D T AH0 CH EH1 N AY2 L AE1 S W IY1 K EH2 N D",
-   "audio_s": 3.81968253968254,
+   "phones": "P R IY1 AH0 AE1 N D V EH2 N K AA0 T EH1 SH T R AE1 V AH0 L D sp F ER0 M HH AY0 D EH1 R AH0 B AE2 D T AH0 CH EH1 N AY2 L AE1 S T W IY1 K EH2 N D",
+   "audio_s": 4.934240362811791,
    "asr_transcript": "Priya and Venkatesh travelled from Hyderabad to Chennai last weekend.",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -360,25 +794,65 @@
    "set": "stress",
    "category": "rare technical words",
    "text": "The cryptographic protocol relies on elliptic curve signatures.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 43,
+     "from_hz": 190.4,
+     "to_hz": 180.9
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "cryptographic",
+     "phone": 4,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.146
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "protocol",
+     "phone": 16,
+     "strength": 1.0,
+     "pitch": 1.12
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "elliptic",
+     "phone": 31,
+     "strength": 1.0,
+     "pitch": 1.047,
+     "energy": 1.202,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "signatures",
+     "phone": 40,
+     "strength": 1.0,
+     "energy": 1.346,
+     "duration": 1.4
+    }
+   ],
    "model_input": "The cryptographic protocol relies on elliptic curve signatures.",
    "phones": "DH AH0 K R IH1 P T AH0 G R AE1 F IH0 K P R OW1 T AH0 K AA2 L R IH0 L AY1 Z AA1 N IH0 L IH1 P T IH0 K K ER1 V S IH1 G N AH0 CH ER0 Z",
-   "audio_s": 3.81968253968254,
-   "asr_transcript": "The cryptographic protocol relies on elliptic signatures.",
+   "audio_s": 4.690430839002268,
+   "asr_transcript": "The cryptographic protocol relies on elliptical signatures.",
    "asr_vs_model_input": {
     "cer": 0.09090909090909091,
-    "wer": 0.125,
+    "wer": 0.25,
     "ref_chars": 55,
     "ref_words": 8,
     "char_edits": 5,
-    "word_edits": 1
+    "word_edits": 2
    },
    "asr_vs_original_whisper_norm": {
     "cer": 0.09090909090909091,
-    "wer": 0.125,
+    "wer": 0.25,
     "ref_chars": 55,
     "ref_words": 8,
     "char_edits": 5,
-    "word_edits": 1
+    "word_edits": 2
    }
   },
   {
@@ -386,25 +860,81 @@
    "set": "stress",
    "category": "abbreviations (known gap: no abbreviation expansion)",
    "text": "Dr. Rao presented the results at IIIT Hyderabad.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 38,
+     "from_hz": 192.5,
+     "to_hz": 179.4
+    },
+    {
+     "rule": "terminal_fall",
+     "phone": 40,
+     "from_hz": 211.4,
+     "to_hz": 179.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Dr",
+     "phone": 1,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.384
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "presented",
+     "phone": 10,
+     "strength": 1.0,
+     "pitch": 1.021,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "results",
+     "phone": 20,
+     "strength": 1.0,
+     "pitch": 1.068
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Hyderabad",
+     "phone": 36,
+     "strength": 1.0,
+     "pitch": 1.035,
+     "energy": 1.068,
+     "duration": 1.4
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 24,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 32,
+     "frames": 6
+    }
+   ],
    "model_input": "Dr. Rao presented the results at IIIT Hyderabad.",
-   "phones": "D AA1 K T ER0 sp R AW1 P ER0 Z EH1 N AH0 D DH AH0 R IH0 Z AH1 L T S AE1 T AY1 AH0 T HH AY0 D EH1 R AH0 B AE2 D",
-   "audio_s": 3.4597732426303853,
-   "asr_transcript": "Dr. Rauke said the results set with her",
+   "phones": "D AA1 K T ER0 R AW1 P ER0 Z EH1 N T AH0 D DH AH0 R IH0 Z AH1 L T S sp AE1 T AY1 AY1 AY1 T IY1 sp HH AY0 D EH1 R AH0 B AE2 D",
+   "audio_s": 5.108390022675737,
+   "asr_transcript": "Dr. Lau presented the results at IIT Hyderabad.",
    "asr_vs_model_input": {
-    "cer": 0.4358974358974359,
-    "wer": 0.625,
+    "cer": 0.07692307692307693,
+    "wer": 0.25,
     "ref_chars": 39,
     "ref_words": 8,
-    "char_edits": 17,
-    "word_edits": 5
+    "char_edits": 3,
+    "word_edits": 2
    },
    "asr_vs_original_whisper_norm": {
-    "cer": 0.3953488372093023,
-    "wer": 0.625,
+    "cer": 0.06976744186046512,
+    "wer": 0.25,
     "ref_chars": 43,
     "ref_words": 8,
-    "char_edits": 17,
-    "word_edits": 5
+    "char_edits": 3,
+    "word_edits": 2
    }
   },
   {
@@ -412,25 +942,147 @@
    "set": "stress",
    "category": "long sentence",
    "text": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "monsoon",
+     "phone": 10,
+     "strength": 1.0,
+     "energy": 1.5,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "arrived",
+     "phone": 13,
+     "strength": 1.0,
+     "pitch": 1.115,
+     "energy": 1.01
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "later",
+     "phone": 17,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.107,
+     "duration": 1.003
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "expected",
+     "phone": 27,
+     "strength": 1.0,
+     "energy": 1.288,
+     "duration": 1.238
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "farmers",
+     "phone": 42,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "eastern",
+     "phone": 51,
+     "strength": 1.0,
+     "pitch": 1.059
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "districts",
+     "phone": 57,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "managed",
+     "phone": 66,
+     "strength": 1.0,
+     "pitch": 1.05
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "irrigation",
+     "phone": 105,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.282
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "canals",
+     "phone": 112,
+     "strength": 1.0,
+     "energy": 1.234
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "completed",
+     "phone": 125,
+     "strength": 1.0,
+     "pitch": 1.059,
+     "energy": 1.5,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "early",
+     "phone": 131,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.415
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "spring",
+     "phone": 137,
+     "strength": 1.0,
+     "pitch": 1.111,
+     "energy": 1.043
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 38,
+     "pause_frames": 18
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 88,
+     "pause_frames": 14
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 100,
+     "frames": 6
+    }
+   ],
    "model_input": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring.",
-   "phones": "AO2 L DH OW1 DH AH0 M AA0 N S UW1 N ER0 AY1 V D L EY1 T ER0 DH AE1 N IH0 K S P EH1 K T AH0 D DH IH0 S Y IH1 R sp DH AH0 F AA1 R M ER0 Z IH0 N DH AH0 IY1 S T ER0 N D IH1 S T R IH0 K T S M AE1 N AH0 JH D T AH0 S AW1 DH EH1 R K R AA1 P S AA1 N T AY1 M sp TH AE1 NG K S T AH0 DH AH0 N UW1 IH2 R AH0 G EY1 SH AH0 N K AH0 N AE1 L Z DH AE1 T W ER0 K AH0 M P L IY1 T AH0 D IH0 N ER1 L IY0 S P ER0 IH1 NG",
-   "audio_s": 11.482267573696145,
-   "asr_transcript": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time thanks to the irrigation canals that were completed in early spring.",
+   "phones": "AO2 L DH OW1 DH AH0 M AA0 N S UW1 N ER0 AY1 V D L EY1 T ER0 DH AE1 N IH0 K S P EH1 K T AH0 D DH IH0 S Y IH1 R sp DH AH0 F AA1 R M ER0 Z IH0 N DH IY0 IY1 S T ER0 N D IH1 S T R IH0 K T S M AE1 N AH0 JH D T AH0 S AW1 DH EH1 R K R AA1 P S AA1 N T AY1 M sp TH AE1 NG K S T AH0 DH AH0 N UW1 sp IH2 R AH0 G EY1 SH AH0 N K AH0 N AE1 L Z DH AE1 T W ER0 K AH0 M P L IY1 T AH0 D IH0 N ER1 L IY0 S P ER0 IH1 NG",
+   "audio_s": 13.525623582766439,
+   "asr_transcript": "Although the monsoon arrived later than expected this year, the farmers in the eastern districts managed to sow their crops on time, thanks to the new irrigation canals that were completed in early spring.",
    "asr_vs_model_input": {
-    "cer": 0.01775147928994083,
-    "wer": 0.029411764705882353,
+    "cer": 0.0,
+    "wer": 0.0,
     "ref_chars": 169,
     "ref_words": 34,
-    "char_edits": 3,
-    "word_edits": 1
+    "char_edits": 0,
+    "word_edits": 0
    },
    "asr_vs_original_whisper_norm": {
-    "cer": 0.01775147928994083,
-    "wer": 0.029411764705882353,
+    "cer": 0.0,
+    "wer": 0.0,
     "ref_chars": 169,
     "ref_words": 34,
-    "char_edits": 3,
-    "word_edits": 1
+    "char_edits": 0,
+    "word_edits": 0
    }
   },
   {
@@ -438,9 +1090,31 @@
    "set": "stress",
    "category": "exclamation, very short",
    "text": "What a wonderful surprise!",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "wonderful",
+     "phone": 5,
+     "strength": 1.0,
+     "pitch": 1.118,
+     "energy": 1.299,
+     "duration": 1.146
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "surprise",
+     "phone": 16,
+     "strength": 1.0,
+     "pitch": 1.111
+    },
+    {
+     "rule": "exclamation_emphasis",
+     "phone": 16
+    }
+   ],
    "model_input": "What a wonderful surprise!",
-   "phones": "HH W AH1 T AH0 W AH1 N D ER0 F AH0 L S AH0 P R AY1 Z",
-   "audio_s": 1.7066666666666668,
+   "phones": "W AH1 T AH0 W AH1 N D ER0 F AH0 L S AH0 P R AY1 Z",
+   "audio_s": 2.10140589569161,
    "asr_transcript": "What a wonderful surprise!",
    "asr_vs_model_input": {
     "cer": 0.0,
@@ -455,6 +1129,1051 @@
     "wer": 0.0,
     "ref_chars": 22,
     "ref_words": 4,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "XE01",
+   "set": "stress",
+   "category": "Long, uncommon words",
+   "text": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "antidisestablishmentarianism",
+     "phone": 2,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.193,
+     "duration": 1.21
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "movement",
+     "phone": 31,
+     "strength": 1.0,
+     "pitch": 1.085,
+     "energy": 1.371,
+     "duration": 1.282
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "considerable",
+     "phone": 46,
+     "strength": 1.0,
+     "pitch": 1.013,
+     "energy": 1.449,
+     "duration": 1.158
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "momentum",
+     "phone": 56,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "during",
+     "phone": 62,
+     "strength": 1.0,
+     "pitch": 1.1
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "parliamentary",
+     "phone": 74,
+     "strength": 1.0,
+     "pitch": 1.112,
+     "energy": 1.104,
+     "duration": 1.257
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "proceedings",
+     "phone": 83,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 41,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 65,
+     "frames": 6
+    }
+   ],
+   "model_input": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "phones": "DH IY0 AE1 N T AY0 D IH0 S IH0 S T AE1 B L IH0 SH M AH0 N T AE1 R IY0 AH0 N IH2 Z AH0 M M UW1 V M AH0 N T G EY1 N D sp K AH0 N S IH1 D ER0 AH0 B AH0 L M OW0 M EH1 N T AH0 M D ER1 IH0 NG sp DH AH0 P AA2 R L AH0 M EH1 N T ER0 IY0 P R AH0 S IY1 D IH0 NG Z",
+   "audio_s": 8.649433106575964,
+   "asr_transcript": "The anti-disestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.2,
+    "ref_chars": 98,
+    "ref_words": 10,
+    "char_edits": 0,
+    "word_edits": 2
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.2,
+    "ref_chars": 98,
+    "ref_words": 10,
+    "char_edits": 0,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "XE02",
+   "set": "stress",
+   "category": "Homographs, stress",
+   "text": "The orchestra's conduct during the ceremony was praised, while the researchers will conduct another experiment tomorrow.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "orchestra's",
+     "phone": 2,
+     "strength": 1.0,
+     "pitch": 1.069,
+     "energy": 1.081
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "conduct",
+     "phone": 12,
+     "strength": 1.0,
+     "pitch": 1.085,
+     "energy": 1.5,
+     "duration": 1.137
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "during",
+     "phone": 19,
+     "strength": 1.0,
+     "pitch": 1.027,
+     "energy": 1.038
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "ceremony",
+     "phone": 26,
+     "strength": 1.0,
+     "pitch": 1.063,
+     "energy": 1.202,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "researchers",
+     "phone": 48,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.175
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "conduct",
+     "phone": 61,
+     "strength": 1.0,
+     "pitch": 1.067
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "another",
+     "phone": 66,
+     "strength": 1.0,
+     "pitch": 1.066,
+     "energy": 1.267,
+     "duration": 1.269
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "experiment",
+     "phone": 74,
+     "strength": 1.0,
+     "pitch": 1.088,
+     "energy": 1.191,
+     "duration": 1.344
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "tomorrow",
+     "phone": 84,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.485
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 22,
+     "frames": 6
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 41,
+     "pause_frames": 25
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 69,
+     "frames": 6
+    }
+   ],
+   "model_input": "The orchestra's conduct during the ceremony was praised, while the researchers will conduct another experiment tomorrow.",
+   "phones": "DH IY0 AO1 R K AH0 S T R AH0 Z K AA1 N D AH0 K T D ER1 IH0 NG sp DH AH0 S EH1 R AH0 M OW2 N IY0 W AA1 Z P R EY1 Z D sp W AY1 L DH AH0 R IY1 S ER0 CH ER0 Z W AH0 L K AA0 N D AH1 K T AH0 N AH1 DH ER0 sp IH0 K S P EH1 R AH0 M AH0 N T T AH0 M AA1 R OW2",
+   "audio_s": 9.578231292517007,
+   "asr_transcript": "Bay Orchestra's conducting the ceremony was praised, while the researchers will conduct another experiment tomorrow.",
+   "asr_vs_model_input": {
+    "cer": 0.058823529411764705,
+    "wer": 0.17647058823529413,
+    "ref_chars": 102,
+    "ref_words": 17,
+    "char_edits": 6,
+    "word_edits": 3
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.05825242718446602,
+    "wer": 0.17647058823529413,
+    "ref_chars": 103,
+    "ref_words": 17,
+    "char_edits": 6,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "XE03",
+   "set": "stress",
+   "category": "Sibilants, articulation",
+   "text": "She sells seashells beside the seashore, but the shells she sells are surely not the same.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "beside",
+     "phone": 15,
+     "strength": 1.0,
+     "pitch": 1.063
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "surely",
+     "phone": 43,
+     "strength": 1.0,
+     "pitch": 1.062,
+     "energy": 1.185
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 24,
+     "pause_frames": 44
+    }
+   ],
+   "model_input": "She sells seashells beside the seashore, but the shells she sells are surely not the same.",
+   "phones": "SH IY1 S EH1 L Z S IY1 SH EH2 L Z B IH0 S AY1 D DH AH0 S IY1 SH AO2 R sp B AH1 T DH AH0 SH EH1 L Z SH IY1 S EH1 L Z AA1 R SH UH1 R L IY0 N AA1 T DH AH0 S EY1 M",
+   "audio_s": 6.501587301587302,
+   "asr_transcript": "She sells seashells beside the seashore, but the shells she sells are surely not the same.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 73,
+    "ref_words": 16,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 73,
+    "ref_words": 16,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "XE04",
+   "set": "stress",
+   "category": "Numbers, time, dates",
+   "text": "At 10:45 AM on November 12, 2026, approximately 1,247 researchers will gather for the international conference.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 123,
+     "from_hz": 208.9,
+     "to_hz": 185.8
+    },
+    {
+     "rule": "terminal_fall",
+     "phone": 124,
+     "from_hz": 198.8,
+     "to_hz": 185.8
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "forty",
+     "phone": 6,
+     "strength": 1.0,
+     "pitch": 1.103
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "November",
+     "phone": 21,
+     "strength": 1.0,
+     "pitch": 1.107,
+     "energy": 1.185,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "twenty",
+     "phone": 34,
+     "strength": 1.0,
+     "pitch": 1.022,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "twenty",
+     "phone": 40,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.009,
+     "duration": 1.313
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "approximately",
+     "phone": 52,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.015,
+     "duration": 1.257
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "thousand",
+     "phone": 65,
+     "strength": 1.0,
+     "pitch": 1.12
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "hundred",
+     "phone": 73,
+     "strength": 1.0,
+     "pitch": 1.019,
+     "energy": 1.039,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "seven",
+     "phone": 84,
+     "strength": 1.0,
+     "pitch": 1.075,
+     "energy": 1.5,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "researchers",
+     "phone": 89,
+     "strength": 1.0,
+     "pitch": 1.009,
+     "energy": 1.306,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "gather",
+     "phone": 99,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.169
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "international",
+     "phone": 113,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.221
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "conference",
+     "phone": 120,
+     "strength": 1.0,
+     "energy": 1.103,
+     "duration": 1.146
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 31,
+     "pause_frames": 38
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 48,
+     "pause_frames": 14
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 102,
+     "frames": 6
+    }
+   ],
+   "model_input": "At ten forty five AM on November twelfth, twenty twenty six, approximately one thousand two hundred forty seven researchers will gather for the international conference.",
+   "phones": "AE1 T T EH1 N F AO1 R T IY0 F AY1 V EY1 EH1 M AA1 N N OW0 V EH1 M B ER0 T W EH1 L F TH sp T W EH1 N T IY0 T W EH1 N T IY0 S IH1 K S sp AH0 P R AA1 K S AH0 M AH0 T L IY0 W AH1 N TH AW1 Z AH0 N D T UW1 HH AH1 N D ER0 D F AO1 R T IY0 S EH1 V AH0 N R IY1 S ER0 CH ER0 Z W AH0 L G AE1 DH ER0 sp F AO1 R DH IY0 IH2 N T ER0 N AE1 SH AH0 N AH0 L K AA1 N F ER0 AH0 N S",
+   "audio_s": 12.202086167800454,
+   "asr_transcript": "At 10.45 a.m. on November 12, 2026, approximately 1,247 researchers will gather for the international conference.",
+   "asr_vs_model_input": {
+    "cer": 0.45774647887323944,
+    "wer": 0.56,
+    "ref_chars": 142,
+    "ref_words": 25,
+    "char_edits": 65,
+    "word_edits": 14
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.11764705882352941,
+    "ref_chars": 91,
+    "ref_words": 17,
+    "char_edits": 0,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "XE05",
+   "set": "stress",
+   "category": "Consonant clusters, pronunciation",
+   "text": "The rhythmic patterns of the extraordinarily talented musician changed unexpectedly during the performance.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "rhythmic",
+     "phone": 3,
+     "strength": 1.0,
+     "pitch": 1.022
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "patterns",
+     "phone": 9,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.113
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "extraordinarily",
+     "phone": 29,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.356,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "talented",
+     "phone": 35,
+     "strength": 1.0,
+     "pitch": 1.019
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "musician",
+     "phone": 46,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "unexpectedly",
+     "phone": 62,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.254,
+     "duration": 1.282
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "during",
+     "phone": 70,
+     "strength": 1.0,
+     "pitch": 1.054,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "performance",
+     "phone": 78,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.5,
+     "duration": 1.344
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 14,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 55,
+     "frames": 6
+    }
+   ],
+   "model_input": "The rhythmic patterns of the extraordinarily talented musician changed unexpectedly during the performance.",
+   "phones": "DH AH0 R IH1 DH M IH0 K P AE1 T ER0 N Z sp AH0 V DH IY0 EH0 K S T R AO2 R D AH0 N EH1 R AH0 L IY0 T AE1 L AH0 N T AH0 D M Y UW0 Z IH1 SH AH0 N CH EY1 N JH D sp AH2 N IH0 K S P EH1 K T IH0 D L IY0 D ER1 IH0 NG DH AH0 P ER0 F AO1 R M AH0 N S",
+   "audio_s": 8.475283446712018,
+   "asr_transcript": "The rhythmic patterns of the extraordinarily talented musician changed unexpectedly during the performance.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 94,
+    "ref_words": 13,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 94,
+    "ref_words": 13,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "XE06",
+   "set": "stress",
+   "category": "Abbreviations, decimals",
+   "text": "Dr. Williams asked whether the temperature would reach 37.5 degrees Celsius by 8:30 p.m.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "Dr",
+     "phone": 1,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.137
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Williams",
+     "phone": 6,
+     "strength": 1.0,
+     "energy": 1.376,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "whether",
+     "phone": 17,
+     "strength": 1.0,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "temperature",
+     "phone": 24,
+     "strength": 1.0,
+     "pitch": 1.076,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "seven",
+     "phone": 42,
+     "strength": 1.0,
+     "pitch": 1.095,
+     "energy": 1.179,
+     "duration": 1.216
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "degrees",
+     "phone": 57,
+     "strength": 1.0,
+     "energy": 1.012
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "Celsius",
+     "phone": 60,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.275,
+     "duration": 1.186
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 20,
+     "frames": 6
+    }
+   ],
+   "model_input": "Dr. Williams asked whether the temperature would reach thirty seven point five degrees Celsius by eight thirty PM",
+   "phones": "D AA1 K T ER0 W IH1 L Y AH0 M Z AE1 S K T W EH1 DH ER0 sp DH AH0 T EH1 M P ER0 AH0 CH ER0 W UH1 D R IY1 CH TH ER1 T IY2 S EH1 V AH0 N P OY1 N T F AY1 V D IH0 G R IY1 Z S EH1 L S IY0 AH0 S B AY1 EY1 T TH ER1 T IY2 P IY1 EH1 M",
+   "audio_s": 8.486893424036282,
+   "asr_transcript": "Dr Williams asked whether the temperature would reach 37.5°C by 8.30pm.",
+   "asr_vs_model_input": {
+    "cer": 0.4631578947368421,
+    "wer": 0.5,
+    "ref_chars": 95,
+    "ref_words": 18,
+    "char_edits": 44,
+    "word_edits": 9
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.17567567567567569,
+    "wer": 0.23529411764705882,
+    "ref_chars": 74,
+    "ref_words": 17,
+    "char_edits": 13,
+    "word_edits": 4
+   }
+  },
+  {
+   "id": "XE07",
+   "set": "stress",
+   "category": "Long sentence, prosody",
+   "text": "Although artificial intelligence can process millions of calculations per second, human creativity remains remarkably difficult to replicate.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 113,
+     "from_hz": 188.4,
+     "to_hz": 182.3
+    },
+    {
+     "rule": "terminal_fall",
+     "phone": 115,
+     "from_hz": 201.6,
+     "to_hz": 182.3
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "artificial",
+     "phone": 10,
+     "strength": 1.0,
+     "pitch": 1.013,
+     "energy": 1.243,
+     "duration": 1.313
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "intelligence",
+     "phone": 18,
+     "strength": 1.0,
+     "duration": 1.257
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "millions",
+     "phone": 35,
+     "strength": 1.0,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "calculations",
+     "phone": 51,
+     "strength": 1.0,
+     "pitch": 1.042,
+     "energy": 1.298,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "second",
+     "phone": 59,
+     "strength": 1.0,
+     "energy": 1.116,
+     "duration": 1.011
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "human",
+     "phone": 67,
+     "strength": 1.0,
+     "energy": 1.358,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "creativity",
+     "phone": 77,
+     "strength": 1.0,
+     "pitch": 1.017,
+     "energy": 1.5,
+     "duration": 1.384
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "remains",
+     "phone": 85,
+     "strength": 1.0,
+     "pitch": 1.039
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "remarkably",
+     "phone": 92,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.12
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "difficult",
+     "phone": 100,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.184,
+     "duration": 1.4
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 4,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 14,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 41,
+     "frames": 6
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 64,
+     "pause_frames": 23
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 71,
+     "frames": 6
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 88,
+     "frames": 6
+    }
+   ],
+   "model_input": "Although artificial intelligence can process millions of calculations per second, human creativity remains remarkably difficult to replicate.",
+   "phones": "AO2 L DH OW1 sp AA2 R T AH0 F IH1 SH AH0 L sp IH0 N T EH1 L AH0 JH AH0 N S K AE1 N P R AA1 S EH2 S M IH1 L Y AH0 N Z sp AH0 V K AE2 L K Y AH0 L EY1 SH AH0 N Z P ER1 S EH1 K AH0 N D sp HH Y UW1 M AH0 N sp K R IY2 EY0 T IH1 V AH0 T IY0 R IH0 M EY1 N Z sp R IH0 M AA1 R K AH0 B L IY0 D IH1 F AH0 K AH0 L T T AH0 R EH1 P L AH0 K EY2 T",
+   "audio_s": 11.911836734693878,
+   "asr_transcript": "Although artificial intelligence can process millions of calculations per second, human creativity remains remarkably difficult to replicate.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 123,
+    "ref_words": 17,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 120,
+    "ref_words": 17,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "XE08",
+   "set": "stress",
+   "category": "Homographs, tense-dependent pronunciation",
+   "text": "I read the book yesterday, and today I will read another chapter before going to sleep.",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "yesterday",
+     "phone": 10,
+     "strength": 1.0,
+     "pitch": 1.083,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "today",
+     "phone": 23,
+     "strength": 1.0,
+     "pitch": 1.108
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "another",
+     "phone": 33,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.39
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "chapter",
+     "phone": 37,
+     "strength": 1.0,
+     "pitch": 1.071,
+     "energy": 1.034
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "before",
+     "phone": 44,
+     "strength": 1.0,
+     "pitch": 1.044,
+     "energy": 1.116,
+     "duration": 1.238
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "going",
+     "phone": 47,
+     "strength": 1.0,
+     "pitch": 1.079,
+     "energy": 1.254,
+     "duration": 1.238
+    },
+    {
+     "rule": "boundary",
+     "punct": ",",
+     "pause_phone": 16,
+     "pause_frames": 14
+    }
+   ],
+   "model_input": "I read the book yesterday, and today I will read another chapter before going to sleep.",
+   "phones": "AY1 R EH1 D DH AH0 B UH1 K Y EH1 S T ER0 D EY2 sp AE1 N D T AH0 D EY1 AY1 W AH0 L R IY1 D AH0 N AH1 DH ER0 CH AE1 P T ER0 B IH0 F AO1 R G OW1 IH0 NG T AH0 S L IY1 P",
+   "audio_s": 5.851428571428571,
+   "asr_transcript": "I read the book yesterday and today I will read another chapter before going to sleep.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 70,
+    "ref_words": 16,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 70,
+    "ref_words": 16,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "XE09",
+   "set": "stress",
+   "category": "Questions, emotional intonation",
+   "text": "Wait! Are you seriously suggesting that we should rebuild the entire system from scratch?",
+   "prosody_rules": [
+    {
+     "rule": "lexical_stress",
+     "word": "seriously",
+     "phone": 10,
+     "strength": 1.0,
+     "pitch": 1.016,
+     "energy": 1.172
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "suggesting",
+     "phone": 21,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "duration": 1.072
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "rebuild",
+     "phone": 37,
+     "strength": 1.0,
+     "duration": 1.384
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "entire",
+     "phone": 45,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.129
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "system",
+     "phone": 48,
+     "strength": 1.0,
+     "pitch": 1.073,
+     "energy": 1.5,
+     "duration": 1.003
+    },
+    {
+     "rule": "boundary",
+     "punct": "!",
+     "pause_phone": 3,
+     "pause_frames": 28
+    },
+    {
+     "rule": "exclamation_emphasis",
+     "phone": 1
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 8,
+     "frames": 6
+    },
+    {
+     "rule": "question_rise",
+     "phone": 59,
+     "from_hz": 196.3,
+     "to_hz": 278.7
+    }
+   ],
+   "model_input": "Wait! Are you seriously suggesting that we should rebuild the entire system from scratch?",
+   "phones": "W EY1 T sp AA1 R Y UW1 sp S IH1 R IY0 AH0 S L IY0 S AH0 G JH EH1 S T IH0 NG DH AE1 T W IY1 SH UH1 D R IY0 B IH1 L D DH IY0 IH0 N T AY1 ER0 S IH1 S T AH0 M F ER0 M S K R AE1 CH",
+   "audio_s": 7.163356009070295,
+   "asr_transcript": "Wait, are you seriously suggesting that we should rebuild the entire system from scratch?",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 74,
+    "ref_words": 14,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 74,
+    "ref_words": 14,
+    "char_edits": 0,
+    "word_edits": 0
+   }
+  },
+  {
+   "id": "XE10",
+   "set": "stress",
+   "category": "Phonetic coverage, fluency",
+   "text": "The quick brown fox jumps over the lazy dog while five extraordinary musicians quietly rehearse their final symphony.",
+   "prosody_rules": [
+    {
+     "rule": "terminal_fall",
+     "phone": 85,
+     "from_hz": 196.8,
+     "to_hz": 185.8
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "over",
+     "phone": 19,
+     "strength": 1.0,
+     "pitch": 1.033,
+     "energy": 1.133
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "lazy",
+     "phone": 25,
+     "strength": 1.0,
+     "pitch": 1.12
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "extraordinary",
+     "phone": 44,
+     "strength": 1.0,
+     "pitch": 1.064,
+     "duration": 1.199
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "musicians",
+     "phone": 56,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.486,
+     "duration": 1.4
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "quietly",
+     "phone": 63,
+     "strength": 1.0,
+     "pitch": 1.12,
+     "energy": 1.059,
+     "duration": 1.199
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "rehearse",
+     "phone": 71,
+     "strength": 1.0,
+     "pitch": 1.116,
+     "energy": 1.139
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "final",
+     "phone": 77,
+     "strength": 1.0,
+     "pitch": 1.021,
+     "energy": 1.066,
+     "duration": 1.017
+    },
+    {
+     "rule": "lexical_stress",
+     "word": "symphony",
+     "phone": 82,
+     "strength": 1.0,
+     "duration": 1.4
+    },
+    {
+     "rule": "micro_pause",
+     "phone": 37,
+     "frames": 6
+    }
+   ],
+   "model_input": "The quick brown fox jumps over the lazy dog while five extraordinary musicians quietly rehearse their final symphony.",
+   "phones": "DH AH0 K W IH1 K B R AW1 N F AA1 K S JH AH1 M P S OW1 V ER0 DH AH0 L EY1 Z IY0 D AO1 G W AY1 L F AY1 V sp EH2 K S T R AH0 AO1 R D AH0 N EH2 R IY0 M Y UW0 Z IH1 SH AH0 N Z K W AY1 AH0 T L IY0 R IY0 HH ER1 S DH EH1 R F AY1 N AH0 L S IH1 M F AH0 N IY0",
+   "audio_s": 8.823582766439909,
+   "asr_transcript": "The quick brown fox jumps over the lazy dog while five extraordinary musicians quietly rehearse their final symphony.",
+   "asr_vs_model_input": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 99,
+    "ref_words": 18,
+    "char_edits": 0,
+    "word_edits": 0
+   },
+   "asr_vs_original_whisper_norm": {
+    "cer": 0.0,
+    "wer": 0.0,
+    "ref_chars": 96,
+    "ref_words": 18,
     "char_edits": 0,
     "word_edits": 0
    }

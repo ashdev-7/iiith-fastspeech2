@@ -1,6 +1,6 @@
 """Inference-time "clear speech" options (no retraining; the model and its weights are unchanged).
 
-Measured problems and the remedy for each (report 5.0c):
+Measured problems and the remedy for each (report §5.3):
   * Endings cut off. Training clips are trimmed at the first/last phone, so the model's last frame is at
     full speech level (mean log-mel about -5.3, digital silence is -11.5) and the vocoder output stops
     mid-sound. edges(): a short lead-in of silence, a 5-frame log-domain fade after the last frame and

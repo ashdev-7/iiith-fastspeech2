@@ -1,0 +1,392 @@
+{
+ "checkpoint": "te_model.pth.tar",
+ "lang": "te",
+ "device": "cpu",
+ "definitions": "Objective metrics for evaluate_val.py (numpy only, so they are unit-tested without torch).\n\nDefinitions (stated in the report exactly as implemented here):\n  * CER / WER: Levenshtein distance / reference length, after normalise_text() on both sides.\n  * mel-cepstral distortion (MCD-mel): the 80-band natural-log mel spectrogram (the model's own\n    feature) is turned into cepstra with an orthonormal DCT-II; coefficients c1..c24 (c0 = energy is\n    excluded) give  MCD = (10 / ln 10) * sqrt(2 * sum_k (c_k - c'_k)^2), averaged over frames.\n    This is NOT the WORLD/SPTK mel-cepstrum MCD that papers report; values are only comparable\n    within this project (between models, languages and conditions computed the same way).\n  * Pearson r and RMSE on phone-level values.\n",
+ "checkpoint_step": 55524,
+ "gv_postfilter": null,
+ "vocoder": "generator_universal",
+ "mode": "sentences_only",
+ "validation": {
+  "utterances": 0,
+  "speakers": 0,
+  "metrics": {
+   "duration_mae_frames": {
+    "n": 0
+   },
+   "duration_log_r": {
+    "n": 0
+   },
+   "length_rel_error": {
+    "n": 0
+   },
+   "pitch_rmse_hz": {
+    "n": 0
+   },
+   "pitch_r": {
+    "n": 0
+   },
+   "energy_rmse": {
+    "n": 0
+   },
+   "energy_r": {
+    "n": 0
+   },
+   "mcd_mel_oracle": {
+    "n": 0
+   },
+   "mcd_mel_oracle_dtw": {
+    "n": 0
+   },
+   "mcd_mel_free_dtw": {
+    "n": 0
+   }
+  },
+  "zero_length_predictions": 0
+ },
+ "controls": {
+  "text": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+  "conditions": [
+   {
+    "condition": "base",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 209.35503763470334,
+    "rms": 0.14759989888089886
+   },
+   {
+    "condition": "duration_0.8",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 0.8,
+    "audio_s": 1.8808163265306121,
+    "median_f0_hz": 209.5523871942729,
+    "rms": 0.14542286457354206
+   },
+   {
+    "condition": "duration_1.25",
+    "pitch_control": 1.0,
+    "energy_control": 1.0,
+    "duration_control": 1.25,
+    "audio_s": 3.01859410430839,
+    "median_f0_hz": 208.38628385769792,
+    "rms": 0.14309895358167055
+   },
+   {
+    "condition": "pitch_0.8",
+    "pitch_control": 0.8,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 164.88681808699133,
+    "rms": 0.11157662945031836
+   },
+   {
+    "condition": "pitch_1.2",
+    "pitch_control": 1.2,
+    "energy_control": 1.0,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 251.78288370302243,
+    "rms": 0.1635751661613855
+   },
+   {
+    "condition": "energy_0.8",
+    "pitch_control": 1.0,
+    "energy_control": 0.8,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 208.89437123033298,
+    "rms": 0.12030481543373774
+   },
+   {
+    "condition": "energy_1.2",
+    "pitch_control": 1.0,
+    "energy_control": 1.2,
+    "duration_control": 1.0,
+    "audio_s": 2.461315192743764,
+    "median_f0_hz": 206.14546844906613,
+    "rms": 0.1588822634939676
+   }
+  ],
+  "note": "pitch/energy controls scale the normalised predictions in the reference code"
+ },
+ "speed_cpu": {
+  "error": "RuntimeError: skipped (no validation utterances in this mode)"
+ },
+ "intelligibility": {},
+ "sentences": [
+  {
+   "id": "T1",
+   "set": "assignment",
+   "category": null,
+   "text": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "model_input": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "phones": "n y uu r oo ph aa r m a k oo l aa j i k a l p a r i sh oo dh a n a l oo n uu t a n a au ss a dh aa l a p r a bh aa v aa n n i v i sh l ee ss i ny c aa r u",
+   "audio_s": 5.270929705215419,
+   "asr_transcript": "Neuro-Pharmacological పరిసోధనలో నూతన ఉషధాల ప్రభావాన్ని విస్లేశించారు.",
+   "asr_vs_model_input": {
+    "cer": 0.3870967741935484,
+    "wer": 0.8333333333333334,
+    "ref_chars": 62,
+    "ref_words": 6,
+    "char_edits": 24,
+    "word_edits": 5
+   }
+  },
+  {
+   "id": "T2a",
+   "set": "assignment",
+   "category": null,
+   "text": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+   "model_input": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.",
+   "phones": "t aa dd u p ai a t a n i p a tt tt u c aa l aa b a l a ng g aa u n d i",
+   "audio_s": 2.461315192743764,
+   "asr_transcript": "తాడు పయతని పట్టు చాలా బలంగా ఉంది.",
+   "asr_vs_model_input": {
+    "cer": 0.07142857142857142,
+    "wer": 0.3333333333333333,
+    "ref_chars": 28,
+    "ref_words": 6,
+    "char_edits": 2,
+    "word_edits": 2
+   }
+  },
+  {
+   "id": "T2b",
+   "set": "assignment",
+   "category": null,
+   "text": "ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "model_input": "ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "phones": "aa m e p a tt tt u c ii r a n u dh a r i ny c i v ee dd u k a k u v a c c i n d i",
+   "audio_s": 2.693514739229025,
+   "asr_transcript": "ఆమేపట్టు చిరను ధరించి వేడుకకు వచ్చింది.",
+   "asr_vs_model_input": {
+    "cer": 0.058823529411764705,
+    "wer": 0.5,
+    "ref_chars": 34,
+    "ref_words": 6,
+    "char_edits": 2,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "T3",
+   "set": "assignment",
+   "category": null,
+   "text": "పులి అడ  విలో నిశ్శబ్దంగా నడిచింది.",
+   "model_input": "పులి అడ విలో నిశ్శబ్దంగా నడిచింది.",
+   "phones": "p u l i a dd a v i l oo n i sh sh a b d a ng g aa n a dd i c i n d i",
+   "audio_s": 2.136235827664399,
+   "asr_transcript": "పులి అడవిలో నిస్సబ్దంగా నడిచింది.",
+   "asr_vs_model_input": {
+    "cer": 0.06896551724137931,
+    "wer": 0.6,
+    "ref_chars": 29,
+    "ref_words": 5,
+    "char_edits": 2,
+    "word_edits": 3
+   }
+  },
+  {
+   "id": "T4",
+   "set": "assignment",
+   "category": null,
+   "text": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ధంగా ఉంచండి.",
+   "model_input": "ఈ సమావేశం రెండు వేల ఇరవై ఆరు నవంబర్ పన్నెండవ తేదీ ఉదయం పది నలభై ఐదు గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ధంగా ఉంచండి.",
+   "phones": "ii s a m aa v ee sh a m r e nn dd u v ee l a i r a v ai aa r u n a v a m b a r p a n n e nn dd a v a t ee d ii u d a y a m p a d i n a l a bh ai ai d u g a nn tt a l a k u p r aa r a m bh a m a v u t u n d i sp s a m a y aa n i k i s i d dh a ng g aa u ny c a nn dd i",
+   "audio_s": 9.125442176870749,
+   "asr_transcript": "2026 నవం బర్పన్ నండవతేది ఉదయం 10.45 గంటలకు ప్రారంబమోతుంది సమయానికి సిద్ధంగా ఉంచండి",
+   "asr_vs_model_input": {
+    "cer": 0.3877551020408163,
+    "wer": 0.7222222222222222,
+    "ref_chars": 98,
+    "ref_words": 18,
+    "char_edits": 38,
+    "word_edits": 13
+   }
+  },
+  {
+   "id": "XT01",
+   "set": "stress",
+   "category": "Long Sanskrit-derived technical vocabulary",
+   "text": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "model_input": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.",
+   "phones": "n y uu r oo ph aa r m a k oo l aa j i k a l p a r i sh oo dh a n a l oo n uu t a n a au ss a dh aa l a p r a bh aa v aa n n i v i sh l ee ss i ny c aa r u",
+   "audio_s": 5.270929705215419,
+   "asr_transcript": "Neuro-Pharmacological పరిసోధనలో నూతన ఉషధాల ప్రభావాన్ని విస్లేశించారు.",
+   "asr_vs_model_input": {
+    "cer": 0.3870967741935484,
+    "wer": 0.8333333333333334,
+    "ref_chars": 62,
+    "ref_words": 6,
+    "char_edits": 24,
+    "word_edits": 5
+   }
+  },
+  {
+   "id": "XT02",
+   "set": "stress",
+   "category": "Homographs: పట్టు",
+   "text": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది, కానీ ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "model_input": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది, కానీ ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.",
+   "phones": "t aa dd u p ai a t a n i p a tt tt u c aa l aa b a l a ng g aa u n d i sp k aa n ii aa m e p a tt tt u c ii r a n u dh a r i ny c i v ee dd u k a k u v a c c i n d i",
+   "audio_s": 5.932698412698413,
+   "asr_transcript": "తాడు పయతని పట్టు చాలా బలంగా ఉంది, కాని ఆమే పట్టు చిరను ధరించి వేడుకకు ఉచ్చింది.",
+   "asr_vs_model_input": {
+    "cer": 0.09090909090909091,
+    "wer": 0.46153846153846156,
+    "ref_chars": 66,
+    "ref_words": 13,
+    "char_edits": 6,
+    "word_edits": 6
+   }
+  },
+  {
+   "id": "XT03",
+   "set": "stress",
+   "category": "Consonant combinations, long sentence",
+   "text": "పులి అడవిలో నిశ్శబ్దంగా నడిచింది, కానీ దాని గర్జనతో అడవి మొత్తం ఒక్కసారిగా ఉలిక్కిపడింది.",
+   "model_input": "పులి అడవిలో నిశ్శబ్దంగా నడిచింది, కానీ దాని గర్జనతో అడవి మొత్తం ఒక్కసారిగా ఉలిక్కిపడింది.",
+   "phones": "p u l i a dd a v i l oo n i sh sh a b d a ng g aa n a dd i c i n d i sp k aa n ii d aa n i g a r j a n a t oo a dd a v i m o t t a m o k k a s aa r i g aa u l i k k i p a dd i n d i",
+   "audio_s": 6.501587301587302,
+   "asr_transcript": "పులి అడవిలో నిస్చబ్దంగా నడిచింది. కాని దాని గర్జనతో అడవి మొత్తం మొక్క సారిగా ఉలిక్కి పడింది.",
+   "asr_vs_model_input": {
+    "cer": 0.06493506493506493,
+    "wer": 0.5454545454545454,
+    "ref_chars": 77,
+    "ref_words": 11,
+    "char_edits": 5,
+    "word_edits": 6
+   }
+  },
+  {
+   "id": "XT04",
+   "set": "stress",
+   "category": "Dates, numbers, time",
+   "text": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది.",
+   "model_input": "ఈ సమావేశం రెండు వేల ఇరవై ఆరు నవంబర్ పన్నెండవ తేదీ ఉదయం పది నలభై ఐదు గంటలకు ప్రారంభమవుతుంది.",
+   "phones": "ii s a m aa v ee sh a m r e nn dd u v ee l a i r a v ai aa r u n a v a m b a r p a n n e nn dd a v a t ee d ii u d a y a m p a d i n a l a bh ai ai d u g a nn tt a l a k u p r aa r a m bh a m a v u t u n d i",
+   "audio_s": 6.8034467120181406,
+   "asr_transcript": "2026 నవం బర్పన్నేండవతేది ఉదైయం 10.45 గంటలకు ప్రారంభమోతుంది",
+   "asr_vs_model_input": {
+    "cer": 0.5,
+    "wer": 0.9333333333333333,
+    "ref_chars": 76,
+    "ref_words": 15,
+    "char_edits": 38,
+    "word_edits": 14
+   }
+  },
+  {
+   "id": "XT05",
+   "set": "stress",
+   "category": "క్ష, శ, త్ర combinations",
+   "text": "క్షణక్షణానికి మారుతున్న పరిస్థితులను గమనిస్తూ శాస్త్రవేత్తలు పరిశోధనను కొనసాగించారు.",
+   "model_input": "క్షణక్షణానికి మారుతున్న పరిస్థితులను గమనిస్తూ శాస్త్రవేత్తలు పరిశోధనను కొనసాగించారు.",
+   "phones": "k ss a nn a k ss a nn aa n i k i m aa r u t u n n a p a r i s th i t u l a n u g a m a n i s t uu sh aa s t r a v ee t t a l u p a r i sh oo dh a n a n u k o n a s aa g i ny c aa r u",
+   "audio_s": 5.746938775510204,
+   "asr_transcript": "ಕ್ಷಣಕ್ಷನಾನಿಕಿ ಮಾರುತುನ್ನ ಪರಿಸ್ತಿತುಲನు ಗಮನಿಸ್ತು ಸಾಸ್ತ್ರ ವೇತ್ತಲು ಪರಿಸೋಧನ ಅನುಕೊನ ಸಾಗಿಂಚಾರು.",
+   "asr_vs_model_input": {
+    "cer": 1.0,
+    "wer": 1.2857142857142858,
+    "ref_chars": 77,
+    "ref_words": 7,
+    "char_edits": 77,
+    "word_edits": 9
+   }
+  },
+  {
+   "id": "XT06",
+   "set": "stress",
+   "category": "Compound words, pronunciation",
+   "text": "హైదరాబాద్‌లోని విశ్వవిద్యాలయంలో కంప్యూటర్ సైన్స్ విద్యార్థులు కృత్రిమ మేధస్సుపై చర్చించారు.",
+   "model_input": "హైదరాబాద్లోని విశ్వవిద్యాలయంలో కంప్యూటర్ సైన్స్ విద్యార్థులు కృత్రిమ మేధస్సుపై చర్చించారు.",
+   "phones": "h ai d a r aa b aa d l oo n i v i sh v a v i d y aa l a y a m l oo k a m p y uu tt a r s ai n s v i d y aa r th u l u k r u t r i m a m ee dh a s s u p ai c a r c i ny c aa r u",
+   "audio_s": 6.095238095238095,
+   "asr_transcript": "AIDARABAD లోని విస్వవిద్యాలైయం లోకం కూప్యూటర్ సైంస్ విద్యార్దులు కృత్రిమమే ధస్సుపై చర్చించారు.",
+   "asr_vs_model_input": {
+    "cer": 0.1951219512195122,
+    "wer": 1.125,
+    "ref_chars": 82,
+    "ref_words": 8,
+    "char_edits": 16,
+    "word_edits": 9
+   }
+  },
+  {
+   "id": "XT07",
+   "set": "stress",
+   "category": "Natural conversational Telugu",
+   "text": "అమ్మ చెప్పిన కథలోని చిన్నారి ప్రతిరోజూ ఉదయాన్నే పక్షుల కిలకిలారావాలను వింటూ పెరిగింది.",
+   "model_input": "అమ్మ చెప్పిన కథలోని చిన్నారి ప్రతిరోజూ ఉదయాన్నే పక్షుల కిలకిలారావాలను వింటూ పెరిగింది.",
+   "phones": "a m m a c e p p i n a k a th a l oo n i c i n n aa r i p r a t i r oo j uu u d a y aa n n ee p a k ss u l a k i l a k i l aa r aa v aa l a n u v i nn tt uu p e r i g i n d i",
+   "audio_s": 5.677278911564626,
+   "asr_transcript": "అమ్మా చెప్పిన కదలోని చిన్నారి ప్రతి రోజు ఉదైయాన్నే పక్షులకి లక్కిలా రావాలను వింటు పెరిగింది.",
+   "asr_vs_model_input": {
+    "cer": 0.09210526315789473,
+    "wer": 0.9,
+    "ref_chars": 76,
+    "ref_words": 10,
+    "char_edits": 7,
+    "word_edits": 9
+   }
+  },
+  {
+   "id": "XT08",
+   "set": "stress",
+   "category": "Prosody, sentence rhythm",
+   "text": "వర్షం పడుతున్నప్పటికీ, రేపటి ప్రయాణం కోసం మేము అవసరమైన వస్తువులన్నింటినీ సిద్ధం చేసుకున్నాము.",
+   "model_input": "వర్షం పడుతున్నప్పటికీ, రేపటి ప్రయాణం కోసం మేము అవసరమైన వస్తువులన్నింటినీ సిద్ధం చేసుకున్నాము.",
+   "phones": "v a r ss a m p a dd u t u n n a p p a tt i k ii sp r ee p a tt i p r a y aa nn a m k oo s a m m ee m u a v a s a r a m ai n a v a s t u v u l a n n i nn tt i n ii s i d dh a m c ee s u k u n n aa m u",
+   "audio_s": 6.6873469387755105,
+   "asr_transcript": "వర్షం పడుతున్నప్పటికి రేపటి ప్రయానం కోసం మేము అవసరమైన వస్తువుల అన్నింటి ని సిద్ధం చేసుకున్నాము.",
+   "asr_vs_model_input": {
+    "cer": 0.04878048780487805,
+    "wer": 0.5,
+    "ref_chars": 82,
+    "ref_words": 10,
+    "char_edits": 4,
+    "word_edits": 5
+   }
+  },
+  {
+   "id": "XT09",
+   "set": "stress",
+   "category": "Question intonation, emphasis",
+   "text": "నిజంగా మనం సాధించాలనుకున్న లక్ష్యాన్ని చేరుకోవడానికి క్రమశిక్షణ, సహనం, పట్టుదల అవసరం కాదా?",
+   "model_input": "నిజంగా మనం సాధించాలనుకున్న లక్ష్యాన్ని చేరుకోవడానికి క్రమశిక్షణ, సహనం, పట్టుదల అవసరం కాదా?",
+   "phones": "n i j a ng g aa m a n a m s aa dh i ny c aa l a n u k u n n a l a k ss y aa n n i c ee r u k oo v a dd aa n i k i k r a m a sh i k ss a nn a sp s a h a n a m sp p a tt tt u d a l a a v a s a r a m k aa d aa",
+   "audio_s": 7.198185941043084,
+   "asr_transcript": "ನಿಜಂಗಾ ಮನಂ ಸಾಧಿಂಚಾಲನು ಕುನ್ನ ಲಕ್ಷಾನ್ನಿ ಚೇರುಕೋವಡಾನಿಕಿ ಕ್ರಮ ಸಿಕ್ಷನ, ಸಹನಂ, ಪಟ್ಟುದಲ ಅವಸರಂ ಕಾದಾ.",
+   "asr_vs_model_input": {
+    "cer": 1.0,
+    "wer": 1.2,
+    "ref_chars": 78,
+    "ref_words": 10,
+    "char_edits": 78,
+    "word_edits": 12
+   }
+  },
+  {
+   "id": "XT10",
+   "set": "stress",
+   "category": "Repeated syllables, long-form pronunciation",
+   "text": "శ్రీకాకుళం నుంచి తిరుపతికి వెళ్లే రైలులో ప్రయాణిస్తున్న ప్రయాణికులకు రేపు ఉదయం ప్రత్యేక ప్రకటన చేయబడుతుంది.",
+   "model_input": "శ్రీకాకుళం నుంచి తిరుపతికి వెళ్లే రైలులో ప్రయాణిస్తున్న ప్రయాణికులకు రేపు ఉదయం ప్రత్యేక ప్రకటన చేయబడుతుంది.",
+   "phones": "sh r ii k aa k u ll a m n u ny c i t i r u p a t i k i v e ll l ee r ai l u l oo p r a y aa nn i s t u n n a p r a y aa nn i k u l a k u r ee p u u d a y a m p r a t y ee k a p r a k a tt a n a c ee y a b a dd u t u n d i",
+   "audio_s": 6.989206349206349,
+   "asr_transcript": "ಸ್ರಿಕಾ ಕುಳ್ಳಮ್ನುಂಚಿ ತಿರುಪತಿಕಿ ವೆಲ್ಲೆ ರೈಲುಲ್ಲೋ ಪ್ರಯಾನಿಸ್ತುನ್ನ ಪ್ರಯಾನಿಕುಲಕ್ಕು ರೇಪು ಉದೈಯಂ ಪ್ರತ್ತೆಕ್ಕ ಪ್ರಕಟನ ಚೇಯವಡುತ್ತುಂದಿ.",
+   "asr_vs_model_input": {
+    "cer": 1.1263157894736842,
+    "wer": 1.0,
+    "ref_chars": 95,
+    "ref_words": 12,
+    "char_edits": 107,
+    "word_edits": 12
+   }
+  }
+ ]
+}
