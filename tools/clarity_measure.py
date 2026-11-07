@@ -1,4 +1,4 @@
-"""Background-noise floor, speech level and ending level of generated speech (report §5.3).
+"""Background-noise floor, speech level and ending level of generated speech (report Section 6.4).
 
 For every wav present in both folders (same file name), in 20 ms frames (hop 10 ms), levels in dBFS:
   quiet  : mean level of the 10 % quietest frames between the first and last frame within 40 dB of the

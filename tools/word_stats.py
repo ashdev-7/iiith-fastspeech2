@@ -1,4 +1,4 @@
-"""Per-word duration/pitch statistics of the test sentences (the numbers behind the report's §6 analysis).
+"""Per-word duration/pitch statistics of the test sentences (the numbers behind the report's Section 7 analysis).
 
 Reads Results/<Lang>/variance_raw/<ID>.json and frontend_trace.json. Word duration = sum of its phones;
 word pitch = max phone F0 (predicted, Hz). Also: mean vowel duration, final-vowel lengthening, pauses,

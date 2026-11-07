@@ -6,7 +6,7 @@ applied per phone). Two general rules, each triggered only when the prediction v
 
 1. Lexical stress (English). In a word with a primary-stressed vowel (digit 1) and unstressed vowels
    (digit 0), the stressed vowel should be the most prominent. Measured on the test sentences: the model
-   realises this on only 11 of 28 such words (report §6), e.g. "conduct" (noun) with the louder, longer,
+   realises this on only 11 of 28 such words (report Section 7), e.g. "conduct" (noun) with the louder, longer,
    higher vowel on the second syllable. Where violated, the stressed vowel's pitch, duration and energy
    are raised towards a margin over the strongest unstressed vowel of the word (capped), and unstressed
    vowels longer than it are shortened (capped).

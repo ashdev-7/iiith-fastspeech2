@@ -57,8 +57,11 @@ def sentence_figs(lang_dir, ids, texts):
         bullets = "".join("<li>{}</li>".format(b) for b in ANALYSIS[i])
         imgs = "".join('<img src="../../Results/{0}/variance_adaptor_plots/{1}/{2}_{1}.png">'.format(lang_dir, k, i)
                        for k in ("duration", "pitch", "energy"))
-        out.append('<div class="sent"><h4>{}: <span{}>{}</span></h4><ul>{}</ul><div class="plots">{}</div></div>'.format(
-            i, cls, html.escape(texts[i]), bullets, imgs))
+        out.append('<div class="sent"><h4>{}: <span{}><span class="ws">{}</span></span></h4><ul>{}</ul>'
+                   '<figure class="plots" data-cap="{} variance-adaptor plots: duration, pitch and energy">{}'
+                   '<figcaption>From top to bottom: predicted duration per phone; pitch per phone with the F0 of the generated '
+                   'audio; energy per phone.</figcaption></figure></div>'.format(
+                       i, cls, html.escape(texts[i]), bullets, i, imgs))
     return "\n".join(out)
 
 
@@ -95,7 +98,7 @@ def main(browser):
     lev = load("Evaluation", "English", "clarity_levels.json")["mean"]
     rep = {}
 
-    # ------------------------------------------------------------------ glance / Section 7
+    # ------------------------------------------------------------------ glance / Section 8
     tests_en = ["E1", "E2a", "E2b", "E3", "E4"]
     tests_te = ["T1", "T2a", "T2b", "T3", "T4"]
     rep["EN_TEST_GLANCE"] = "{}".format(
@@ -129,14 +132,14 @@ def main(browser):
     for k in ("TE_ASR_BOX", "TE_ASR_NOTE"):
         rep[k] = TEXT[k][mode]
 
-    # ------------------------------------------------------------------ Section 5.3 levels
+    # ------------------------------------------------------------------ Section 6.4 levels
     b, a = lev["before"], lev["after"]
     rep.update({"CLARITY_END_BEFORE": "{:.0f} dBFS".format(b["end_db"]), "CLARITY_END_AFTER": "{:.0f} dBFS".format(a["end_db"]),
                 "CLARITY_QUIET_BEFORE": "{:.1f}".format(b["quiet_db"]), "CLARITY_QUIET_AFTER": "{:.1f} dBFS".format(a["quiet_db"]),
                 "CLARITY_SPEECH_BEFORE": "{:.1f}".format(b["speech_db"]),
                 "CLARITY_SPEECH_AFTER": "{:.1f} dBFS".format(a["speech_db"])})
 
-    # ------------------------------------------------------------------ Section 5.4 English
+    # ------------------------------------------------------------------ Section 6.5 English
     rows = []
     for i in tests_en:
         r = en_s[i]
@@ -147,7 +150,7 @@ def main(browser):
     rep["EN_FRONTEND_LIST"] = '<ul class="dec">' + "".join(
         "<li><b>{}</b>: {}.</li>".format(i, TEXT["en_frontend"][i]) for i in tests_en) + "</ul>"
 
-    # ------------------------------------------------------------------ Section 5.5 Telugu
+    # ------------------------------------------------------------------ Section 6.6 Telugu
     rows = []
     for i in tests_te:
         ra, rw = te_as[i], te_ws[i]
@@ -161,21 +164,23 @@ def main(browser):
     rep["TE_FRONTEND_LIST"] = '<ul class="dec">' + "".join(
         '<li><b>{}</b>: <span class="te">{}</span>.</li>'.format(i, TEXT["te_frontend"][i]) for i in tests_te) + "</ul>"
 
-    # ------------------------------------------------------------------ Section 6 figures
-    rep["TE_EN_SENTENCE_FIGS"] = ("<h3>6.1 English</h3>\n" + sentence_figs("English", tests_en, tests)
-                                  + '\n<h3 class="pb">6.2 Telugu</h3>\n' + sentence_figs("Telugu", tests_te, tests))
+    # ------------------------------------------------------------------ Section 7 figures
+    rep["TE_EN_SENTENCE_FIGS"] = ("<h3>7.1 English</h3>\n" + sentence_figs("English", tests_en, tests)
+                                  + '\n<h3 class="pb">7.2 Telugu</h3>\n' + sentence_figs("Telugu", tests_te, tests))
 
-    # ------------------------------------------------------------------ Section 7.3 / Section 7.4 tables
+    # ------------------------------------------------------------------ Section 8.3 / Section 8.4 tables
     def table(ids, lang, en_rows=None):
+        cap = "{} {} sentences: Whisper transcripts and character error rate".format(
+            "English" if lang == "en" else "Telugu", "stress" if ids[0][0] == "S" else "extended")
         cls = ' class="te"' if lang == "te" else ""
         if lang == "en":
-            out = ['<table class="sx"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
+            out = ['<table class="sx" data-cap="' + cap + '"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
                    '<th class="n">CER norm.</th></tr>']
         elif mode == "te_asr":
-            out = ['<table class="sx"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Telugu-ASR transcript</th>'
+            out = ['<table class="sx" data-cap="' + cap + '"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Telugu-ASR transcript</th>'
                    '<th class="n">CER</th></tr>']
         else:
-            out = ['<table class="sx"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
+            out = ['<table class="sx" data-cap="' + cap + '"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
                    '<th class="n">CER, script-mapped</th></tr>']
         for i in ids:
             meta = stress.get(i) or ext.get(i)
@@ -223,12 +228,97 @@ def main(browser):
     left = sorted(set(re.findall(r"\b(?:EN|TE|TE2|CLARITY|STRESS|EXTENDED|EXT)_[A-Z0-9_]+\b", s)))
     if left:
         raise SystemExit("unfilled placeholders: " + ", ".join(left))
+    s, lookup = number_and_index(s)
+    render(s, browser)
+    pages = find_pages(lookup)
+    for key, pg in pages.items():  # second pass with the page numbers found in the first
+        s = s.replace("{{PG:%s}}" % key, str(pg))
+    s = re.sub(r"\{\{PG:[^}]+\}\}", "", s)
+    render(s, browser)
+    print("wrote", PDF, os.path.getsize(PDF), "bytes; page numbers", "filled" if pages else "not filled (pypdfium2 missing)")
+
+
+def render(s, browser):
     with open(BUILT, "w", encoding="utf-8") as f:
         f.write(s)
     url = "file:///" + BUILT.replace("\\", "/")
     subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
                     "--print-to-pdf=" + PDF, url], check=True, timeout=300)
-    print("wrote", PDF, os.path.getsize(PDF), "bytes")
+
+
+def _plain(x):
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", "", x)).split())
+
+
+def number_and_index(s):
+    """Numbers the tables and figures marked with data-cap, gives every numbered h2/h3 an id, and writes the
+    contents page and the lists of figures and tables. Returns the page and the (key, text to find) pairs whose
+    page numbers find_pages looks up in the first rendering."""
+    entries = {"toc": [], "fig": [], "tab": []}
+    n = {"tab": 0, "fig": 0, "h": 0}
+
+    def tab(m):
+        n["tab"] += 1
+        key = "tab%d" % n["tab"]
+        entries["tab"].append((key, "Table %d. %s" % (n["tab"], m.group(2)), "Table %d." % n["tab"]))
+        return '<table{}{} id="{}"><caption>Table {}. {}</caption>'.format(m.group(1), m.group(3), key, n["tab"], m.group(2))
+    s = re.sub(r'<table([^>]*?) data-cap="([^"]*)"([^>]*)>', tab, s)
+
+    def fig(m):
+        n["fig"] += 1
+        key = "fig%d" % n["fig"]
+        entries["fig"].append((key, "Figure %d. %s" % (n["fig"], m.group(2)), "Figure %d." % n["fig"]))
+        body = m.group(3).replace("<figcaption>", "<figcaption><b>Figure {}.</b> {}. ".format(n["fig"], m.group(2)), 1)
+        return '<figure{} id="{}">{}</figure>'.format(m.group(1), key, body)
+    s = re.sub(r'<figure([^>]*?) data-cap="([^"]*)">(.*?)</figure>', fig, s, flags=re.S)
+
+    def head(m):
+        attrs = m.group(2)
+        if "nonum" in attrs:
+            return m.group(0)
+        n["h"] += 1
+        key = "h%d" % n["h"]
+        title = _plain(m.group(3))
+        entries["toc"].append((key, m.group(1), title, title[:45]))
+        return '<{0} id="{1}"{2}>{3}</{0}>'.format(m.group(1), key, re.sub(r'\s*id="[^"]*"', "", attrs), m.group(3))
+    start = s.index("<!--FRONTMATTER-->")
+    s = s[:start] + re.sub(r"<(h2|h3)([^>]*)>(.*?)</\1>", head, s[start:], flags=re.S)
+
+    def line(key, label, cls):
+        return ('<div class="tl {}"><a href="#{}">{}</a><span class="dots"></span><span class="pg">{{{{PG:{}}}}}</span></div>'
+                .format(cls, key, label, key))
+    out = ['<section class="front"><h2 class="nonum">Contents</h2>']
+    out += [line(k, t, "l2" if lvl == "h2" else "l3") for k, lvl, t, _ in entries["toc"]]
+    out.append('</section>\n<section class="front"><h2 class="nonum">List of Figures</h2>')
+    out += [line(k, t, "l3") for k, t, _ in entries["fig"]]
+    out.append('<h2 class="nonum lists">List of Tables</h2>')
+    out += [line(k, t, "l3") for k, t, _ in entries["tab"]]
+    out.append("</section>")
+    s = s.replace("<!--FRONTMATTER-->", "\n".join(out))
+    lookup = [(k, p) for k, _, _, p in entries["toc"]] + [(k, p) for k, _, p in entries["fig"] + entries["tab"]]
+    return s, lookup
+
+
+def find_pages(lookup):
+    """Page of each heading/caption in the first rendering (pages after the lists are searched)."""
+    try:
+        import pypdfium2
+    except ImportError:
+        return {}
+    doc = pypdfium2.PdfDocument(PDF)
+    texts = [" ".join(doc[i].get_textpage().get_text_range().split()) for i in range(len(doc))]
+    first = max(i for i, t in enumerate(texts) if "List of Tables" in t) + 1
+    found = {}
+    for key, probe in lookup:
+        probe = " ".join(probe.split())
+        for i in range(first, len(texts)):
+            if probe in texts[i]:
+                found[key] = i + 1
+                break
+    missing = [k for k, _ in lookup if k not in found]
+    if missing:
+        print("page not found for:", missing)
+    return found
 
 
 if __name__ == "__main__":

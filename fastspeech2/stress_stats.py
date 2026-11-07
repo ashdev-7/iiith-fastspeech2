@@ -1,4 +1,4 @@
-"""Is lexical stress realised in the English DATA, and by the model? (report §6)
+"""Is lexical stress realised in the English DATA, and by the model? (report Section 7)
 
 For every clip: words from the project frontend on the clip's transcript (clips whose frontend phones differ
 from the aligned phones in train/val.txt are skipped), then prosody_rules.stress_realised on

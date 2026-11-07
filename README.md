@@ -10,8 +10,8 @@ HiFi-GAN (universal) as the vocoder:
 | Train / validation | 4.87 h / 0.98 h (3077 / 742 utterances) | 4.90 h / 1.01 h (2140 / 446 utterances; 4.96 h / 1.02 h selected, 28 clips not aligned) |
 | Text front end | lexicon + g2p_en, homograph POS rule, time/number normalisation | rule-based Telugu G2P, Telugu numbers/ordinals/times, English loanwords in Latin script |
 | Training | 17,949 steps, 1 × T4, 3.5 h | 55,524 steps, 2 × T4, 8 h |
-| Test voice | `svarah_8a8e2655` (clearest recordings, report §5.1) | `te_female` (better HiFi-GAN copy-synthesis) |
-| Inference | GV post-filter and clear-speech options (report §5.2–5.3); model weights unchanged | the model as trained, no options |
+| Test voice | `svarah_8a8e2655` (clearest recordings, report Section 6.2) | `te_female` (better HiFi-GAN copy-synthesis) |
+| Inference | GV post-filter and clear-speech options (report Sections 6.3–6.4); model weights unchanged | the model as trained, no options |
 
 The full write-up is [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf). Every change to the
 reference code is listed, with its reason and test, in [`MODIFICATIONS.md`](MODIFICATIONS.md), which starts
@@ -58,12 +58,12 @@ Copy-synthesis = the ground-truth mel through the same HiFi-GAN, i.e. the best t
 ASR model can do; the gap is what the acoustic model loses.
 † Whisper large-v3 is weak on Telugu (33 % CER even on copy-synthesis of real recordings), so the Telugu
 figure bounds the gap (2.7 points) rather than measuring pronunciation; it also writes some Telugu speech in
-Kannada script, which the report scores after mapping it back to Telugu (§5.5, §7.4).
+Kannada script, which the report scores after mapping it back to Telugu (Section 6.6, Section 8.4).
 
 Further sentences beyond the assignment (not part of it): 16 stress sentences written for this project (numbers, questions, homographs, names,
 abbreviations, long sentences, Telugu–English code-mixing; [`Evaluation/stress_sentences.json`](Evaluation/stress_sentences.json))
 and 20 extended sentences supplied by the author ([`Evaluation/Extended/extended_sentences.json`](Evaluation/Extended/extended_sentences.json); XE01 and XT01 repeat E1 and T1 verbatim),
-scored in the report (§7.3–7.4). `Evaluation/English/model_only/` holds the English test sentences from the
+scored in the report (Sections 8.3–8.4). `Evaluation/English/model_only/` holds the English test sentences from the
 model alone (no inference-time options), for comparison with `Results/English/`.
 
 ## Checkpoints

@@ -4,15 +4,36 @@
 <meta charset="utf-8">
 <title>FastSpeech 2 for English and Telugu: Technical Report</title>
 <style>
-  @page { size: A4; margin: 22mm 20mm 22mm 20mm; }
+  @page { size: A4; margin: 22mm 20mm 24mm 20mm;
+          @bottom-center { content: counter(page); font-family: Cambria, Georgia, serif; font-size: 9pt; color: #444; } }
+  @page :first { @bottom-center { content: none; } }
   :root { --ink:#111; --muted:#4a4a4a; --rule:#000; --hair:#d0d0d0; }
   html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { font-family: Cambria, Georgia, "Times New Roman", serif; font-size: 10.5pt; line-height: 1.45; color: var(--ink);
          background: #fff; margin: 0; }
   .te { font-family: "Nirmala UI", "Noto Sans Telugu", "Gautami", sans-serif; }
   h1 { font-size: 19pt; font-weight: bold; text-align: center; margin: 0 0 3mm; }
-  h2 { font-size: 13pt; font-weight: bold; margin: 10mm 0 3mm; break-after: avoid; }
-  h3 { font-size: 11pt; font-weight: bold; margin: 6mm 0 2mm; break-after: avoid; }
+  h2 { font-size: 15pt; font-weight: bold; margin: 0 0 5mm; padding-bottom: 2mm; border-bottom: 0.8px solid #000; break-before: page; break-after: avoid; }
+  h2.nonum { border-bottom: none; }
+  .abstract h2 { break-before: auto; font-size: 11pt; text-align: center; margin: 0 0 2mm; padding: 0; }
+  .cover { text-align: center; padding-top: 45mm; }
+  .cover-top { font-size: 11pt; letter-spacing: 0.15em; text-transform: uppercase; color: #444; margin-bottom: 8mm; }
+  .cover h1 { font-size: 22pt; line-height: 1.25; margin: 0 0 6mm; }
+  .cover-sub { font-size: 12pt; color: #333; margin-bottom: 14mm; line-height: 1.5; }
+  .cover .author { font-size: 13pt; margin-bottom: 2mm; }
+  .abstract { text-align: left; margin: 26mm 8mm 0; font-size: 10pt; }
+  .abstract p { text-align: justify; }
+  section.front h2 { margin-bottom: 6mm; }
+  h2.lists { break-before: auto; margin-top: 10mm; }
+  .tl { display: flex; align-items: baseline; font-size: 10pt; line-height: 1.5; }
+  .tl a { color: #111; }
+  .tl.l2 { font-weight: bold; margin-top: 2.2mm; }
+  .tl.l3 { padding-left: 7mm; }
+  .tl .dots { flex: 1; border-bottom: 1px dotted #888; margin: 0 2mm 1.2mm; }
+  .tl .pg { min-width: 7mm; text-align: right; }
+  caption { caption-side: top; text-align: left; font-weight: bold; font-size: 9.5pt; padding: 0 0 1.5mm; }
+  figcaption b { color: #111; }
+  h3 { font-size: 12pt; font-weight: bold; margin: 8mm 0 2.5mm; break-after: avoid; }
   h4 { font-size: 10.5pt; font-weight: bold; margin: 5mm 0 1.5mm; break-after: avoid; }
   p { margin: 0 0 2.6mm; text-align: left; }
   ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
@@ -30,6 +51,7 @@
   tr:last-child td { border-bottom: none; }
   tr { break-inside: avoid; }
   td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  td code { overflow-wrap: anywhere; word-break: break-word; }
   figure { margin: 4mm 0 5mm; break-inside: avoid; }
   figure img { width: 100%; display: block; }
   figcaption { font-size: 9pt; color: var(--muted); margin-top: 1.5mm; }
@@ -47,9 +69,8 @@
   p.small { text-align: left; }
   .pb { break-before: page; }
   .ws { white-space: pre-wrap; }
-  table.glance, table.sx { table-layout: fixed; }
+  table.glance, table.sx, table.fixed { table-layout: fixed; }
   table.glance { break-inside: avoid; }
-  .toc { columns: 2; font-size: 10pt; margin: 0 0 6mm; line-height: 1.6; }
   ul.dec { padding-left: 6mm; font-size: 9.8pt; }
   ul.dec li { margin: 0 0 1.4mm; }
   ol.refs { padding-left: 0; list-style: none; font-size: 9.2pt; line-height: 1.4; }
@@ -58,44 +79,84 @@
 </head>
 <body>
 
-<h1>FastSpeech 2 for English and Telugu</h1>
+<div class="cover">
+<div class="cover-top">Technical report</div>
+<h1>FastSpeech 2 Text-to-Speech for English and Telugu</h1>
+<div class="cover-sub">Implementation, training and analysis of two separately trained models:<br>English (Svarah) and Telugu (IndicTTS Telugu)</div>
 <div class="author">Yash Tyagi</div>
-<div class="meta">Technical report: implementation, data, training and analysis of two separately trained FastSpeech 2 models
-(English: Svarah; Telugu: IndicTTS Telugu) · 7 November 2026<br>
-Code, results and checkpoints: <code>https://github.com/ashdev-7/iiith-fastspeech2</code></div>
-
-<div class="box">
-<p><b>How to read this report.</b> All numbers were measured in this project unless they are marked
-<span class="tag paper">paper</span> (reported in the FastSpeech 2 paper [1]) or <span class="tag repo">reference</span> (taken from
-the reference implementation [2] or its configuration files). Statements marked <span class="tag est">interpretation</span> are
-explanations that were not tested. Each measurement was produced by a scripted Kaggle job that records the code version it ran; the
-jobs are listed in <code>kaggle/README.md</code>, and the files each number comes from are named in the text.</p>
-<p>Intelligibility was measured with automatic speech recognition (TE_ASR_BOX), with the recognisers pinned to exact versions.
-No listening test was run, so the report makes no claim about perceived naturalness. Sections 5.1 to 5.3 and 7, and the extra sentences
-in Sections 7.3 and 7.4, go beyond what the assignment asks.</p>
+<div class="meta">7 November 2026<br>Repository: <code>https://github.com/ashdev-7/iiith-fastspeech2</code></div>
+<div class="abstract"><h2 class="nonum">Abstract</h2>
+<p>This report describes two FastSpeech 2 text-to-speech models trained separately for English, on 4.87 hours of the Svarah corpus, and
+for Telugu, on 4.90 hours of the IndicTTS Telugu corpus, starting from the open-source implementation ming024/FastSpeech2 [2]. The
+reference code supports English and Mandarin only; Telugu was added through a rule-based grapheme-to-phone converter, Telugu number
+normalisation, a separate symbol table and a forced aligner trained on the selected Telugu clips. The report documents the data
+selection and preprocessing, the training runs and their loss curves, the speech generated for the ten test sentences of the assignment,
+and the duration, pitch and energy predicted by the variance adaptor for each sentence. An additional evaluation on the held-out
+validation sets measures prosody prediction errors, a mel-cepstral distance and intelligibility by automatic speech recognition. No
+listening test was run, so the report makes no claim about perceived naturalness.</p></div>
 </div>
 
-<div class="toc">
-<a href="#s1">1. Implementation approach</a><br>
-<a href="#s2">2. Data: selection, split, preprocessing</a><br>
-<a href="#s3">3. Training configuration</a><br>
-<a href="#s4">4. Loss curves: convergence and over-fitting</a><br>
-<a href="#s5">5. Generated speech, per test sentence</a><br>
-<a href="#s6">6. Variance-adaptor plots, per test sentence</a><br>
-<a href="#s7">7. Objective evaluation on held-out data</a><br>
-<a href="#s8">8. English vs Telugu; limitations, failures, improvements</a><br>
-<a href="#s9">9. Reproducibility</a><br>
-<a href="#sR">References</a><br>
-<a href="#sA">Appendix: deliverables checklist</a>
-</div>
+<!--FRONTMATTER-->
+<!-- =============================================================== -->
+<h2 id="s1">1. Introduction</h2>
+<h3>1.1 Task and scope</h3>
+<p>The assignment asks for the FastSpeech 2 model [1] to be implemented and evaluated separately for English and Telugu, starting from
+a public implementation, with about 5 hours of training audio and 1 hour of validation audio per language: Svarah [4] for English and
+IndicTTS Telugu [5] for Telugu. Each model must synthesise five given test sentences (English E1, E2a, E2b, E3, E4; Telugu T1, T2a,
+T2b, T3, T4; E2 and T2 each consist of two sentences, a and b), and the duration, pitch and energy predicted by the variance adaptor
+must be analysed for each sentence. The changes made to the implementation, especially for Telugu, must be documented.</p>
 
-<h3>Results at a glance</h3>
-<table class="glance">
+<h3>1.2 Deliverables and repository layout</h3>
+<p>The repository follows the folder structure required by the assignment. Table 1 lists each required item and where it is; the last three rows are additions that hold the shared code, the compute jobs, the tests and the evaluation outputs.</p>
+<table class="fixed" data-cap="Required repository items and their location">
+<colgroup><col style="width:42%"><col style="width:58%"></colgroup>
+<tr><th>Required item</th><th>Location and content</th></tr>
+<tr><td><code>English/</code>, <code>Telugu/</code>: <code>train.py</code>, <code>preprocess.py</code>, <code>inference.py</code>, <code>config.yaml</code></td><td>One folder per language. The three scripts are short wrappers that run the shared code in <code>fastspeech2/</code> with the folder's <code>config.yaml</code>.</td></tr>
+<tr><td><code>English/checkpoints/</code>, <code>Telugu/checkpoints/</code></td><td>A README with the download link and SHA-256 checksum of each trained model. The files (135 MB each) exceed GitHub's 100 MB limit, so they are attached to the repository's release v1.0, as the assignment allows.</td></tr>
+<tr><td><code>Results/&lt;Lang&gt;/training_loss.png</code>, <code>validation_loss.png</code></td><td>Loss plots for both models (Section 5).</td></tr>
+<tr><td><code>Results/&lt;Lang&gt;/test_generated_audios/</code></td><td>Five generated sentences per language (Section 6).</td></tr>
+<tr><td><code>Results/&lt;Lang&gt;/variance_adaptor_plots/{duration,pitch,energy}/</code></td><td>Fifteen plots per language, three per test sentence (Section 7).</td></tr>
+<tr><td><code>Report/Technical_Report.pdf</code></td><td>This report.</td></tr>
+<tr><td><code>README.md</code>, <code>requirements.txt</code></td><td>Overview, results summary, commands; Python dependencies.</td></tr>
+<tr><td><code>fastspeech2/</code></td><td>The reference implementation [2] with our modifications, and the new modules (Telugu and English frontends, data preparation, inference, plotting, evaluation). Every change is listed in <code>MODIFICATIONS.md</code>.</td></tr>
+<tr><td><code>kaggle/</code>, <code>tests/</code>, <code>tools/</code></td><td>Compute job scripts, automated tests, report and measurement scripts.</td></tr>
+<tr><td><code>Evaluation/</code></td><td>Outputs of the additional evaluation (Section 8) and of the checks quoted in the text.</td></tr>
+</table>
+
+<h3>1.3 Organisation of this report</h3>
+<p>Sections 2 to 7, 9 and 10 answer the seven report items of the assignment in the order it lists them (Table 2). Section 8 and the
+parts marked as additional in Section 6 go beyond what the assignment asks.</p>
+<table class="fixed" data-cap="Report items required by the assignment and where they are answered">
+<colgroup><col style="width:70%"><col style="width:30%"></colgroup>
+<tr><th>Report item required by the assignment</th><th>Section</th></tr>
+<tr><td>Implementation approach, architecture components used from the reference implementation, and modifications for English and Telugu</td><td>2</td></tr>
+<tr><td>Dataset selection, subsampling, preprocessing, train/validation split, and training configuration for each language</td><td>3, 4</td></tr>
+<tr><td>Analysis of the training and validation loss curves: convergence, instability, over-fitting</td><td>5</td></tr>
+<tr><td>Observations on the generated speech, including pronunciation and overall quality, for each test sentence</td><td>6</td></tr>
+<tr><td>Analysis of the variance-adaptor plots for duration, pitch and energy, for each test sentence</td><td>7</td></tr>
+<tr><td>Comparison of the English and Telugu models, with limitations, failures and possible improvements</td><td>9</td></tr>
+<tr><td>Reproducibility: software dependencies, configuration files and commands</td><td>10</td></tr>
+<tr><td><i>Additional:</i> objective evaluation on the held-out validation sets, speed, extra test sentences</td><td>8</td></tr>
+</table>
+
+<h3>1.4 Conventions and access to the evidence</h3>
+<p>All numbers were measured in this project unless they are marked <span class="tag paper">paper</span> (reported in the FastSpeech 2
+paper [1]) or <span class="tag repo">reference</span> (taken from the reference implementation [2] or its configuration files).
+Statements marked <span class="tag est">interpretation</span> are explanations that were not tested.</p>
+<p>File paths in the text refer to the public repository named on the title page, where every file cited is available. The
+computations ran as scripted jobs on Kaggle; the job names used in the text (for example <code>fs2-18-aligner-check</code>) correspond to
+the scripts in <code>kaggle/&lt;number&gt;_&lt;name&gt;/run.py</code>, listed in <code>kaggle/README.md</code>. The Kaggle runs themselves are
+private to the author's account, so every output this report relies on is committed to the repository, under <code>Results/</code> and
+<code>Evaluation/</code>; the status records of the main jobs are in <code>Evaluation/Data/job_records/</code>.</p>
+<p>Intelligibility was measured with automatic speech recognition (TE_ASR_BOX), with the recognisers pinned to exact versions.</p>
+
+<h3>1.5 Results at a glance</h3>
+<table class="glance" data-cap="Data, training and results at a glance">
 <colgroup><col style="width:46%"><col style="width:27%"><col style="width:27%"></colgroup>
 <tr><th></th><th class="n">English (Svarah)</th><th class="n">Telugu (IndicTTS)</th></tr>
 <tr><td>Training data used: hours (utterances)</td><td class="n">4.87 h (3,077)</td><td class="n">4.90 h (2,140)</td></tr>
 <tr><td>Validation data used: hours (utterances)</td><td class="n">0.98 h (742)</td><td class="n">1.01 h (446)</td></tr>
-<tr><td>Speakers in training (Section 2.1)</td><td class="n">110 profiles</td><td class="n">2</td></tr>
+<tr><td>Speakers in training (Section 3.1)</td><td class="n">110 profiles</td><td class="n">2</td></tr>
 <tr><td>Training steps</td><td class="n">17,949</td><td class="n">55,524</td></tr>
 <tr><td>Training time and hardware</td><td class="n">211 min, 1 T4 GPU</td><td class="n">480 min, 2 T4 GPUs</td></tr>
 <tr><td>Validation loss, total: lowest (step) and last</td><td class="n">2.651 (7k), 2.686</td><td class="n">1.970 (16k), 1.974</td></tr>
@@ -106,34 +167,29 @@ in Sections 7.3 and 7.4, go beyond what the assignment asks.</p>
 <tr><td>Real-time factor, T4 GPU and 4-thread CPU</td><td class="n">0.027, 0.35</td><td class="n">0.026, 0.37</td></tr>
 </table>
 <p class="small"><sup>a</sup> Whisper large-v3 [8] on 150 validation utterances; copy-synthesis is the real recording's mel-spectrogram
-passed through the same vocoder, i.e. the best this vocoder and recogniser allow. Whisper is weak on Telugu (Section 7).
+passed through the same vocoder, i.e. the best this vocoder and recogniser allow. Whisper is weak on Telugu (Section 8).
 <sup>b</sup> English: final configuration, after Whisper's English text normaliser. Telugu: after mapping Kannada-script output back to
-Telugu; much of the remaining error is recogniser formatting, Latin script in T1 and digits in T4 (Section 5.5).</p>
-<p>All required outputs are in the repository: ten generated test sentences, thirty variance-adaptor plots, and training- and
-validation-loss plots for both languages (checklist in the Appendix). Every test sentence passes the run-time checks: the predicted
-durations sum to the mel length, no phone has zero length, and the audio is finite and not silent.</p>
-<p>Beyond the brief, the report contains an evaluation on every held-out utterance (Section 7); a diagnosis of where quality is lost and
-three remedies (Sections 5.1 to 5.3); a check that the Telugu aligner's access to the validation clips does not bias the results
-(Section 2.2); 34 further sentences of our own, not from the assignment (Sections 7.3 and 7.4); and twelve fixes to the reference code
-(Section 1.3).</p>
+Telugu; much of the remaining error is recogniser formatting, Latin script in T1 and digits in T4 (Section 6.6).</p>
+<p>All required outputs are in the repository (Table 1). Every test sentence passes the run-time checks of the inference script: the
+predicted durations sum to the mel length, no phone has zero length, and the audio is finite and not silent.</p>
 
 <!-- =============================================================== -->
-<h2 id="s1">1. Implementation approach</h2>
+<h2 id="s2">2. Implementation approach</h2>
 
-<h3>1.1 Architecture used from the reference implementation</h3>
-<p>The starting point is <code>ming024/FastSpeech2</code> [2] (MIT licence), an implementation of FastSpeech 2 [1], vendored with the modifications in Section 1.3. The model is the
+<h3>2.1 Architecture used from the reference implementation</h3>
+<p>The starting point is <code>ming024/FastSpeech2</code> [2] (MIT licence), an implementation of FastSpeech 2 [1], vendored with the modifications in Section 2.5. The model is the
 non-autoregressive FastSpeech 2 acoustic model:</p>
 <ul>
 <li><b>Encoder</b>: phoneme embedding + 4 feed-forward Transformer (FFT) blocks (self-attention, 2 heads, hidden 256; Conv1D 1024, kernels 9/1).</li>
-<li><b>Speaker embedding</b> (multi-speaker mode) added to the encoder output: 110 Svarah training speaker profiles (Svarah has no speaker ids, Section 2.1), 2 Telugu speakers.</li>
+<li><b>Speaker embedding</b> (multi-speaker mode) added to the encoder output: 110 Svarah training speaker profiles (Svarah has no speaker ids, Section 3.1), 2 Telugu speakers.</li>
 <li><b>Variance adaptor</b>: three predictors (2 × Conv1D 256, kernel 3, LayerNorm, dropout 0.5) for log-duration, pitch and energy.
 Pitch and energy are <i>per phone</i>, quantised into 256 bins, embedded and added to the hidden sequence; the
 <b>length regulator</b> repeats each phone vector <i>d</i> times, with <i>d</i> = round(exp(log <i>d̂</i>) − 1) at inference. In training the ground-truth duration, pitch and energy are used here (teacher forcing) and the predictors learn them; at inference the predictions are used.</li>
-<li><b>Decoder</b>: 6 FFT blocks → linear to 80 mel bins → 5-layer convolutional <b>PostNet</b> (residual).</li>
+<li><b>Decoder</b>: 6 FFT blocks, followed by a linear layer to 80 mel bins and a 5-layer convolutional <b>PostNet</b> (residual).</li>
 <li><b>Loss</b>: MAE on mel (before and after PostNet) + MSE on log-duration, pitch and energy (6 terms logged).</li>
 <li><b>Vocoder</b>: the reference repository's pretrained <b>HiFi-GAN "universal"</b> generator [3] (not trained here).</li>
 </ul>
-<table>
+<table data-cap="FastSpeech 2 paper, reference code and this project compared">
 <colgroup><col style="width:19%"><col style="width:27%"><col style="width:27%"><col style="width:27%"></colgroup>
 <tr><th></th><th>FastSpeech 2 paper [1]</th><th>Reference code [2]</th><th>This project</th></tr>
 <tr><td>Training data</td><td>LJSpeech, 24 h, 1 speaker</td><td>configs for LJSpeech, AISHELL-3, LibriTTS</td><td>about 5 h per language</td></tr>
@@ -149,22 +205,55 @@ Pitch and energy are <i>per phone</i>, quantised into 256 bins, embedded and add
 <p class="small">The paper's figures cannot be compared directly with ours: the data (24 h of one speaker against about 5 h),
 the vocoder and the GPU all differ. Phone-averaged pitch is also used by FastPitch [10].</p>
 
-<h3>1.2 Language-specific work</h3>
+<h3>2.2 Data flow and tensor shapes (from the code)</h3>
+<p>Shapes recorded with forward hooks on both models (batch 1; <i>L</i> phones including pauses, <i>T</i> mel frames):</p>
+<table data-cap="Data flow and tensor shapes">
+<tr><th>Stage</th><th>Component</th><th>Output</th></tr>
+<tr><td>text to phones</td><td>English frontend / Telugu normaliser + G2P (language-specific)</td><td>phone list + per-word trace</td></tr>
+<tr><td>phones to ids</td><td><code>text_to_sequence</code> (table per language; unknown symbol raises)</td><td>(1, <i>L</i>) int64</td></tr>
+<tr><td>embedding + encoder</td><td><code>Encoder</code>: embedding, sinusoidal positions, 4 FFT blocks</td><td>(1, <i>L</i>, 256)</td></tr>
+<tr><td>speaker</td><td><code>speaker_emb</code>, added to every position</td><td>(1, 256), broadcast</td></tr>
+<tr><td>variance predictors</td><td>duration (log), pitch, energy, one value per phone</td><td>(1, <i>L</i>) each</td></tr>
+<tr><td>pitch / energy embedding</td><td>256-bin quantisation, then <code>nn.Embedding(256, 256)</code>, added</td><td>(1, <i>L</i>, 256)</td></tr>
+<tr><td>length regulator</td><td>repeat phone <i>i</i> <i>d<sub>i</sub></i> times, <i>T</i> = Σ<i>d<sub>i</sub></i></td><td>(1, <i>T</i>, 256)</td></tr>
+<tr><td>decoder to mel</td><td>6 FFT blocks, Linear(256, 80), PostNet (residual)</td><td>(1, <i>T</i>, 80) log-mel</td></tr>
+<tr><td>vocoder</td><td>HiFi-GAN universal, input (1, 80, <i>T</i>)</td><td>256·<i>T</i> samples at 22,050 Hz</td></tr>
+</table>
+<p class="small">In training (and in the validation loss of Section 5) the ground-truth duration, pitch and energy are embedded and used by the
+length regulator; the predictors are trained against them. At inference the predictions are used. Everything below the frontend and the
+symbol table is language-independent code, trained separately per language; the two models share no weights.</p>
+
+<h3>2.3 What was inherited, what we changed, what we added</h3>
+<table data-cap="What was inherited, what we changed, what we added">
+<tr><th>Part</th><th>Origin</th><th>Our change</th><th>Evidence</th></tr>
+<tr><td>Model (encoder, variance adaptor, length regulator, decoder, PostNet), loss, optimizer</td><td>ming024/FastSpeech2 @ d4e79eb</td><td>none to the architecture; encoder vocabulary sized per language (L3); control fixes M1, M12; device fixes M11</td><td>diff vs upstream: <code>model/fastspeech2.py</code>, <code>model/loss.py</code>, <code>transformer/Layers.py</code> unchanged</td></tr>
+<tr><td>Hyper-parameters</td><td>reference LJSpeech configs</td><td>max_seq_len raised from 1000 to 1500 (clips up to 15 s); steps and LR decays sized to a time budget</td><td><code>English/config.yaml</code>, <code>Telugu/config.yaml</code></td></tr>
+<tr><td>Vocoder</td><td>reference: pretrained HiFi-GAN "universal"</td><td>none (a fine-tune was tried and not adopted, Section 6.3)</td><td><code>hifigan/</code> unchanged</td></tr>
+<tr><td>English text to phones</td><td>reference: LibriSpeech lexicon, g2p_en, English cleaners, number rules</td><td>new inference frontend with traced decisions and general rules (Section 2.4)</td><td><code>text/english_frontend.py</code>, tests</td></tr>
+<tr><td>Telugu text to phones</td><td>nothing in the reference</td><td>new: normaliser, rule-based G2P, 65-symbol table, Latin-script mapping</td><td><code>text/telugu/</code>, <code>text/symbols.py</code>, tests</td></tr>
+<tr><td>Data loaders, split</td><td>reference: LJSpeech/AISHELL-3/LibriTTS loaders, unseeded random split</td><td>new HF ingest, candidate filter, group split with leakage checks</td><td><code>data/ingest.py</code>, <code>data/select_split.py</code></td></tr>
+<tr><td>Alignment</td><td>reference: MFA run externally</td><td>English: MFA pretrained <code>english_us_arpa</code>; Telugu: MFA acoustic model trained here</td><td><code>data/mfa_prepare.py</code>, <code>kaggle/pipeline.py</code></td></tr>
+<tr><td>Feature extraction</td><td>reference preprocessor</td><td>bug fixes M5–M7; manifest-driven split</td><td><code>preprocessor/preprocessor.py</code></td></tr>
+<tr><td>Inference, plots, evaluation, post-processing</td><td>reference: <code>synthesize.py</code> only</td><td>new (inference with checks, variance plots, evaluation, GV post-filter, prosody and clarity options)</td><td><code>inference.py</code>, <code>plotting.py</code>, <code>evaluate_val.py</code>, ...</td></tr>
+<tr><td>Data, checkpoints</td><td>datasets named by the assignment; no checkpoints supplied</td><td>both models trained here from random initialisation</td><td>job records <code>fs2-03-train-*</code></td></tr>
+</table>
+
+<h3>2.4 Language-specific work</h3>
 <h4>Telugu (the reference has no Telugu support)</h4>
 <ul>
 <li><b>Grapheme-to-phone</b> (<code>text/telugu/g2p.py</code>, <code>phones.py</code>): Telugu script is close to phonemic, so it is
 converted by deterministic rules on the Unicode Telugu block: a consonant carries the inherent vowel /a/ unless a vowel sign or
-virama follows; a vowel sign replaces it; the anusvara (ం) becomes the nasal homorganic with the next consonant (బలంగా →
-<code>b a l a ng g aa</code>, ఉంచండి → <code>u ny c a nn dd i</code>), otherwise /m/; visarga → /h/. 50 phone labels in ASCII
+virama follows; a vowel sign replaces it; the anusvara (ం) becomes the nasal homorganic with the next consonant (బలంగా gives
+<code>b a l a ng g aa</code> and ఉంచండి gives <code>u ny c a nn dd i</code>), otherwise /m/; the visarga gives /h/. 50 phone labels in ASCII
 (retroflex consonants doubled: <code>tt dd nn ss ll</code>; aspirates with <code>h</code>; long vowels doubled). Every code point must be
 consumed by a rule, otherwise an error is raised, so characters are never dropped silently.</li>
 <li><b>Normalisation</b> (<code>text/telugu/normalize.py</code>): Telugu number words for cardinals, ordinals and times:
-<span class="te">2026</span> → <span class="te">రెండు వేల ఇరవై ఆరు</span>, <span class="te">12వ</span> → <span class="te">పన్నెండవ</span>,
-<span class="te">10:45</span> → <span class="te">పది నలభై ఐదు</span>.</li>
+<span class="te">2026</span> as <span class="te">రెండు వేల ఇరవై ఆరు</span>, <span class="te">12వ</span> as <span class="te">పన్నెండవ</span>,
+<span class="te">10:45</span> as <span class="te">పది నలభై ఐదు</span>.</li>
 <li><b>Symbol table</b>: a separate 65-symbol Telugu table (padding, punctuation, 50 phones, silences); the encoder embedding is sized
 per language (L1–L4 in <code>MODIFICATIONS.md</code>, which also has a one-table summary of all Telugu work).</li>
 <li><b>Alignment</b>: we found no pretrained Telugu acoustic model for MFA, so one was <b>trained here</b> on the selected IndicTTS
-clips with a dictionary generated by the G2P (11,947 words, 0 without pronunciation); Section 2.2
+clips with a dictionary generated by the G2P (11,947 words, 0 without pronunciation); Section 3.2
 shows that its access to the validation clips does not affect the results.</li>
 <li><b>Code-mixing</b> (beyond the test set): English words written in Latin script inside Telugu text (e.g. "iPhone") are mapped
 from ARPAbet to the nearest Telugu phones, using only phones already in the Telugu table (<code>text/telugu/latin.py</code>).</li>
@@ -172,43 +261,43 @@ from ARPAbet to the nearest Telugu phones, using only phones already in the Telu
 </ul>
 <h4>English</h4>
 <ul>
-<li><b>Inference frontend</b> (<code>text/english_frontend.py</code>): times ("10:45 AM" → "ten forty five A M", AM/PM as letter names),
-numbers and years (reference <code>inflect</code> rules: 2026 → "twenty twenty six"); homographs known to g2p_en (<i>conduct</i>)
+<li><b>Inference frontend</b> (<code>text/english_frontend.py</code>): times ("10:45 AM" is read "ten forty five A M", with AM/PM as letter names),
+numbers and years (reference <code>inflect</code> rules: 2026 is read "twenty twenty six"); homographs known to g2p_en (<i>conduct</i>)
 resolved by part of speech over the whole sentence; pronunciations from the LibriSpeech lexicon [14] (the lexicon used for alignment);
-g2p_en [13] for out-of-vocabulary words; punctuation → short pause <code>sp</code>. Every decision is recorded per word in
+g2p_en [13] for out-of-vocabulary words; punctuation becomes the short pause <code>sp</code>. Every decision is recorded per word in
 <code>frontend_trace.json</code>; the test text itself is never changed.</li>
-<li><b>Rules found by inspecting the test outputs</b> (Section 5.4), all general, none word-specific: split words ("<span class="ws">rhyth  m</span>") are joined for
+<li><b>Rules found by inspecting the test outputs</b> (Section 6.5), all general, none word-specific: split words ("<span class="ws">rhyth  m</span>") are joined for
 pronunciation when the concatenation is a lexicon word and the first part is not; a word-final "oo" in an out-of-vocabulary word is
 /uː/ (<i>andaroo</i>); the <b>citation form</b> is preferred where the lexicon's first variant is a casual reduction (dropped /t/ in
 "twenty", "parliamentary", dropped /d/ in "thousand"; flapped /t/ in "thirty"; 670 words in all); "the" before a vowel is /ðiː/; and an
 out-of-vocabulary word of 12 or more letters is split into the fewest lexicon words of at least 4 letters
-(<i>antidisestablishmentarianism</i> → anti + disestablishment + arianism), instead of being left to g2p_en.</li>
+(<i>antidisestablishmentarianism</i> becomes anti + disestablishment + arianism), instead of being left to g2p_en.</li>
 <li><b>Robustness rules for unseen text</b> (from probing with new sentences; none changes the ten test sentences, checked phone by
 phone): "%" and "&amp;" spoken; an hour with a.m./p.m. and no minutes; acronyms spelled or taken from CMUdict; "1,247" read as a quantity,
 not a year; "Month day" dates as ordinals; no pause after "Dr."; two corrections to g2p_en's homograph table (past-tense <i>read</i>, verb
 <i>process</i>).</li>
 <li><b>Alignment</b>: MFA's pretrained <code>english_us_arpa</code> acoustic model with the LibriSpeech lexicon + g2p_en for
 out-of-vocabulary words (6,388 words, 0 without pronunciation).</li>
-<li><b>Inference-time options</b> (Sections 5.2–5.3): a global-variance post-filter and clear-speech options, each introduced for a measured
+<li><b>Inference-time options</b> (Sections 6.3–6.4): a global-variance post-filter and clear-speech options, each introduced for a measured
 problem; the trained weights are the same for every output.</li>
 </ul>
 
-<h3>1.3 Modifications to the reference code</h3>
+<h3>2.5 Modifications to the reference code</h3>
 <p>Twelve fixes (M1–M12) and four language-support changes (L1–L4) are listed in <code>MODIFICATIONS.md</code> with the original
 behaviour, the reason, the new behaviour and the test that covers it. The ones that change results:</p>
-<table>
+<table data-cap="Fixes to the reference code that change results">
 <tr><th>#</th><th>Problem in the reference</th><th>Fix</th></tr>
 <tr><td>M1</td><td>Energy embedding received the <i>pitch</i> control value</td><td>uses <code>e_control</code></td></tr>
 <tr><td>M5</td><td>Utterances without a TextGrid added the previous utterance's pitch/energy to the normalisation statistics</td><td>statistics only from processed utterances</td></tr>
 <tr><td>M6</td><td>Empty TextGrid intervals (MFA ≥ 2 writes pauses this way) were dropped, so pauses vanished from phone sequences and durations</td><td>kept as <code>sp</code></td></tr>
 <tr><td>M9</td><td>float64 energy targets: <code>backward()</code> failed ("Found dtype Double")</td><td>cast to float32</td></tr>
 <tr><td>M10</td><td>numpy-scalar learning rate in checkpoints, rejected by <code>torch.load(weights_only=True)</code></td><td><code>float()</code></td></tr>
-<tr><td>M12</td><td>Pitch/energy controls multiplied the <i>z-normalised</i> value: for a voice below the corpus mean, pitch × 1.2 <i>lowered</i> F0 (126 → 113 Hz)</td><td>scale in Hz / energy units; now × 1.2 → 126 → 157 Hz (en, former voice, commit a2c8afe), 209 → 252 Hz (te)</td></tr>
+<tr><td>M12</td><td>Pitch/energy controls multiplied the <i>z-normalised</i> value: for a voice below the corpus mean, pitch × 1.2 <i>lowered</i> F0 (from 126 to 113 Hz)</td><td>scale in Hz / energy units; a factor of 1.2 now raises F0 from 126 to 157 Hz (English, former voice, commit a2c8afe) and from 209 to 252 Hz (Telugu)</td></tr>
 </table>
 <p>Others: CPU-safe STFT (M2), librosa ≥ 0.10 keyword API (M3), UTF-8 file handling (M4, M7), sorted speaker ids (M7),
 <code>map_location</code>/<code>weights_only</code> loading and HiFi-GAN paths (M8), masks on the input's device (M11).</p>
 
-<h3>1.4 Engineering for a reliable run</h3>
+<h3>2.6 Engineering for a reliable run</h3>
 <p>All compute ran as Kaggle script jobs that clone the repository and record the commit. Every job except the data-ingest and data-accounting jobs first runs the test suite (64 tests at the Telugu training job, 108 in the last
 jobs: frontends, symbol tables, split leakage, preprocessing, model forward/backward on every test sentence, checkpoint round trip,
 plots, prosody and clarity rules) and stops if a test fails; a CPU <b>rehearsal</b> ran every stage on a small real subset before the full runs. The training job
@@ -219,42 +308,10 @@ checkpoint. The rerun used one GPU and completed.</p>
 
 <!-- =============================================================== -->
 
-<h3>1.5 What was inherited, what we changed, what we added</h3>
-<table>
-<tr><th>Part</th><th>Origin</th><th>Our change</th><th>Evidence</th></tr>
-<tr><td>Model (encoder, variance adaptor, length regulator, decoder, PostNet), loss, optimizer</td><td>ming024/FastSpeech2 @ d4e79eb</td><td>none to the architecture; encoder vocabulary sized per language (L3); control fixes M1, M12; device fixes M11</td><td>diff vs upstream: <code>model/fastspeech2.py</code>, <code>model/loss.py</code>, <code>transformer/Layers.py</code> unchanged</td></tr>
-<tr><td>Hyper-parameters</td><td>reference LJSpeech configs</td><td>max_seq_len 1000 → 1500 (clips up to 15 s); steps and LR decays sized to a time budget</td><td><code>English/config.yaml</code>, <code>Telugu/config.yaml</code></td></tr>
-<tr><td>Vocoder</td><td>reference: pretrained HiFi-GAN "universal"</td><td>none (a fine-tune was tried and not adopted, Section 5.2)</td><td><code>hifigan/</code> unchanged</td></tr>
-<tr><td>English text → phones</td><td>reference: LibriSpeech lexicon, g2p_en, English cleaners, number rules</td><td>new inference frontend with traced decisions and general rules (Section 1.2)</td><td><code>text/english_frontend.py</code>, tests</td></tr>
-<tr><td>Telugu text → phones</td><td>nothing in the reference</td><td>new: normaliser, rule-based G2P, 65-symbol table, Latin-script mapping</td><td><code>text/telugu/</code>, <code>text/symbols.py</code>, tests</td></tr>
-<tr><td>Data loaders, split</td><td>reference: LJSpeech/AISHELL-3/LibriTTS loaders, unseeded random split</td><td>new HF ingest, candidate filter, group split with leakage checks</td><td><code>data/ingest.py</code>, <code>data/select_split.py</code></td></tr>
-<tr><td>Alignment</td><td>reference: MFA run externally</td><td>English: MFA pretrained <code>english_us_arpa</code>; Telugu: MFA acoustic model trained here</td><td><code>data/mfa_prepare.py</code>, <code>kaggle/pipeline.py</code></td></tr>
-<tr><td>Feature extraction</td><td>reference preprocessor</td><td>bug fixes M5–M7; manifest-driven split</td><td><code>preprocessor/preprocessor.py</code></td></tr>
-<tr><td>Inference, plots, evaluation, post-processing</td><td>reference: <code>synthesize.py</code> only</td><td>new (inference with checks, variance plots, evaluation, GV post-filter, prosody and clarity options)</td><td><code>inference.py</code>, <code>plotting.py</code>, <code>evaluate_val.py</code>, ...</td></tr>
-<tr><td>Data, checkpoints</td><td>datasets named by the assignment; no checkpoints supplied</td><td>both models trained here from random initialisation</td><td>job records <code>fs2-03-train-*</code></td></tr>
-</table>
+<!-- =============================================================== -->
+<h2 id="s3">3. Data: selection, split and preprocessing</h2>
 
-<h3>1.6 Data flow and tensor shapes (from the code)</h3>
-<p>Shapes recorded with forward hooks on both models (batch 1; <i>L</i> phones including pauses, <i>T</i> mel frames):</p>
-<table>
-<tr><th>Stage</th><th>Component</th><th>Output</th></tr>
-<tr><td>text → phones</td><td>English frontend / Telugu normaliser + G2P (language-specific)</td><td>phone list + per-word trace</td></tr>
-<tr><td>phones → ids</td><td><code>text_to_sequence</code> (table per language; unknown symbol raises)</td><td>(1, <i>L</i>) int64</td></tr>
-<tr><td>embedding + encoder</td><td><code>Encoder</code>: embedding, sinusoidal positions, 4 FFT blocks</td><td>(1, <i>L</i>, 256)</td></tr>
-<tr><td>speaker</td><td><code>speaker_emb</code>, added to every position</td><td>(1, 256) → broadcast</td></tr>
-<tr><td>variance predictors</td><td>duration (log), pitch, energy, one value per phone</td><td>(1, <i>L</i>) each</td></tr>
-<tr><td>pitch / energy embedding</td><td>256-bin quantisation → <code>nn.Embedding(256, 256)</code>, added</td><td>(1, <i>L</i>, 256)</td></tr>
-<tr><td>length regulator</td><td>repeat phone <i>i</i> <i>d<sub>i</sub></i> times, <i>T</i> = Σ<i>d<sub>i</sub></i></td><td>(1, <i>T</i>, 256)</td></tr>
-<tr><td>decoder → mel</td><td>6 FFT blocks, Linear(256, 80), PostNet (residual)</td><td>(1, <i>T</i>, 80) log-mel</td></tr>
-<tr><td>vocoder</td><td>HiFi-GAN universal, input (1, 80, <i>T</i>)</td><td>256·<i>T</i> samples at 22,050 Hz</td></tr>
-</table>
-<p class="small">In training (and in the validation loss of Section 4) the ground-truth duration, pitch and energy are embedded and used by the
-length regulator; the predictors are trained against them. At inference the predictions are used. Everything below the frontend and the
-symbol table is language-independent code, trained separately per language; the two models share no weights.</p>
-
-<h2 id="s2">2. Data: selection, split and preprocessing</h2>
-
-<h3>2.1 Selection and subsampling</h3>
+<h3>3.1 Selection and subsampling</h3>
 <p>Both datasets are larger than the 5 h + 1 h budget, so a deterministic, duration-targeted selection was used
 (<code>data/select_split.py</code>). Only the two specified datasets are used, Svarah [4] and IndicTTS Telugu [5], from Hugging Face at pinned revisions
 (<code>ai4bharat/Svarah</code>, <code>SPRINGLab/IndicTTS_Telugu</code>).</p>
@@ -269,7 +326,7 @@ that share a transcript are additionally merged (union-find), so no sentence can
 validation if it fits all validation quotas it touches, else to training if it fits, else it is not used.</li>
 <li><b>No overlap</b>: utterance ids, groups and normalised transcripts must be disjoint between train and validation, and clips with identical audio (SHA-1 of the PCM samples) are excluded before the split. All checks passed (0 overlaps).</li>
 </ul>
-<table>
+<table data-cap="Data selected and used, per language">
 <tr><th></th><th>English (Svarah)</th><th>Telugu (IndicTTS)</th></tr>
 <tr><td>Selected train</td><td class="n">3,079 utt. · 4.87 h · 110 speaker profiles</td><td class="n">2,164 utt. · 4.96 h (female 2.41 h, male 2.55 h)</td></tr>
 <tr><td>Selected validation</td><td class="n">742 utt. · 0.98 h · 109 speaker profiles</td><td class="n">450 utt. · 1.02 h (0.51 h each)</td></tr>
@@ -287,7 +344,7 @@ ranges rather than random failures <span class="tag est">interpretation</span>; 
 also appear in training (different recordings), and both Telugu speakers are in both splits: the split is by recording / sentence, not by speaker, so the validation sets measure
 generalisation to new sentences, not to new voices.</p>
 
-<h3>2.2 Preprocessing</h3>
+<h3>3.2 Preprocessing</h3>
 <ol>
 <li><b>Audio</b>: decoded from the Hugging Face parquet files, mono, resampled to 22,050 Hz (soxr), 16-bit.</li>
 <li><b>Text</b>: English transcripts through the reference <code>english_cleaners</code> (lower case, numbers and abbreviations spelled out), keeping letters and apostrophes; pronunciations from the LibriSpeech lexicon with g2p_en for missing words. Telugu transcripts through the Telugu normaliser; pronunciations from the Telugu G2P. The inference frontends use the same lexicon, G2P and phone sets.</li>
@@ -298,14 +355,14 @@ FastSpeech 2 model itself trains only on the training split. To measure whether 
 a second Telugu aligner was trained on the <b>training clips only</b> (same dictionary, same MFA version and command), the validation
 clips were aligned with it, and both alignments were compared (<code>tools/aligner_check.py</code>, Kaggle <code>fs2-18-aligner-check</code>,
 <code>Evaluation/Data/aligner_check.json</code>):
-<table>
+<table data-cap="Agreement between the two Telugu aligners">
 <tr><th>Second aligner (training clips only) vs the one used</th><th class="n">Validation clips (445)</th><th class="n">Training clips (2,139)</th></tr>
 <tr><td>Phones whose duration is within 1 frame (11.6 ms) / identical</td><td class="n">95.4 % / 66.8 %</td><td class="n">96.1 % / 69.1 %</td></tr>
 <tr><td>Mean phone-boundary shift (95th percentile)</td><td class="n">2.7 ms (10 ms)</td><td class="n">2.6 ms (10 ms)</td></tr>
 <tr><td>Clips with the same phone sequence (the others differ only in where a short pause was placed)</td><td class="n">363</td><td class="n">1,951</td></tr>
 </table>
-The released model's validation duration error against the two alignments: <b>1.058 → 1.112 frames</b> (MAE) and Pearson r of log
-durations <b>0.848 → 0.823</b>. The reported Telugu duration scores are therefore optimistic by about 0.05 frames (0.6 ms per phone), and
+The released model's validation duration error against the two alignments: <b>from 1.058 to 1.112 frames</b> (MAE) and Pearson r of log
+durations <b>from 0.848 to 0.823</b>. The reported Telugu duration scores are therefore optimistic by about 0.05 frames (0.6 ms per phone), and
 the training targets the model learned from would have been almost the same without the validation clips (agreement on the
 training clips is as high as on the validation clips).</li>
 <li><b>Features</b> (reference preprocessor with fixes M5–M7): leading/trailing silence trimmed using the alignment; 80-band
@@ -315,9 +372,9 @@ z-normalised with the training-set mean/std; per-phone durations in frames from 
 </ol>
 
 <!-- =============================================================== -->
-<h2 id="s3">3. Training configuration</h2>
-<p>Both models use the reference architecture and optimiser settings (Section 1.1); only the length of training differs.</p>
-<table>
+<h2 id="s4">4. Training configuration</h2>
+<p>Both models use the reference architecture and optimiser settings (Section 2.1); only the length of training differs.</p>
+<table data-cap="Training configuration">
 <colgroup><col style="width:40%"><col style="width:30%"><col style="width:30%"></colgroup>
 <tr><th>Setting</th><th class="n">English</th><th class="n">Telugu</th></tr>
 <tr><td>Trainable parameters</td><td class="n">35.44 M</td><td class="n">35.34 M</td></tr>
@@ -336,16 +393,16 @@ decays at 1/3, 4/9 and 5/9 of the planned steps, the same proportions as the ref
 1.0; length-sorted groups of four batches; 32-bit floating point; random seed 1234. Validation runs every 1,000 steps on the full
 validation set and records the six losses, the duration error and the total-length error (<code>val_diagnostics.csv</code>). The parameter
 difference comes from the symbol embedding (75,520 parameters) and the speaker embedding (27,648).</p>
-<p>The English budget was cut from 8 h to 3.5 h for the rerun because the Telugu validation total had come within 2 % of its final value by step 7k (Section 4); this also saved GPU quota and shortened the exposure to another session failure. Exact configs:
+<p>The English budget was cut from 8 h to 3.5 h for the rerun because the Telugu validation total had come within 2 % of its final value by step 7k (Section 5); this also saved GPU quota and shortened the exposure to another session failure. Exact configs:
 <code>English/config.yaml</code>, <code>Telugu/config.yaml</code>, and as run: <code>Results/&lt;Lang&gt;/train_config_used.yaml</code>.</p>
 
 <!-- =============================================================== -->
-<h2 id="s4">4. Loss curves: convergence, stability and over-fitting</h2>
-<figure><img src="../../Results/Telugu/loss_curves.png"><figcaption>Telugu: training loss (grey line, mean of each 100 steps) and validation loss (black line with dots, every 1,000 steps), logarithmic scale. Separate
+<h2 id="s5">5. Loss curves: convergence, stability and over-fitting</h2>
+<figure data-cap="Telugu training and validation losses"><img src="../../Results/Telugu/loss_curves.png"><figcaption>Training loss (grey line, mean of each 100 steps) and validation loss (black line with dots, every 1,000 steps), logarithmic scale. Separate
 <code>training_loss.png</code> and <code>validation_loss.png</code> are in <code>Results/Telugu/</code>.</figcaption></figure>
-<figure><img src="../../Results/English/loss_curves.png"><figcaption>English, same layout (<code>Results/English/</code>).</figcaption></figure>
+<figure data-cap="English training and validation losses"><img src="../../Results/English/loss_curves.png"><figcaption>Same layout as Figure 1. Separate <code>training_loss.png</code> and <code>validation_loss.png</code> are in <code>Results/English/</code>.</figcaption></figure>
 
-<table>
+<table data-cap="Validation losses: lowest and last values">
 <tr><th>Validation loss</th><th class="n">English lowest (step)</th><th class="n">English last</th><th class="n">Telugu lowest (step)</th><th class="n">Telugu last</th></tr>
 <tr><td>total</td><td class="n">2.651 (7k)</td><td class="n">2.686</td><td class="n">1.970 (16k)</td><td class="n">1.974</td></tr>
 <tr><td>mel after PostNet</td><td class="n">0.753</td><td class="n">0.760</td><td class="n">0.589</td><td class="n">0.595</td></tr>
@@ -357,7 +414,7 @@ difference comes from the symbol embedding (75,520 parameters) and the speaker e
 <p><b>What the validation loss measures.</b> It is computed like the training loss: the ground-truth duration, pitch and energy of each
 validation utterance drive the length regulator and the embeddings (<code>evaluate.py</code>). The mel terms therefore measure reconstruction
 with the true prosody, and the duration, pitch and energy terms measure the predictors on unseen phones. Free-running quality is
-measured separately in Section 7.</p>
+measured separately in Section 8.</p>
 <p><b>Convergence.</b> The total training loss falls from 13 to ≈ 2 in the first 2k of the 4k warm-up steps, then slowly. The
 learning-rate decays show as steps: the mean training loss of the 1,000 steps after the first decay is 18.7 % (English, 6k) and 5.6 %
 (Telugu, 18k) below that of the 1,000 steps before, against 7.3 % and 2.2 % in comparison windows without a decay; the later decays
@@ -372,13 +429,14 @@ For English there is <b>mild over-fitting</b>: validation pitch, energy and dura
 checkpoints (17,949 and 55,524 steps) were not validated separately. Early stopping on the validation total (minimum at 7k steps) would give a slightly better English model and save time; the
 released checkpoint is the last one <span class="tag est">interpretation</span>.</p>
 <p><b>English vs Telugu level.</b> English validation losses are higher in every term except pitch. The two runs differ in data
-(110 speaker profiles of ≈ 2.7 min each with varying recording conditions, Section 5.1, against two speakers with ~2.5 h each), frontend and
+(110 speaker profiles of ≈ 2.7 min each with varying recording conditions, Section 6.2, against two speakers with ~2.5 h each), frontend and
 training length (17,949 vs 55,524 steps), so the difference cannot be attributed to the language <span class="tag est">interpretation</span>.</p>
 
 <!-- =============================================================== -->
-<h2 id="s5">5. Generated speech, per test sentence</h2>
+<h2 id="s6">6. Generated speech, per test sentence</h2>
+<h3>6.1 Test text and how the speech was assessed</h3>
 <p>Audio: <code>Results/&lt;Lang&gt;/test_generated_audios/</code>. Voices: English <code>svarah_8a8e2655</code> (chosen by recording
-clarity, Section 5.1); Telugu <code>te_female</code> (lower HiFi-GAN copy-synthesis error than <code>te_male</code>: mel L1 0.378
+clarity, Section 6.2); Telugu <code>te_female</code> (lower HiFi-GAN copy-synthesis error than <code>te_male</code>: mel L1 0.378
 vs 0.394 on 20 validation clips each). Pronunciation is assessed by transcribing each wav with an
 ASR model and comparing it with the frontend's normalised text (character error rate, CER); for English the CER is also given after
 Whisper's English text normaliser, which removes pure formatting differences ("10:45" vs "ten forty five").</p>
@@ -388,16 +446,16 @@ Whisper's English text normaliser, which removes pure formatting differences ("1
 same PDF (pypdf, the Word copy) detach or reorder Telugu vowel signs (e.g. "విశ్లషే ించారు" for "విశ్లేషించారు"), so they were not used.
 Spacing in the given text is kept as is, including "<span class="ws">rhyth  m</span>" (E3) and "<span class="ws te">అడ  విలో</span>" (T3); the frontends only decide how such text is
 pronounced, and <code>frontend_trace.json</code> records the original text next to the model input. For "<span class="ws">rhyth  m</span>" the English frontend
-joins the pieces (read literally, "m" becomes the letter name: the first full run said "rythe em", Section 5.4); for "<span class="ws te">అడ  విలో</span>" no rule is needed,
+joins the pieces (read literally, "m" becomes the letter name: the first full run said "rythe em", Section 6.5); for "<span class="ws te">అడ  విలో</span>" no rule is needed,
 because the Telugu input has no word-boundary symbol and the split gives exactly the phones of అడవిలో.</p>
 
-<h3>5.1 Choice of the English test voice, and where quality is lost</h3>
+<h3>6.2 Choice of the English test voice, and where quality is lost (additional)</h3>
 <p>The first English outputs (voice <code>svarah_71f88d2a</code>, chosen because it has the most training audio) sounded muffled. A Praat
 analysis [12] (<code>tools/acoustic_analysis.py</code>) and a diagnostic job (<code>fastspeech2/diagnose_quality.py</code>, Kaggle
 <code>fs2-07-diagnose</code>, <code>Evaluation/Diagnosis/</code>) located the cause. For 24–30 validation clips of each test voice it compares
-the natural recording, copy-synthesis (ground-truth mel → HiFi-GAN), FastSpeech 2 with ground-truth duration/pitch/energy (oracle) and
+the natural recording, copy-synthesis (the ground-truth mel through HiFi-GAN), FastSpeech 2 with ground-truth duration/pitch/energy (oracle) and
 free-running FastSpeech 2, band by band (long-term spectrum, dB relative to the natural recording):</p>
-<table>
+<table data-cap="Long-term spectrum of each version minus the natural recording, by band (dB)">
 <tr><th>Band (Hz)</th><th class="n">0–500</th><th class="n">500–1k</th><th class="n">1k–2k</th><th class="n">2k–4k</th><th class="n">4k–6k</th><th class="n">6k–8k</th></tr>
 <tr><td>English, copy − natural</td><td class="n">−0.1</td><td class="n">+0.7</td><td class="n">+0.5</td><td class="n">+0.8</td><td class="n">+1.0</td><td class="n">+1.1</td></tr>
 <tr><td>English, free-running − natural</td><td class="n">−0.3</td><td class="n">+3.1</td><td class="n">0.0</td><td class="n">+3.1</td><td class="n">+3.9</td><td class="n">+1.9</td></tr>
@@ -411,11 +469,11 @@ The muffled sound was <b>the voice's own recordings</b>: ranking all 110 trainin
 (1–4 kHz band −23 dB); recording conditions vary by speaker. The test sentences were rendered in the four
 clearest voices; <code>svarah_8a8e2655</code> (rank 2, 1–4 kHz band −9.7 dB) had the lowest jitter and shimmer of the four and is used
 for all English outputs. The checkpoint is unchanged; only the speaker embedding chosen at inference differs. Effect at the time (means
-over the five English sentences, Praat): spectral centre of gravity 298 → 623 Hz, jitter 1.18 → 0.51 %, shimmer 11.1 → 8.9 % (<code>Evaluation/Diagnosis/voice_choice.json</code>). The selection rule was changed after
+over the five English sentences, Praat): spectral centre of gravity from 298 to 623 Hz, jitter from 1.18 to 0.51 %, shimmer from 11.1 to 8.9 % (<code>Evaluation/Diagnosis/voice_choice.json</code>). The selection rule was changed after
 listening to the first outputs; it is an objective rule on training recordings, and the earlier outputs remain in the repository history
 (commit <code>8f5ae5f</code>).</p>
 
-<h3>5.2 Over-smoothing: diagnosis and three remedies</h3>
+<h3>6.3 Over-smoothing: diagnosis and three remedies (additional)</h3>
 <p>The band-energy comparison above cannot see whether spectral <i>detail</i> is preserved. Measuring the variance of each log-mel bin over
 time ("global variance", GV) and the mean frame-to-frame change (flux), on 6 of the held-out clips per language (the ones whose audio the
 job kept; English: the first voice), shows over-smoothing, a known weakness of FastSpeech 2 (its decoder is trained with an L1 loss on the mel here, and regression losses
@@ -428,12 +486,12 @@ its utterance mean by <code>r<sub>k</sub><sup>s/2</sup></code>, where <code>r<su
 variance, estimated once on <b>training</b> clips of the test voice (<code>Results/English/gv_ratio.json</code>), as in statistical
 parametric synthesis (global-variance compensation [9]). Inference only. Ratio estimated on 29 training clips (Telugu voice: 40); scored on the test voice's 9 held-out clips (Telugu: 25)
 (<code>Evaluation/Postfilter/</code>, Kaggle <code>fs2-08-postfilter</code>):</p>
-<table>
+<table data-cap="Effect of the global-variance post-filter on held-out clips">
 <tr><th>English, strength s</th><th class="n">GV / natural</th><th class="n">flux / natural</th><th class="n">HNR (dB)</th><th class="n">shimmer (%)</th><th class="n">MCD (DTW)</th></tr>
 <tr><td>0 (off)</td><td class="n">0.76</td><td class="n">0.62</td><td class="n">16.9</td><td class="n">8.2</td><td class="n">36.7</td></tr>
 <tr><td>0.5</td><td class="n">0.90</td><td class="n">0.67</td><td class="n">17.4</td><td class="n">8.1</td><td class="n">37.6</td></tr>
 <tr><td>1.0 (used)</td><td class="n">1.04</td><td class="n">0.71</td><td class="n">17.6</td><td class="n">7.9</td><td class="n">38.6</td></tr>
-<tr><td>Telugu 0 → 1.0</td><td class="n">0.97 → 1.00</td><td class="n">0.81 → 0.81</td><td class="n">18.0 → 17.9</td><td class="n">8.0 → 7.6</td><td class="n">29.7 → 29.9</td></tr>
+<tr><td>Telugu, 0 and 1.0</td><td class="n">from 0.97 to 1.00</td><td class="n">from 0.81 to 0.81</td><td class="n">from 18.0 to 17.9</td><td class="n">from 8.0 to 7.6</td><td class="n">from 29.7 to 29.9</td></tr>
 </table>
 <p>The post-filter restores the variance completely and part of the temporal sharpness; HNR rises by 0.7 dB and shimmer falls by 0.4 points
 (9 clips, small changes); MCD rises slightly because it rewards averaged spectra (a known property of MCD). Telugu is not over-smoothed (r ≈ 1.02, no
@@ -442,10 +500,10 @@ measurable change), so its outputs are left unfiltered.</p>
 FastSpeech 2's teacher-forced mels of the training set, paired with the recordings cut exactly as the preprocessor cuts them, with
 discriminators (MPD + MSD, from the original HiFi-GAN code [3]) trained from scratch because the reference ships only the generator
 (<code>fastspeech2/vocoder_finetune.py</code>, Kaggle <code>fs2-09-vocoder-ft-*</code>; <code>Evaluation/VocoderFinetune/summary.json</code>).</p>
-<table>
-<tr><th>Universal → fine-tuned</th><th class="n">val. mel L1 (GTA)</th><th class="n">Whisper CER, synthesis</th><th class="n">Whisper CER, copy-synthesis</th><th>other</th></tr>
-<tr><td>English</td><td class="n">0.866 → 0.850</td><td class="n">15.7 → 15.3 %</td><td class="n">11.6 → 12.3 %</td><td>GV ratio 0.91 → 0.87; copy-synthesis HNR 14.9 dB vs 17.1 natural</td></tr>
-<tr><td>Telugu</td><td class="n">0.671 → 0.600</td><td class="n">35.8 → 35.5 %</td><td class="n">33.1 → 31.0 %</td><td>GV ratio 1.00 → 0.94</td></tr>
+<table data-cap="HiFi-GAN fine-tuning: universal and fine-tuned vocoder compared">
+<tr><th>Universal, then fine-tuned</th><th class="n">val. mel L1 (GTA)</th><th class="n">Whisper CER, synthesis</th><th class="n">Whisper CER, copy-synthesis</th><th>other</th></tr>
+<tr><td>English</td><td class="n">from 0.866 to 0.850</td><td class="n">from 15.7 to 15.3 %</td><td class="n">from 11.6 to 12.3 %</td><td>GV ratio from 0.91 to 0.87; copy-synthesis HNR 14.9 dB vs 17.1 natural</td></tr>
+<tr><td>Telugu</td><td class="n">from 0.671 to 0.600</td><td class="n">from 35.8 to 35.5 %</td><td class="n">from 33.1 to 31.0 %</td><td>GV ratio from 1.00 to 0.94</td></tr>
 </table>
 <p>The fine-tuned vocoders fit the training mels better but did not make the synthesis clearer and made some outputs worse, so the
 universal HiFi-GAN is kept for both languages. The likely reason is the short adversarial training with discriminators started from
@@ -456,10 +514,10 @@ Kaggle <code>fs2-11-adapt-en</code>, <code>Evaluation/Adaptation/</code>). The t
 clips improved only up to step 100–150 and then got worse; the gains (≤ 0.5 MCD on 9 clips) are within noise and the voice-quality
 measures do not move: with 2.7 min of one voice, the decoder fits the training clips without improving on the held-out ones. The unadapted model is kept.</p>
 
-<h3>5.3 Clear-speech inference options (English)</h3>
+<h3>6.4 Clear-speech inference options for English (additional)</h3>
 <p>Listening to the English outputs exposed three further problems. Each was measured, and each remedy acts at inference time
 (<code>fastspeech2/clarity.py</code>, <code>prosody_rules.py</code>); the model weights are unchanged. The model's own predictions are
-kept in every variance file and drawn in every plot (Section 6), so nothing here hides what the variance adaptor predicted.</p>
+kept in every variance file and drawn in every plot (Section 7), so nothing here hides what the variance adaptor predicted.</p>
 <ul>
 <li><b>Endings cut off.</b> Training clips are trimmed at the first and last phone, so the model's last frame is still at speech level and
 the waveform stops mid-sound (last 20 ms of the model-only outputs: CLARITY_END_BEFORE). Remedy: a short silence lead-in, a 5-frame
@@ -467,19 +525,19 @@ fade of the last frame and trailing silence before the vocoder (CLARITY_END_AFTE
 <li><b>Background noise.</b> The vocoder alone is clean (−86 dBFS RMS on a silent mel), but the model reproduces the Svarah recordings' noise floor in its pauses (43.8 dB
 above digital silence, measured on 119 pause frames of the model's own output on three neutral sentences that are not test sentences,
 <code>Results/English/noise_profile.json</code>). Remedy: subtraction of that floor in the mel domain. Quietest frames
-CLARITY_QUIET_BEFORE → CLARITY_QUIET_AFTER; speech level CLARITY_SPEECH_BEFORE → CLARITY_SPEECH_AFTER (unchanged)
+from CLARITY_QUIET_BEFORE to CLARITY_QUIET_AFTER; speech level from CLARITY_SPEECH_BEFORE to CLARITY_SPEECH_AFTER (unchanged)
 (<code>tools/clarity_measure.py</code> on E1–E4, model-only vs final; <code>Evaluation/English/clarity_levels.json</code>).</li>
 <li><b>Fast, run-together speech.</b> On validation the model is 4 % shorter than the real speakers (median length ratio 0.96), and long
 words sounded run together with their neighbours (the author's listening impression, not measured). Remedy: overall duration × 1.10; words with four or more vowels × 1.25, preceded by a 70 ms
-micro-pause (placed before their article, never between article and noun); phrasing (Section 6: lengthening before punctuation, a minimum pause
+micro-pause (placed before their article, never between article and noun); phrasing (Section 7: lengthening before punctuation, a minimum pause
 at each punctuation mark, a falling end for statements and a rising end for yes/no questions).</li>
 </ul>
 CLARITY_DECISION
 <p class="small">Model-only renders of the five English test sentences (no inference-time option and no post-filter; the same frontend) are
 in <code>Evaluation/English/model_only/</code> for comparison.</p>
 
-<h3>5.4 English</h3>
-<table>
+<h3>6.5 English test sentences</h3>
+<table data-cap="English test sentences: Whisper transcripts and character error rate">
 <colgroup><col style="width:7%"><col style="width:11%"><col style="width:56%"><col style="width:13%"><col style="width:13%"></colgroup>
 <tr><th>ID</th><th class="n">Duration</th><th>Whisper large-v3 transcript of the generated audio</th><th class="n">CER, raw</th><th class="n">CER, normalised</th></tr>
 EN_SENTENCE_ROWS
@@ -488,8 +546,8 @@ EN_SENTENCE_ROWS
 EN_FRONTEND_LIST
 EN_OBSERVATIONS
 
-<h3>5.5 Telugu</h3>
-<table>
+<h3>6.6 Telugu test sentences</h3>
+<table data-cap="Telugu test sentences: Whisper transcripts and character error rate">
 <colgroup><col style="width:7%"><col style="width:11%"><col style="width:56%"><col style="width:13%"><col style="width:13%"></colgroup>
 TE_TABLE_HEAD
 TE_SENTENCE_ROWS
@@ -499,7 +557,7 @@ TE_FRONTEND_LIST
 TE_OBSERVATIONS
 
 <!-- =============================================================== -->
-<h2 id="s6">6. Variance-adaptor plots, per test sentence</h2>
+<h2 id="s7">7. Variance-adaptor plots, per test sentence</h2>
 <p>Each test sentence has three plots in <code>Results/&lt;Lang&gt;/variance_adaptor_plots/</code>:</p>
 <ul>
 <li><b>Duration</b>: predicted frames per phone (bars), with milliseconds on the right axis.</li>
@@ -516,14 +574,14 @@ the per-word figures come from <code>tools/word_stats.py</code>.</p>
 <h4>Patterns common to all ten sentences (the model's own predictions)</h4>
 <ul>
 <li><b>Declination</b>: the mean pitch of the last third of the phones is below that of the first third in every sentence (English
-219–237 Hz → 195–209 Hz; Telugu 217–246 → 178–197 Hz). The exception to a falling end is E3, which the model ends on its highest pitch
+from 219–237 Hz to 195–209 Hz; Telugu from 217–246 Hz to 178–197 Hz). The exception to a falling end is E3, which the model ends on its highest pitch
 (269 Hz on <i>unexpectedly</i>), a question-like rise on a statement.</li>
 <li><b>Phrase-final lengthening</b>: the last vowel is 1.1–2.5× the sentence's mean vowel duration in English (except E2a, 0.9×, whose last
 word ends in /s/) and 1.3–2.1× in Telugu.</li>
 <li><b>Segmental energy pattern</b>: vowels and nasals high, stops, fricatives and pauses low (e.g. E4: /s/ and /z/ 4.5–14, vowels 30–123 a.u., median 64), as
 expected for an STFT-norm energy.</li>
 <li><b>Speaking rate</b> 11.0–12.5 phones/s (English), 12.5–14.5 phones/s (Telugu).</li>
-<li><b>Lexical stress (English)</b> is weakly marked: the noun and verb <i>conduct</i> get almost the same syllable durations (Section 6.1). This is
+<li><b>Lexical stress (English)</b> is weakly marked: the noun and verb <i>conduct</i> get almost the same syllable durations (Section 7.1). This is
 what the data contain: in the Svarah training recordings the stressed vowel is the most prominent vowel of its word in 43.6 % of words,
 against 40.7 % expected by chance, and the model's predictions match the validation recordings (45.6 % vs 44.4 %). "Most prominent" = higher than every unstressed vowel of the word on at least two of pitch, duration and energy; words with a primary-stressed and an unstressed vowel; 1,074 training and 340 validation words, from the 428 training and 141 validation clips whose frontend phones match the forced alignment exactly (the other clips were skipped, so this is a subsample)
 (<code>fastspeech2/stress_stats.py</code>, Kaggle <code>fs2-15-stress-stats</code>).</li>
@@ -533,11 +591,11 @@ against 40.7 % expected by chance, and the model's predictions match the validat
 TE_EN_SENTENCE_FIGS
 
 <!-- =============================================================== -->
-<h2 id="s7">7. Objective evaluation on held-out data</h2>
+<h2 id="s8">8. Objective evaluation on held-out data</h2>
 <p>Both models were evaluated on <b>every validation utterance</b> (never trained on), each synthesised with its own speaker and without
 any inference-time option (<code>fastspeech2/evaluate_val.py</code>, Kaggle <code>fs2-04-eval</code>, <code>fs2-06-eval-fix</code>). Silence
 phones are excluded from duration/pitch/energy metrics.</p>
-<table>
+<table data-cap="Objective evaluation on the validation sets">
 <tr><th>Metric</th><th class="n">English (742 utt.)</th><th class="n">Telugu (446 utt.)</th></tr>
 <tr><td>Duration MAE (frames, 11.6 ms) / Pearson r of log(1+d)</td><td class="n">2.81 / 0.58</td><td class="n">1.06 / 0.85</td></tr>
 <tr><td>Total utterance length, relative error</td><td class="n">11.7 %</td><td class="n">4.5 %</td></tr>
@@ -546,7 +604,7 @@ phones are excluded from duration/pitch/energy metrics.</p>
 <tr><td>Mel-cepstral distortion*, ground-truth duration/pitch/energy (DTW)</td><td class="n">36.6</td><td class="n">26.1</td></tr>
 <tr><td>Mel-cepstral distortion*, predicted duration/pitch/energy (DTW)</td><td class="n">39.0</td><td class="n">30.9</td></tr>
 <tr><td>Whisper large-v3 CER / WER, our synthesis (150 utt.)</td><td class="n">15.7 % / 21.5 %</td><td class="n">TE_SYN_CER</td></tr>
-<tr><td>Same, copy-synthesis ceiling (ground-truth mel → same HiFi-GAN)</td><td class="n">11.6 % / 13.8 %</td><td class="n">TE_COPY_ROW</td></tr>
+<tr><td>Same, copy-synthesis ceiling (ground-truth mel through the same HiFi-GAN)</td><td class="n">11.6 % / 13.8 %</td><td class="n">TE_COPY_ROW</td></tr>
 TE2_ROWS
 </table>
 <p class="small">* Computed from the model's own 80-band log-mel (orthonormal DCT, c1–c24), averaged over DTW-aligned frames. This is not
@@ -560,8 +618,8 @@ reason is that two speakers reading prepared text vary less than Svarah's 110 sp
 (3) For English the intelligibility gap to the vocoder ceiling is 4.1 points of CER: the acoustic model loses some intelligibility,
 but most of the error (11.6 of 15.7 points) is already present in copy-synthesis of the real recordings. TE_READING</p>
 
-<h3>7.1 Speed</h3>
-<table>
+<h3>8.1 Speed</h3>
+<table data-cap="Real-time factors">
 <tr><th>Real-time factor (compute s / audio s), batch 1, warm</th><th class="n">English</th><th class="n">Telugu</th></tr>
 <tr><td>GPU (Tesla T4): acoustic model / HiFi-GAN / total</td><td class="n">0.0079 / 0.0193 / 0.027</td><td class="n">0.0070 / 0.0186 / 0.026</td></tr>
 <tr><td>CPU (4 threads, fp32, 20 utterances): acoustic / HiFi-GAN / total</td><td class="n">0.029 / 0.322 / 0.350</td><td class="n">0.026 / 0.339 / 0.366</td></tr>
@@ -571,10 +629,10 @@ with Parallel WaveGAN <span class="tag paper">paper</span>. On a CPU the acousti
 vocoder dominates (92–93 % of the time), so a lighter vocoder is the lever for CPU deployment. Timing excludes the text frontend; CUDA
 is synchronised before each reading; one untimed warm-up call.</p>
 
-<h3>7.2 Prosody controls</h3>
+<h3>8.2 Prosody controls</h3>
 <p>Each control factor was applied to one sentence per language (E2b and T2a), and the length, median F0 and RMS level of the audio
 were measured.</p>
-<table>
+<table data-cap="Effect of the prosody controls">
 <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
 <tr><th>Control (factor)</th><th class="n">English: length / median F0 / RMS</th><th class="n">Telugu: length / median F0 / RMS</th></tr>
 <tr><td>none</td><td class="n">4.55 s / 206 Hz / 0.146</td><td class="n">2.46 s / 209 Hz / 0.148</td></tr>
@@ -588,39 +646,39 @@ of per-phone frames explains the difference). Pitch control after M12 is near-pr
 <p class="small"><sup>c</sup> Earlier English test voice, 126 Hz without control (<code>Evaluation/English/metrics_validation.json</code>).
 <sup>d</sup> From the console log of Kaggle job <code>fs2-04-eval</code>; not stored as a file.</p>
 
-<h3>7.3 Stress sentences</h3>
+<h3>8.3 Stress sentences</h3>
 <p>Sixteen further sentences, written for this project (not part of the assignment; <code>Evaluation/stress_sentences.json</code>), probe cases the test set does not: questions, homographs,
 names, abbreviations, numbers, conjuncts, code-mixing, very long and very short sentences. English uses the final configuration; Telugu
 the model as submitted.</p>
 STRESS_TABLES
 
-<h3>7.4 Extended sentence set</h3>
+<h3>8.4 Extended sentence set</h3>
 <p>Ten more sentences per language, supplied by the author (not part of the assignment; <code>Evaluation/Extended/extended_sentences.json</code>), extend each test sentence's difficulty
-(long technical words, homographs, numbers and dates, clusters, questions and exclamations, long sentences). XE01 and XT01 are the test sentences E1 and T1 verbatim, XT04 is the first clause of T4, and XE02/XT02 combine the two E2/T2 sentences; several were used while developing the frontend rules (Section 1.2), so they are not a blind test.</p>
+(long technical words, homographs, numbers and dates, clusters, questions and exclamations, long sentences). XE01 and XT01 are the test sentences E1 and T1 verbatim, XT04 is the first clause of T4, and XE02/XT02 combine the two E2/T2 sentences; several were used while developing the frontend rules (Section 2.4), so they are not a blind test.</p>
 EXTENDED_TABLES
 
 <!-- =============================================================== -->
-<h2 id="s8">8. English vs Telugu; limitations, failures and improvements</h2>
-<h3>8.1 Comparison</h3>
-<table>
+<h2 id="s9">9. English vs Telugu; limitations, failures and improvements</h2>
+<h3>9.1 Comparison</h3>
+<table data-cap="English and Telugu models compared">
 <colgroup><col style="width:20%"><col style="width:40%"><col style="width:40%"></colgroup>
 <tr><th></th><th>English</th><th>Telugu</th></tr>
 <tr><td>Data character</td><td>110 speaker profiles, ~2.7 min each, Indian-accented, recording conditions vary by speaker</td><td>2 speakers, ~2.5 h each, read speech</td></tr>
-<tr><td>Text → phones</td><td>irregular spelling: lexicon + neural G2P; homographs, out-of-vocabulary words and normalisation are the main risks</td><td>near-phonemic script: deterministic rules cover every word; risks are normalisation and loanwords</td></tr>
+<tr><td>Text to phones</td><td>irregular spelling: lexicon + neural G2P; homographs, out-of-vocabulary words and normalisation are the main risks</td><td>near-phonemic script: deterministic rules cover every word; risks are normalisation and loanwords</td></tr>
 <tr><td>Prosody prediction (validation)</td><td>lower: pitch r 0.35, duration r 0.58; lexical stress barely marked, as in the data</td><td>higher: pitch r 0.76, duration r 0.85</td></tr>
 <tr><td>Over-fitting</td><td>mild (validation total lowest at 7k, +1.3 % by 17k)</td><td>minimal (total +0.2 % after 16k; duration term +3.7 %)</td></tr>
-<tr><td>Output quality without inference-time help</td><td>over-smoothed decoder, recording noise reproduced, endings cut; needs the post-filter and clear-speech options (Sections 5.2–5.3)</td><td>not over-smoothed; used as the model produces it</td></tr>
-<tr><td>Phrase structure</td><td>pause at the E4 comma with no pitch reset after it in the model's prediction</td><td>pause at the T4 comma followed by a clear pitch reset (208 → 270 Hz)</td></tr>
+<tr><td>Output quality without inference-time help</td><td>over-smoothed decoder, recording noise reproduced, endings cut; needs the post-filter and clear-speech options (Sections 6.3–6.4)</td><td>not over-smoothed; used as the model produces it</td></tr>
+<tr><td>Phrase structure</td><td>pause at the E4 comma with no pitch reset after it in the model's prediction</td><td>pause at the T4 comma followed by a clear pitch reset (from 208 to 270 Hz)</td></tr>
 <tr><td>Main failures on the test set</td><td>EN_FAILURES</td><td>TE_FAILURES</td></tr>
 </table>
-<h3>8.2 Limitations</h3>
+<h3>9.2 Limitations</h3>
 <ul>
 <li><b>5 h of data</b> per language (the assignment's budget) against 24 h in the paper; the variance predictors show the largest
-train/validation gap (Section 4), and English prosody prediction on held-out data is weak (pitch r 0.35).</li>
+train/validation gap (Section 5), and English prosody prediction on held-out data is weak (pitch r 0.35).</li>
 <li><b>No listening test</b>: quality statements rely on ASR and acoustic measurements.</li>
-<li><b>English decoder over-smoothing</b> (Section 5.2): the GV post-filter restores the spectral variance but only part of the
+<li><b>English decoder over-smoothing</b> (Section 6.3): the GV post-filter restores the spectral variance but only part of the
 frame-to-frame sharpness; the remaining smoothness is in the trained decoder; why it is larger for English than for Telugu was not tested.</li>
-<li><b>The English output relies on inference-time options</b> (Section 5.3); the model alone (<code>Evaluation/English/model_only/</code>) is less
+<li><b>The English output relies on inference-time options</b> (Section 6.4); the model alone (<code>Evaluation/English/model_only/</code>) is less
 clear. They are rules, not learned: they fire on punctuation and word length, not on meaning.</li>
 <li><b>No question intonation in Telugu</b>: the Telugu model, used without rules, ends the yes/no question XT09 (<span class="te">…అవసరం
 కాదా?</span>) with a falling, fading end (≈ 170 Hz on the last syllable against a sentence median of 206 Hz; Praat on <code>Evaluation/Extended/Telugu/XT09_te.wav</code>), i.e. with statement intonation; the "?" is
@@ -630,13 +688,13 @@ not part of the model input.</li>
 <li><b>Universal vocoder</b>: copy-synthesis costs 11.6 % CER on English validation speech; recording quality varies by Svarah speaker
 and bounds what each voice can sound like.</li>
 <li><b>Telugu clips that MFA could not align were dropped</b> (28); their transcripts were not inspected.</li>
-<li><b>Validation shares speakers with training</b> in both languages (split by recording / sentence, Section 2.1).</li>
-<li><b>Svarah speaker identity is a metadata proxy</b> (110 profiles vs 117 speakers on the dataset card, Section 2.1).</li>
+<li><b>Validation shares speakers with training</b> in both languages (split by recording / sentence, Section 3.1).</li>
+<li><b>Svarah speaker identity is a metadata proxy</b> (110 profiles vs 117 speakers on the dataset card, Section 3.1).</li>
 </ul>
-<h3>8.3 Possible improvements (from the test sentences)</h3>
+<h3>9.3 Possible improvements (from the test sentences)</h3>
 <ul>
-<li><b>Voice and data selection by recording quality</b> (Section 5.1): select or weight training speakers by measured clarity, not only by amount
-of audio; the change of test voice (made in the same run as the letter-name durations for AM/PM) lowered the English test-sentence CER from 15.8 % to 2.7 % (Whisper-normalised, five sentences; commits 8f5ae5f → 1fcb7d6).</li>
+<li><b>Voice and data selection by recording quality</b> (Section 6.2): select or weight training speakers by measured clarity, not only by amount
+of audio; the change of test voice (made in the same run as the letter-name durations for AM/PM) lowered the English test-sentence CER from 15.8 % to 2.7 % (Whisper-normalised, five sentences; commits 8f5ae5f and 1fcb7d6).</li>
 <li><b>Word-boundary and sentence-type symbols in the input</b>: neither frontend marks word boundaries or the sentence type (as in the
 reference), so the model cannot separate "అడ విలో" from "అడవిలో", cannot learn the rise of a question (XT09) and ends E3 with a rise;
 adding such symbols needs retraining <span class="tag est">interpretation</span>.</li>
@@ -651,18 +709,18 @@ the paper) for richer intonation.</li>
 </ul>
 
 
-<h3>8.4 Assumptions</h3>
+<h3>9.4 Assumptions</h3>
 <ul>
 <li>Telugu spelling is close enough to pronunciation for rule-based G2P. Supported, not proven: MFA aligned 98.9 % of the selected Telugu clips
 with the G2P dictionary; no native-speaker review.</li>
 <li>The universal HiFi-GAN suits these voices. Measured: copy-synthesis within ~1 dB of the recordings per band up to 8 kHz; ASR ceilings
 11.6 % (English) and 33.1 % (Telugu, weak ASR).</li>
-<li>MFA alignments are an adequate duration reference. Partly checked for Telugu (Section 2.2: 95 % of phones within one frame between two aligners).</li>
-<li>ASR character error is a usable proxy for intelligibility. Reasonable for English; weak for Telugu (Section 7).</li>
-<li>"About 5 h / 1 h" is counted on the audio of the used clips; trimmed hours are also reported (Section 2.1).</li>
-<li>The PDF text layer is the authoritative test text (Section 5).</li>
+<li>MFA alignments are an adequate duration reference. Partly checked for Telugu (Section 3.2: 95 % of phones within one frame between two aligners).</li>
+<li>ASR character error is a usable proxy for intelligibility. Reasonable for English; weak for Telugu (Section 8).</li>
+<li>"About 5 h / 1 h" is counted on the audio of the used clips; trimmed hours are also reported (Section 3.1).</li>
+<li>The PDF text layer is the authoritative test text (Section 6).</li>
 </ul>
-<h3>8.5 What this report does not establish</h3>
+<h3>9.5 What this report does not establish</h3>
 <ul>
 <li>Naturalness or perceived quality: no listening test was run; statements marked as the author's impressions are not results.</li>
 <li>Whether the Telugu confusions (శ/స, ణ/న, aspiration) come from the acoustic model, the vocoder or Whisper.</li>
@@ -676,7 +734,7 @@ so the English test-sentence CER is optimistic.</li>
 </ul>
 
 <!-- =============================================================== -->
-<h2 id="s9">9. Reproducibility</h2>
+<h2 id="s10">10. Reproducibility</h2>
 <p><b>Software</b> (as run on Kaggle): Python 3.13, PyTorch 2.11.0 (CUDA 12.8 on T4; CPU build for data jobs), librosa,
 pyworld, tgt, g2p_en, MFA 3.4.3 (conda-forge, via micromamba), transformers 5.16.1 (validation evaluation) and 5.20.2 (later jobs; evaluation only). Full package lists are in
 each job's <code>environment.txt</code>; <code>requirements.txt</code> lists the minimum versions. Data: Svarah and IndicTTS Telugu from
@@ -713,7 +771,7 @@ and each records the commit it ran. <b>Tests</b>: <code>pytest</code>.</p>
 
 
 <!-- =============================================================== -->
-<h2 id="sR">References</h2>
+<h2>References</h2>
 <ol class="refs">
 <li><span>[1]</span><span>Y. Ren, C. Hu, X. Tan, T. Qin, S. Zhao, Z. Zhao, and T.-Y. Liu, "FastSpeech 2: Fast and high-quality end-to-end text to speech," in <i>Proc. Int. Conf. Learning Representations (ICLR)</i>, 2021.</span></li>
 <li><span>[2]</span><span>C.-M. Chien, "FastSpeech 2 - PyTorch implementation," GitHub repository, commit d4e79eb, 8 July 2021. [Online]. Available: https://github.com/ming024/FastSpeech2</span></li>
@@ -734,25 +792,25 @@ and each records the commit it ran. <b>Tests</b>: <code>pytest</code>.</p>
 <li><span>[17]</span><span>vasista22, "whisper-telugu-large-v2," Hugging Face model card, revision ba19a24. [Online]. Available: https://huggingface.co/vasista22/whisper-telugu-large-v2</span></li>
 </ol>
 
-<h2 id="sA">Appendix: deliverables checklist</h2>
-<table>
+<h2>Appendix A. Deliverables checklist</h2>
+<table data-cap="Assignment deliverables and where they are">
 <tr><th>Assignment item</th><th>Where</th></tr>
-<tr><td>Two separate models, English (Svarah) and Telugu (IndicTTS Telugu), ~5 h train / ~1 h validation each</td><td>Sections 2.1, 3; <code>English/config.yaml</code>, <code>Telugu/config.yaml</code></td></tr>
-<tr><td>Data selection and subsampling strategy; train/validation separate with no overlap</td><td>Section 2.1; <code>fastspeech2/data/select_split.py</code>; <code>Evaluation/Data/accounting.json</code></td></tr>
-<tr><td>Dataset preparation and preprocessing, both languages</td><td>Section 2.2</td></tr>
-<tr><td>Changes to the GitHub implementation for each language, particularly Telugu</td><td>Sections 1.2–1.3; <code>MODIFICATIONS.md</code> ("Telugu support at a glance", L1–L4, M1–M12, new files)</td></tr>
-<tr><td>Speech for all test sentences, text preserved as provided</td><td><code>Results/&lt;Lang&gt;/test_generated_audios/</code> (E1, E2a, E2b, E3, E4; T1, T2a, T2b, T3, T4); Section 5 (text check)</td></tr>
+<tr><td>Two separate models, English (Svarah) and Telugu (IndicTTS Telugu), ~5 h train / ~1 h validation each</td><td>Sections 3.1, 4; <code>English/config.yaml</code>, <code>Telugu/config.yaml</code></td></tr>
+<tr><td>Data selection and subsampling strategy; train/validation separate with no overlap</td><td>Section 3.1; <code>fastspeech2/data/select_split.py</code>; <code>Evaluation/Data/accounting.json</code></td></tr>
+<tr><td>Dataset preparation and preprocessing, both languages</td><td>Section 3.2</td></tr>
+<tr><td>Changes to the GitHub implementation for each language, particularly Telugu</td><td>Sections 2.4–2.5; <code>MODIFICATIONS.md</code> ("Telugu support at a glance", L1–L4, M1–M12, new files)</td></tr>
+<tr><td>Speech for all test sentences, text preserved as provided</td><td><code>Results/&lt;Lang&gt;/test_generated_audios/</code> (E1, E2a, E2b, E3, E4; T1, T2a, T2b, T3, T4); Section 6 (text check)</td></tr>
 <tr><td>Folder structure: <code>English/</code>, <code>Telugu/</code> (train.py, preprocess.py, inference.py, config.yaml, checkpoints/), <code>Results/</code>, <code>Report/</code>, <code>README.md</code>, <code>requirements.txt</code></td><td>repository root</td></tr>
 <tr><td>Trained checkpoints, separately per language</td><td>GitHub release v1.0, linked from <code>&lt;Lang&gt;/checkpoints/README.md</code> and <code>README.md</code> (files exceed GitHub's 100 MB limit)</td></tr>
-<tr><td>Training- and validation-loss plots, both models</td><td><code>Results/&lt;Lang&gt;/training_loss.png</code>, <code>validation_loss.png</code>; Section 4</td></tr>
-<tr><td>Variance-adaptor plots (duration, pitch, energy) for each test sentence, both languages</td><td><code>Results/&lt;Lang&gt;/variance_adaptor_plots/{duration,pitch,energy}/</code>; Section 6</td></tr>
-<tr><td>Report: implementation, architecture, modifications</td><td>Section 1</td></tr>
-<tr><td>Report: data, subsampling, preprocessing, split, training configuration</td><td>Sections 2, 3</td></tr>
-<tr><td>Report: loss curves, convergence, instability, over-fitting</td><td>Section 4</td></tr>
-<tr><td>Report: generated speech per test sentence, pronunciation, quality</td><td>Sections 5.4, 5.5</td></tr>
-<tr><td>Report: variance-adaptor analysis per test sentence</td><td>Section 6</td></tr>
-<tr><td>Report: English vs Telugu, limitations, failures, improvements</td><td>Section 8</td></tr>
-<tr><td>Report: reproducibility (dependencies, configs, commands)</td><td>Section 9; <code>README.md</code></td></tr>
+<tr><td>Training- and validation-loss plots, both models</td><td><code>Results/&lt;Lang&gt;/training_loss.png</code>, <code>validation_loss.png</code>; Section 5</td></tr>
+<tr><td>Variance-adaptor plots (duration, pitch, energy) for each test sentence, both languages</td><td><code>Results/&lt;Lang&gt;/variance_adaptor_plots/{duration,pitch,energy}/</code>; Section 7</td></tr>
+<tr><td>Report: implementation, architecture, modifications</td><td>Section 2</td></tr>
+<tr><td>Report: data, subsampling, preprocessing, split, training configuration</td><td>Sections 3, 4</td></tr>
+<tr><td>Report: loss curves, convergence, instability, over-fitting</td><td>Section 5</td></tr>
+<tr><td>Report: generated speech per test sentence, pronunciation, quality</td><td>Sections 6.5, 6.6</td></tr>
+<tr><td>Report: variance-adaptor analysis per test sentence</td><td>Section 7</td></tr>
+<tr><td>Report: English vs Telugu, limitations, failures, improvements</td><td>Section 9</td></tr>
+<tr><td>Report: reproducibility (dependencies, configs, commands)</td><td>Section 10; <code>README.md</code></td></tr>
 </table>
 
 </body>
