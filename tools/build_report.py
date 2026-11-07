@@ -57,7 +57,7 @@ def sentence_figs(lang_dir, ids, texts):
         bullets = "".join("<li>{}</li>".format(b) for b in ANALYSIS[i])
         imgs = "".join('<img src="../../Results/{0}/variance_adaptor_plots/{1}/{2}_{1}.png">'.format(lang_dir, k, i)
                        for k in ("duration", "pitch", "energy"))
-        out.append('<div class="sent"><h4>{} — <span{}>{}</span></h4><ul>{}</ul><div class="plots">{}</div></div>'.format(
+        out.append('<div class="sent"><h4>{}: <span{}>{}</span></h4><ul>{}</ul><div class="plots">{}</div></div>'.format(
             i, cls, html.escape(texts[i]), bullets, imgs))
     return "\n".join(out)
 
@@ -95,83 +95,87 @@ def main(browser):
     lev = load("Evaluation", "English", "clarity_levels.json")["mean"]
     rep = {}
 
-    # ------------------------------------------------------------------ glance / §7
+    # ------------------------------------------------------------------ glance / Section 7
     tests_en = ["E1", "E2a", "E2b", "E3", "E4"]
     tests_te = ["T1", "T2a", "T2b", "T3", "T4"]
-    rep["EN_TEST_GLANCE"] = "{} (final configuration, Whisper large-v3, normalised)".format(
+    rep["EN_TEST_GLANCE"] = "{}".format(
         pct(corpus([en_s[i] for i in tests_en], "asr_vs_original_whisper_norm")))
     wi = te_w["intelligibility"]
     if "synthesis" not in wi:
         raise SystemExit("Telugu intelligibility results missing")
     rep["TE_SYN_CER"] = "{} / {}".format(pct(wi["synthesis"]["cer"]), pct(wi["synthesis"]["wer"]))
     rep["TE_COPY_ROW"] = "{} / {}".format(pct(wi["copy_synthesis_ceiling"]["cer"]), pct(wi["copy_synthesis_ceiling"]["wer"]))
-    w_glance = "{} ({}), Whisper large-v3, 150 utt.".format(pct(wi["synthesis"]["cer"]), pct(wi["copy_synthesis_ceiling"]["cer"]))
+    w_glance = "{} vs {}".format(pct(wi["synthesis"]["cer"]), pct(wi["copy_synthesis_ceiling"]["cer"]))
     if mode == "te_asr":
         ai = te_av["intelligibility"]
         if "synthesis" not in ai:
             raise SystemExit("Telugu-ASR validation results missing")
         rep["TE_TEST_GLANCE"] = "{} (Telugu ASR)".format(pct(corpus([te_as[i] for i in tests_te], "asr_vs_model_input")))
-        rep["TE_VAL_ASR_GLANCE"] = "{} ({}), Telugu ASR, {} utt.; {}".format(
+        rep["TE_VAL_ASR_GLANCE"] = "{} vs {} (Telugu ASR, {} utt.); Whisper: {}".format(
             pct(ai["synthesis"]["cer"]), pct(ai["copy_synthesis_ceiling"]["cer"]), ai["utterances"], w_glance)
-        rep["TE2_ROWS"] = ('<tr><td>Telugu ASR CER / WER, our synthesis ({n} utt.)</td><td class="n">—</td><td class="n">{s}</td></tr>'
-                           '<tr><td>Same, copy-synthesis ceiling</td><td class="n">—</td><td class="n">{c}</td></tr>').format(
+        rep["TE2_ROWS"] = ('<tr><td>Telugu ASR CER / WER, our synthesis ({n} utt.)</td><td class="n">n/a</td><td class="n">{s}</td></tr>'
+                           '<tr><td>Same, copy-synthesis ceiling</td><td class="n">n/a</td><td class="n">{c}</td></tr>').format(
             n=ai["utterances"], s="{} / {}".format(pct(ai["synthesis"]["cer"]), pct(ai["synthesis"]["wer"])),
             c="{} / {}".format(pct(ai["copy_synthesis_ceiling"]["cer"]), pct(ai["copy_synthesis_ceiling"]["wer"])))
-        rep["TE_TABLE_HEAD"] = ('<tr><th>ID</th><th>Duration</th><th>Frontend decisions</th><th>Telugu-ASR transcript of the generated '
-                                'audio</th><th class="n">CER, Telugu ASR</th><th class="n">CER, Whisper large-v3</th></tr>')
+        rep["TE_TABLE_HEAD"] = ('<tr><th>ID</th><th class="n">Duration</th><th>Telugu-ASR transcript of the generated '
+                                'audio</th><th class="n">CER, Telugu ASR</th><th class="n">CER, Whisper</th></tr>')
     else:
-        rep["TE_TEST_GLANCE"] = "{} (Whisper large-v3, script-mapped)".format(
+        rep["TE_TEST_GLANCE"] = "{}".format(
             pct(corpus([te_as[i] for i in tests_te], "asr_vs_model_input")))
-        rep["TE_VAL_ASR_GLANCE"] = w_glance + "; weak on Telugu (§7)"
+        rep["TE_VAL_ASR_GLANCE"] = w_glance
         rep["TE2_ROWS"] = ""
-        rep["TE_TABLE_HEAD"] = ('<tr><th>ID</th><th>Duration</th><th>Frontend decisions</th><th>Whisper large-v3 transcript of the '
+        rep["TE_TABLE_HEAD"] = ('<tr><th>ID</th><th class="n">Duration</th><th>Whisper large-v3 transcript of the '
                                 'generated audio</th><th class="n">CER</th><th class="n">CER, script-mapped</th></tr>')
     for k in ("TE_ASR_BOX", "TE_ASR_NOTE"):
         rep[k] = TEXT[k][mode]
 
-    # ------------------------------------------------------------------ §5.3 levels
+    # ------------------------------------------------------------------ Section 5.3 levels
     b, a = lev["before"], lev["after"]
     rep.update({"CLARITY_END_BEFORE": "{:.0f} dBFS".format(b["end_db"]), "CLARITY_END_AFTER": "{:.0f} dBFS".format(a["end_db"]),
                 "CLARITY_QUIET_BEFORE": "{:.1f}".format(b["quiet_db"]), "CLARITY_QUIET_AFTER": "{:.1f} dBFS".format(a["quiet_db"]),
                 "CLARITY_SPEECH_BEFORE": "{:.1f}".format(b["speech_db"]),
                 "CLARITY_SPEECH_AFTER": "{:.1f} dBFS".format(a["speech_db"])})
 
-    # ------------------------------------------------------------------ §5.4 English
+    # ------------------------------------------------------------------ Section 5.4 English
     rows = []
     for i in tests_en:
         r = en_s[i]
-        rows.append('<tr><td>{}</td><td class="n">{:.2f} s</td><td>{}</td><td>{}</td><td class="n">{} / {}</td></tr>'.format(
-            i, r["audio_s"], TEXT["en_frontend"][i], html.escape(r.get("asr_transcript", "—")),
+        rows.append('<tr><td>{}</td><td class="n">{:.2f} s</td><td>{}</td><td class="n">{}</td><td class="n">{}</td></tr>'.format(
+            i, r["audio_s"], html.escape(r.get("asr_transcript", "n/a")),
             pct(r["asr_vs_model_input"]["cer"]), pct(r["asr_vs_original_whisper_norm"]["cer"])))
     rep["EN_SENTENCE_ROWS"] = "\n".join(rows)
+    rep["EN_FRONTEND_LIST"] = '<ul class="dec">' + "".join(
+        "<li><b>{}</b>: {}.</li>".format(i, TEXT["en_frontend"][i]) for i in tests_en) + "</ul>"
 
-    # ------------------------------------------------------------------ §5.5 Telugu
+    # ------------------------------------------------------------------ Section 5.5 Telugu
     rows = []
     for i in tests_te:
         ra, rw = te_as[i], te_ws[i]
         c1, c2 = ((ra["asr_vs_model_input"]["cer"], rw["asr_vs_model_input"]["cer"]) if mode == "te_asr"
                   else (rw["asr_vs_model_input"]["cer"], rw["asr_script_mapped"]["cer"]))
-        rows.append('<tr><td>{}</td><td class="n">{:.2f} s</td><td class="te">{}</td><td class="te">{}</td>'
+        rows.append('<tr><td>{}</td><td class="n">{:.2f} s</td><td class="te">{}</td>'
                     '<td class="n">{}</td><td class="n">{}</td></tr>'.format(
-                        i, rw["audio_s"], TEXT["te_frontend"][i], html.escape(ra.get("asr_transcript", "—")),
+                        i, rw["audio_s"], html.escape(ra.get("asr_transcript", "n/a")),
                         pct(c1), pct(c2)))
     rep["TE_SENTENCE_ROWS"] = "\n".join(rows)
+    rep["TE_FRONTEND_LIST"] = '<ul class="dec">' + "".join(
+        '<li><b>{}</b>: <span class="te">{}</span>.</li>'.format(i, TEXT["te_frontend"][i]) for i in tests_te) + "</ul>"
 
-    # ------------------------------------------------------------------ §6 figures
+    # ------------------------------------------------------------------ Section 6 figures
     rep["TE_EN_SENTENCE_FIGS"] = ("<h3>6.1 English</h3>\n" + sentence_figs("English", tests_en, tests)
                                   + '\n<h3 class="pb">6.2 Telugu</h3>\n' + sentence_figs("Telugu", tests_te, tests))
 
-    # ------------------------------------------------------------------ §7.3 / §7.4 tables
+    # ------------------------------------------------------------------ Section 7.3 / Section 7.4 tables
     def table(ids, lang, en_rows=None):
         cls = ' class="te"' if lang == "te" else ""
         if lang == "en":
-            out = ['<table><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
+            out = ['<table class="sx"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
                    '<th class="n">CER norm.</th></tr>']
         elif mode == "te_asr":
-            out = ['<table><tr><th>ID</th><th>Case</th><th>Text</th><th>Telugu-ASR transcript</th>'
+            out = ['<table class="sx"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Telugu-ASR transcript</th>'
                    '<th class="n">CER</th></tr>']
         else:
-            out = ['<table><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
+            out = ['<table class="sx"><colgroup><col style="width:7%"><col style="width:14%"><col style="width:34%"><col style="width:35%"><col style="width:10%"></colgroup><tr><th>ID</th><th>Case</th><th>Text</th><th>Whisper large-v3 transcript</th>'
                    '<th class="n">CER, script-mapped</th></tr>']
         for i in ids:
             meta = stress.get(i) or ext.get(i)
@@ -180,8 +184,8 @@ def main(browser):
             text = html.escape(texts[i]) + ('<br><span class="small">{}</span>'.format(html.escape(meta["gloss"]))
                                             if meta.get("gloss") else "")
             out.append('<tr><td>{}</td><td>{}</td><td{}>{}</td><td{}>{}</td><td class="n">{}</td></tr>'.format(
-                i, html.escape(meta.get("category", "")), cls, text, cls, html.escape(r.get("asr_transcript") or "—"),
-                pct(m["cer"]) if m else "—"))
+                i, html.escape(meta.get("category", "")), cls, text, cls, html.escape(r.get("asr_transcript") or "n/a"),
+                pct(m["cer"]) if m else "n/a"))
         out.append("</table>")
         return "\n".join(out)
 

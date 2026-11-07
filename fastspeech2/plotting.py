@@ -104,7 +104,7 @@ def plot_variances(rec, out_dir, telugu_font=None):
     # Duration: bar per phone (frames), secondary axis in ms.
     fig, ax = plt.subplots(figsize=(width, 4))
     x = np.arange(len(phones))
-    ax.bar(x, durs, color="#3a6ea5", label=final + " duration")
+    ax.bar(x, durs, color="0.62", edgecolor="0.25", linewidth=0.4, label=final + " duration")
     if raw:
         ax.plot(x, raw["duration_frames"], "o", mfc="none", mec="black", ms=4,
                 label="model prediction (no controls)")
@@ -123,14 +123,14 @@ def plot_variances(rec, out_dir, telugu_font=None):
     # Pitch: phone-level prediction in Hz as steps, plus F0 of the generated audio.
     fig, ax = plt.subplots(figsize=(width, 4))
     pitch = np.array(rec["pitch_hz"], dtype=float)
-    _steps(ax, starts, durs, pitch, frame_ms, final + " F0 per phone (Hz)", "#c0392b")
+    _steps(ax, starts, durs, pitch, frame_ms, final + " F0 per phone (Hz)", "black")
     if raw:
-        _steps(ax, starts, durs, raw["pitch_hz"], frame_ms, "model prediction (no controls)", "black", ls="--", lw=1.2)
+        _steps(ax, starts, durs, raw["pitch_hz"], frame_ms, "model prediction (no controls)", "0.45", ls="--", lw=1.2)
     if rec.get("generated_f0_hz") is not None:
         f0 = np.array(rec["generated_f0_hz"], dtype=float)
         f0[f0 <= 0] = np.nan
         t = np.arange(len(f0)) * rec["generated_f0_period_ms"]
-        ax.plot(t, f0, ".", ms=2, color="0.35", label="F0 extracted from the generated wav (pyworld; unvoiced = gaps)")
+        ax.plot(t, f0, ".", ms=2, color="0.6", label="F0 extracted from the generated wav (pyworld; unvoiced = gaps)")
     ax.set_ylabel("Hz")
     _phone_axis(ax, phones, starts, durs, frame_ms)
     ax.legend(fontsize=7, loc="upper right")
@@ -140,9 +140,9 @@ def plot_variances(rec, out_dir, telugu_font=None):
     # Energy: phone-level prediction (frame L2 norm of the STFT magnitude, arbitrary units).
     fig, ax = plt.subplots(figsize=(width, 4))
     energy = np.array(rec["energy"], dtype=float)
-    _steps(ax, starts, durs, energy, frame_ms, final + " energy per phone", "#27ae60")
+    _steps(ax, starts, durs, energy, frame_ms, final + " energy per phone", "black")
     if raw:
-        _steps(ax, starts, durs, raw["energy"], frame_ms, "model prediction (no controls)", "black", ls="--", lw=1.2)
+        _steps(ax, starts, durs, raw["energy"], frame_ms, "model prediction (no controls)", "0.45", ls="--", lw=1.2)
     ax.set_ylabel("energy: frame L2 STFT magnitude (a.u.)")
     _phone_axis(ax, phones, starts, durs, frame_ms)
     ax.legend(fontsize=7, loc="upper right")
@@ -182,7 +182,7 @@ def plot_losses(csv_paths, out_path, title, splits=("train", "val")):
     names = ["total", "mel", "mel_postnet", "pitch", "energy", "duration"]
     fig, axes = plt.subplots(2, 3, figsize=(14, 7), sharex=True)
     for ax, name in zip(axes.flat, names):
-        for split, color in (("train", "#3a6ea5"), ("val", "#c0392b")):
+        for split, color in (("train", "0.6"), ("val", "black")):
             if split not in splits:
                 continue
             pts = sorted((s, float(r[name])) for (sp, s), r in last.items() if sp == split)
