@@ -27,6 +27,7 @@ records the commit in `code_commit.txt`, and calls the shared stage functions in
 | `18_aligner_check` (`fs2-18-aligner-check`) | CPU | 01, 02, 03 te | Telugu MFA aligner retrained on the training clips only; validation clips aligned with it; alignments and the model's validation duration scores compared with the reported ones (`tools/aligner_check.py`) |
 | `19_asr_te` (`fs2-19-asr-te`) | CPU | 02, 03 te | Telugu intelligibility re-measured with a Telugu ASR model (`vasista22/whisper-telugu-large-v2`, pinned; not trained on IndicTTS): validation synthesis vs copy-synthesis ceiling, assignment, extended and stress sentences |
 | `20_asr_te_cpu` (`fs2-20-asr-te-cpu`) | CPU | 02, 03 te | Job 19 sized for the 12-hour CPU limit (job 19 was stopped in its main stage; its 5-clip smoke stage alone took 111 min): assignment, extended and stress sentences with transcripts, and 30 validation clips (synthesis vs copy-synthesis ceiling) |
+| `21_final_en_nostress` (`fs2-21-final-en-nostress`) | CPU | 02, 03 en | Job 17 without the lexical-stress rule (all else equal): `Results/English` layout, extended set, Whisper large-v3 on test, stress and extended sentences |
 
 `03_*` and `04_*` folders are generated from `03_train/run_template.py` and `04_eval/run_template.py`
 by `tools/make_train_jobs.py`; `tests/test_pipeline.py` fails if they are out of date.
