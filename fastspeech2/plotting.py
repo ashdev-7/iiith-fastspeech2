@@ -64,7 +64,8 @@ def _set_title(ax, item_id, text, what, telugu_font):
         TITLE_RENDERING["mode"] = "no Telugu font: sentence omitted from plot titles"
         ax.set_title("{} - {} (sentence text: see variance_raw/{}.json)".format(item_id, what, item_id), fontsize=10)
         return
-    img = shaped_text_image(text, telugu_font)
+    # long sentences get a smaller title so the title is not wider than the plot
+    img = shaped_text_image(text, telugu_font, size_px=max(18, min(30, int(30 * 70 / max(len(text), 1)))))
     if img is not None:
         from matplotlib.offsetbox import AnnotationBbox, OffsetImage
         TITLE_RENDERING["mode"] = "Pillow raqm (shaped) + " + telugu_font
@@ -77,20 +78,39 @@ def _set_title(ax, item_id, text, what, telugu_font):
                      fontfamily=["DejaVu Sans", telugu_font])
 
 
-def _phone_axis(ax, phones, starts, durs, frame_ms):
-    centers = (starts + durs / 2.0) * frame_ms
+MAX_PHONES_PER_ROW = 40  # longer sentences are wrapped onto several rows so the phone labels stay legible
+
+
+def _rows(n):
+    """Phone index chunks, one per plot row (balanced sizes, at most MAX_PHONES_PER_ROW each)."""
+    k = max(1, int(np.ceil(n / MAX_PHONES_PER_ROW)))
+    return [c for c in np.array_split(np.arange(n), k) if len(c)]
+
+
+def _figure(n_phones, rows):
+    width = max(8.0, 0.22 * max(len(r) for r in rows) + 2)
+    fig, axes = plt.subplots(len(rows), 1, figsize=(width, 3.3 * len(rows) + (0.6 if len(rows) > 1 else 0.7)), squeeze=False)
+    return fig, axes[:, 0]
+
+
+def _phone_axis(ax, phones, starts, durs, frame_ms, idx=None, xlabel=True):
+    idx = np.arange(len(phones)) if idx is None else idx
+    centers = (starts[idx] + durs[idx] / 2.0) * frame_ms
     ax.set_xticks(centers)
-    ax.set_xticklabels(phones, rotation=90, fontsize=7)
-    ax.set_xlim(0, (starts[-1] + durs[-1]) * frame_ms if len(durs) else 1)
-    for b in starts * frame_ms:
+    ax.set_xticklabels([phones[i] for i in idx], rotation=90, fontsize=10)
+    lo, hi = starts[idx[0]] * frame_ms, (starts[idx[-1]] + durs[idx[-1]]) * frame_ms
+    ax.set_xlim(lo, hi if hi > lo else lo + 1)
+    for b in starts[idx] * frame_ms:
         ax.axvline(b, color="0.85", lw=0.5, zorder=0)
-    ax.set_xlabel("phone (positioned at its predicted time span, ms)")
+    if xlabel:
+        ax.set_xlabel("phone (positioned at its predicted time span, ms)")
 
 
 def plot_variances(rec, out_dir, telugu_font=None):
     """rec: dict from variance_raw/<ID>.json. Writes duration/, pitch/, energy/ PNGs; returns paths.
     When inference-time controls were used, rec["model_prediction"] holds the model's own predictions for the
-    same phones (no controls); they are drawn dashed/hollow next to the final values."""
+    same phones (no controls); they are drawn dashed/hollow next to the final values. Sentences with more than
+    MAX_PHONES_PER_ROW phones are drawn on several rows with a common y scale."""
     item_id, text = rec["id"], rec["original_text"]
     raw = rec.get("model_prediction")
     final = "final (after inference-time controls)" if raw else "predicted"
@@ -98,55 +118,71 @@ def plot_variances(rec, out_dir, telugu_font=None):
     durs = np.array(rec["duration_frames"], dtype=float)
     frame_ms = rec["frame_ms"]
     starts = np.concatenate([[0.0], np.cumsum(durs)[:-1]])
+    rows = _rows(len(phones))
+    last = len(rows) - 1
     paths = {}
-    width = max(8.0, 0.22 * len(phones) + 2)
 
     # Duration: bar per phone (frames), secondary axis in ms.
-    fig, ax = plt.subplots(figsize=(width, 4))
-    x = np.arange(len(phones))
-    ax.bar(x, durs, color="0.62", edgecolor="0.25", linewidth=0.4, label=final + " duration")
+    fig, axes = _figure(len(phones), rows)
+    top = max(durs.max(), max(raw["duration_frames"]) if raw else 0) * 1.1 + 0.5
+    for r, (ax, idx) in enumerate(zip(axes, rows)):
+        ax.bar(idx, durs[idx], color="0.62", edgecolor="0.25", linewidth=0.4, label=final + " duration")
+        if raw:
+            ax.plot(idx, np.array(raw["duration_frames"], dtype=float)[idx], "o", mfc="none", mec="black", ms=4,
+                    label="model prediction (no controls)")
+        ax.set_xticks(idx)
+        ax.set_xticklabels([phones[i] for i in idx], rotation=90, fontsize=10)
+        ax.set_xlim(idx[0] - 0.6, idx[-1] + 0.4)
+        ax.set_ylim(0, top)
+        ax.set_ylabel("duration (frames)")
+        sec = ax.secondary_yaxis("right", functions=(lambda f: f * frame_ms, lambda m: m / frame_ms))
+        sec.set_ylabel("ms")
+        if r == last:
+            ax.set_xlabel("phone (input order)")
     if raw:
-        ax.plot(x, raw["duration_frames"], "o", mfc="none", mec="black", ms=4,
-                label="model prediction (no controls)")
-        ax.legend(fontsize=7, loc="upper right")
-    ax.set_xticks(x)
-    ax.set_xticklabels(phones, rotation=90, fontsize=7)
-    ax.set_xlim(-0.6, len(phones) - 0.4)
-    ax.set_ylabel("predicted duration (frames)")
-    ax.set_xlabel("phone (input order)")
-    sec = ax.secondary_yaxis("right", functions=(lambda f: f * frame_ms, lambda m: m / frame_ms))
-    sec.set_ylabel("ms")
-    _set_title(ax, item_id, text, "predicted duration, total {:.0f} frames = {:.2f} s".format(
+        axes[0].legend(fontsize=7, loc="upper right")
+    _set_title(axes[0], item_id, text, "predicted duration, total {:.0f} frames = {:.2f} s".format(
         durs.sum(), durs.sum() * frame_ms / 1000), telugu_font)
     paths["duration"] = _save(fig, out_dir, "duration", item_id)
 
     # Pitch: phone-level prediction in Hz as steps, plus F0 of the generated audio.
-    fig, ax = plt.subplots(figsize=(width, 4))
     pitch = np.array(rec["pitch_hz"], dtype=float)
-    _steps(ax, starts, durs, pitch, frame_ms, final + " F0 per phone (Hz)", "black")
-    if raw:
-        _steps(ax, starts, durs, raw["pitch_hz"], frame_ms, "model prediction (no controls)", "0.45", ls="--", lw=1.2)
+    f0 = t = None
     if rec.get("generated_f0_hz") is not None:
         f0 = np.array(rec["generated_f0_hz"], dtype=float)
         f0[f0 <= 0] = np.nan
         t = np.arange(len(f0)) * rec["generated_f0_period_ms"]
-        ax.plot(t, f0, ".", ms=2, color="0.6", label="F0 extracted from the generated wav (pyworld; unvoiced = gaps)")
-    ax.set_ylabel("Hz")
-    _phone_axis(ax, phones, starts, durs, frame_ms)
-    ax.legend(fontsize=7, loc="upper right")
-    _set_title(ax, item_id, text, "pitch", telugu_font)
+    vals = [pitch] + ([np.array(raw["pitch_hz"], dtype=float)] if raw else []) + ([f0[~np.isnan(f0)]] if f0 is not None else [])
+    lo, hi = min(np.nanmin(v) for v in vals if len(v)), max(np.nanmax(v) for v in vals if len(v))
+    fig, axes = _figure(len(phones), rows)
+    for r, (ax, idx) in enumerate(zip(axes, rows)):
+        _steps(ax, starts[idx], durs[idx], pitch[idx], frame_ms, final + " F0 per phone (Hz)", "black")
+        if raw:
+            _steps(ax, starts[idx], durs[idx], np.array(raw["pitch_hz"], dtype=float)[idx], frame_ms,
+                   "model prediction (no controls)", "0.45", ls="--", lw=1.2)
+        if f0 is not None:
+            ax.plot(t, f0, ".", ms=2, color="0.6", label="F0 extracted from the generated wav (pyworld; unvoiced = gaps)")
+        ax.set_ylim(lo - 10, hi + 10)
+        ax.set_ylabel("Hz")
+        _phone_axis(ax, phones, starts, durs, frame_ms, idx, xlabel=(r == last))
+    axes[0].legend(fontsize=7, loc="upper right")
+    _set_title(axes[0], item_id, text, "pitch", telugu_font)
     paths["pitch"] = _save(fig, out_dir, "pitch", item_id)
 
     # Energy: phone-level prediction (frame L2 norm of the STFT magnitude, arbitrary units).
-    fig, ax = plt.subplots(figsize=(width, 4))
     energy = np.array(rec["energy"], dtype=float)
-    _steps(ax, starts, durs, energy, frame_ms, final + " energy per phone", "black")
-    if raw:
-        _steps(ax, starts, durs, raw["energy"], frame_ms, "model prediction (no controls)", "0.45", ls="--", lw=1.2)
-    ax.set_ylabel("energy: frame L2 STFT magnitude (a.u.)")
-    _phone_axis(ax, phones, starts, durs, frame_ms)
-    ax.legend(fontsize=7, loc="upper right")
-    _set_title(ax, item_id, text, "energy", telugu_font)
+    hi = max(energy.max(), max(raw["energy"]) if raw else 0)
+    fig, axes = _figure(len(phones), rows)
+    for r, (ax, idx) in enumerate(zip(axes, rows)):
+        _steps(ax, starts[idx], durs[idx], energy[idx], frame_ms, final + " energy per phone", "black")
+        if raw:
+            _steps(ax, starts[idx], durs[idx], np.array(raw["energy"], dtype=float)[idx], frame_ms,
+                   "model prediction (no controls)", "0.45", ls="--", lw=1.2)
+        ax.set_ylim(0, hi * 1.08 + 1)
+        ax.set_ylabel("energy (a.u.)")
+        _phone_axis(ax, phones, starts, durs, frame_ms, idx, xlabel=(r == last))
+    axes[0].legend(fontsize=7, loc="upper right")
+    _set_title(axes[0], item_id, text, "energy (frame L2 STFT magnitude, arbitrary units)", telugu_font)
     paths["energy"] = _save(fig, out_dir, "energy", item_id)
     return paths
 

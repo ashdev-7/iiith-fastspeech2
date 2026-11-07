@@ -50,12 +50,20 @@ def corpus(rows, key):
     return ce / max(1, rc)
 
 
+def _tall(path):
+    """Plots of long sentences are drawn on several rows; they are printed at full width so the labels stay legible."""
+    from PIL import Image
+    w, h = Image.open(path).size
+    return ' class="tall"' if h > 0.5 * w else ""
+
+
 def sentence_figs(lang_dir, ids, texts):
     out = []
     for i in ids:
         cls = ' class="te"' if lang_dir == "Telugu" else ""
         bullets = "".join("<li>{}</li>".format(b) for b in ANALYSIS[i])
-        imgs = "".join('<img src="../../Results/{0}/variance_adaptor_plots/{1}/{2}_{1}.png">'.format(lang_dir, k, i)
+        imgs = "".join('<img{3} src="../../Results/{0}/variance_adaptor_plots/{1}/{2}_{1}.png">'.format(
+            lang_dir, k, i, _tall(os.path.join(ROOT, "Results", lang_dir, "variance_adaptor_plots", k, "{}_{}.png".format(i, k))))
                        for k in ("duration", "pitch", "energy"))
         out.append('<div class="sent"><h4>{}: <span{}><span class="ws">{}</span></span></h4><ul>{}</ul>'
                    '<figure class="plots" data-cap="{} variance-adaptor plots: duration, pitch and energy">{}'

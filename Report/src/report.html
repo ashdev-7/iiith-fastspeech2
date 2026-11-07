@@ -62,9 +62,10 @@
   .tag::before { content: "["; } .tag::after { content: "]"; }
   .tag.meas, .tag.extra { display: none; }
   .sent { margin-bottom: 6mm; }
-  .sent .plots { break-inside: avoid; }
+  .sent .plots { break-inside: auto; }
   .sent h4 { break-after: avoid; }
-  .sent .plots img { width: auto; max-width: 100%; max-height: 76mm; margin: 0 auto 3mm; display: block; }
+  .sent .plots img { width: auto; height: auto; max-width: 100%; max-height: 80mm; margin: 0 auto 4mm; display: block; break-inside: avoid; }
+  .sent .plots img.tall { width: 100%; max-height: none; }
   .small { font-size: 9pt; color: var(--muted); }
   p.small { text-align: left; }
   .pb { break-before: page; }
