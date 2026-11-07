@@ -214,7 +214,7 @@ between train and validation; duplicate audio is excluded. All checks passed (0 
 <tr><th></th><th>English (Svarah)</th><th>Telugu (IndicTTS)</th></tr>
 <tr><td>Selected train</td><td class="n">3,079 utt. · 4.87 h · 110 speakers</td><td class="n">2,164 utt. · 4.96 h (female 2.41 h, male 2.55 h)</td></tr>
 <tr><td>Selected validation</td><td class="n">742 utt. · 0.98 h · 109 speakers</td><td class="n">450 utt. · 1.02 h</td></tr>
-<tr><td>Not aligned by MFA</td><td class="n">0</td><td class="n">28 (1.1 %), in 4 clusters of consecutive ids</td></tr>
+<tr><td>Not aligned by MFA</td><td class="n">0</td><td class="n">28 (1.1 %), mostly in runs of near-consecutive ids</td></tr>
 <tr><td>Rejected in preprocessing</td><td class="n">2 (≤ 1 voiced frame)</td><td class="n">0</td></tr>
 <tr><td>Used for training / validation</td><td class="n">3,077 / 742</td><td class="n">2,140 / 446</td></tr>
 <tr><td>Hours used, train / validation (selected audio)</td><td class="n">4.87 / 0.98 h</td><td class="n">4.90 / 1.01 h</td></tr>
@@ -222,7 +222,8 @@ between train and validation; duplicate audio is excluded. All checks passed (0 
 <tr><td>Overlap of the used sets: ids / transcripts</td><td class="n">0 / 0</td><td class="n">0 / 0</td></tr>
 </table>
 <p class="small">Hours and overlaps of the used sets: Kaggle <code>fs2-13-data-accounting</code>, <code>Evaluation/Data/accounting.json</code>.
-The unaligned Telugu clips are clustered (ids te_0091x–0092x, te_0233x, te_0264x), which suggests transcript/audio mismatches in those
+The unaligned Telugu clips are mostly in runs of near-consecutive ids (te_00915–00929: 6, te_01062–01072: 3, te_02330–02333: 4,
+te_02638–02654: 11; the other 4 lie between te_00111 and te_00191), which suggests transcript/audio mismatches in those
 ranges rather than random failures <span class="tag est">estimated</span>; they were excluded, not repaired. Svarah validation speakers
 also appear in training (different recordings): the split is by recording, not by speaker, so the English validation set measures
 generalisation to new sentences, not to new voices.</p>
@@ -260,7 +261,7 @@ z-normalised with the training-set mean/std; per-phone durations in frames from 
 <h2 id="s3">3. Training configuration</h2>
 <table>
 <tr><th></th><th>English</th><th>Telugu</th></tr>
-<tr><td>Model</td><td colspan="2">reference architecture (§1.1); 35.44 M (en) / 35.34 M (te) parameters, the difference being the symbol tables (360 vs 65 symbols)</td></tr>
+<tr><td>Model</td><td colspan="2">reference architecture (§1.1); 35.44 M (en) / 35.34 M (te) parameters; the difference is the symbol embedding (360 vs 65 symbols: 75,520 parameters) and the speaker embedding (110 vs 2 speakers: 27,648)</td></tr>
 <tr><td>Optimiser</td><td colspan="2">Adam, β = (0.9, 0.98), ε = 10<sup>−9</sup>; Noam warm-up 4,000 steps; ×0.3 decay at 1/3, 4/9 and 5/9 of the planned steps (the reference's 300k/400k/500k of 900k); gradient clipping 1.0; batch 16 (length-sorted groups of 4 batches); fp32</td></tr>
 <tr><td>Planned steps / LR decays</td><td>20,000 / 6k, 8k, 11k</td><td>56,000 / 18k, 24k, 31k</td></tr>
 <tr><td>How the plan was set</td><td>300-step probe: 1.45 steps/s on 1 × T4; 210-min budget</td><td>300-step probe: 2.08 steps/s on 2 × T4; 480-min budget</td></tr>
@@ -291,11 +292,12 @@ coincide with the learning-rate decays (Telugu at 18k, English at 6k), after whi
 losses reach within 2 % of their final value by step 7k (Telugu) and 5k (English) and are flat afterwards <span class="tag meas">measured</span>.</p>
 <p><b>Stability.</b> No spikes, no divergence, no non-finite losses in either run (the trainer stops on any non-finite value;
 it never triggered).</p>
-<p><b>Over-fitting.</b> The gap between training and validation grows throughout: by the end the training pitch and energy
-losses are 30–40× lower than validation for Telugu, ~15× for English. This is memorisation of 5 h of data, mainly by the
-variance predictors. For Telugu it is benign: validation never got worse (final within 0.2 % of best). For English there is
-<b>mild over-fitting</b>: validation pitch, energy and duration losses drift upward by 3–7 % after 7k steps, and the total by
-1.3 %. Early stopping on validation loss (here ~7–10k steps) would give a slightly better English model and save time; the
+<p><b>Over-fitting.</b> The gap between training and validation grows throughout: by the end (mean of the last 10 training logs) the training pitch loss is ~32× lower than validation for Telugu and ~15× for
+English, the energy loss ~13× and ~14×. This is memorisation of 5 h of data, mainly by the
+variance predictors. For Telugu it is benign: the validation total ends within 0.2 % of its best; only the duration term ends 3.7 % above its minimum (8k).
+For English there is <b>mild over-fitting</b>: validation pitch, energy and duration losses end 2.6–6.9 % above their minima (reached at
+1k–5k steps), and the total 1.3 % above its minimum (7k). The last validation is at 17k (English) and 55k (Telugu); the released
+checkpoints (17,949 and 55,524 steps) were not validated separately. Early stopping on the validation total (minimum at 7k steps) would give a slightly better English model and save time; the
 released checkpoint is the last one <span class="tag est">estimated</span>.</p>
 <p><b>English vs Telugu level.</b> English validation losses are higher in every term except pitch, consistent with the harder
 data: 110 speakers (≈ 2.7 min each), accented, more varied speaking style and recording conditions, against two
@@ -492,7 +494,7 @@ is synchronised before each reading; one untimed warm-up call.</p>
 <tr><td>none</td><td class="n">4.55 s / 206 Hz / 0.146</td><td class="n">2.46 s / 209 Hz / 0.148</td></tr>
 <tr><td>duration 0.8 / 1.25</td><td class="n">3.37 s / 5.42 s</td><td class="n">1.88 s / 3.02 s</td></tr>
 <tr><td>pitch 0.8 / 1.2 (after M12)</td><td class="n">169 Hz / 245 Hz</td><td class="n">165 Hz / 252 Hz</td></tr>
-<tr><td>pitch 0.8 / 1.2 (reference code)</td><td class="n">140 Hz / 113 Hz — inverted (former voice, 126 Hz)</td><td class="n">204 Hz / 209 Hz — almost no effect</td></tr>
+<tr><td>pitch 0.8 / 1.2 (reference code)</td><td class="n">140 Hz / 113 Hz — inverted (former voice, 126 Hz)</td><td class="n">204 Hz / 209 Hz — almost no effect (fs2-04-eval log)</td></tr>
 <tr><td>energy 0.8 / 1.2 (after M12)</td><td class="n">RMS 0.126 / 0.164</td><td class="n">RMS 0.120 / 0.159</td></tr>
 </table>
 <p>The duration control scales length close to the factor (0.74× and 1.19× for English; 0.76× and 1.23× for Telugu; rounding
@@ -518,7 +520,7 @@ EXTENDED_TABLES
 <tr><td>Data character</td><td>110 speakers, ~2.7 min each, Indian-accented, varied recording and style</td><td>2 speakers, ~2.5 h each, studio read speech</td></tr>
 <tr><td>Text → phones</td><td>irregular spelling: lexicon + neural G2P; homographs, out-of-vocabulary words and normalisation are the main risks</td><td>near-phonemic script: deterministic rules cover every word; risks are normalisation and loanwords</td></tr>
 <tr><td>Prosody prediction (validation)</td><td>weak: pitch r 0.35, duration r 0.58; lexical stress barely marked, as in the data</td><td>good: pitch r 0.76, duration r 0.85</td></tr>
-<tr><td>Over-fitting</td><td>mild (validation drifts up after 7k)</td><td>none visible (flat after ~10k)</td></tr>
+<tr><td>Over-fitting</td><td>mild (validation total lowest at 7k, +1.3 % by 17k)</td><td>minimal (total flat after 16k, +0.2 %)</td></tr>
 <tr><td>Output quality without inference-time help</td><td>over-smoothed decoder, recording noise reproduced, endings cut; needs the post-filter and clear-speech options (§5.2–5.3)</td><td>not over-smoothed; used as the model produces it</td></tr>
 <tr><td>Phrase structure</td><td>pause at the E4 comma with no pitch reset after it in the model's prediction</td><td>pause at the T4 comma followed by a clear pitch reset (208 → 270 Hz)</td></tr>
 <tr><td>Main failures on the test set</td><td>EN_FAILURES</td><td>TE_FAILURES</td></tr>
@@ -549,7 +551,7 @@ of audio; the test-voice choice alone removed most English ASR errors.</li>
 <li><b>Word-boundary and sentence-type symbols in the input</b>: neither frontend marks word boundaries or the sentence type (as in the
 reference), so the model cannot separate "అడ విలో" from "అడవిలో", cannot learn the rise of a question (XT09) and ends E3 with a rise;
 adding such symbols needs retraining <span class="tag est">estimated</span>.</li>
-<li><b>Early stopping / checkpoint selection</b> on validation loss (English ~7–10k steps).</li>
+<li><b>Early stopping / checkpoint selection</b> on validation loss (English: validation total lowest at 7k steps).</li>
 <li><b>Against over-smoothing</b> (largest remaining English gap): a decoder loss that does not average (mixture output or an adversarial
 post-net), which needs retraining; or a longer vocoder fine-tune that starts from trained discriminators <span class="tag est">estimated</span>.
 Speaker adaptation needs more than 2.7 min of the target voice, or parameter-efficient adaptation (conditional layer norm, as in AdaSpeech).</li>
