@@ -41,7 +41,7 @@ ANALYSIS = {
         "<b>Energy (model).</b> Vowels median 72, nasals 44, other consonants 12 a.u.; the strongest phone is the /ɚ/ of <i>researchers</i> (121).",
         "<b>Options.</b> The stress rule puts the higher pitch on the stressed second vowel (224 vs 215 Hz). With E2a (233 vs 224 Hz on the "
         "first vowel) the final audio therefore carries the homograph contrast in pitch, which the model alone hardly does. Whisper: 10.9 % CER "
-        "without the options (\"an experimental evaluation of\"), exact with them.",
+        "with the post-filter only (configuration R0, earlier frontend: \"an experimental evaluation of\"), exact with the final options.",
     ],
     "E3": [
         "<b>Duration (model).</b> The split word is pronounced as <i>rhythm</i> (<code>R IH1 DH AH0 M</code>, 383 ms), without a pause inside it: "
@@ -49,7 +49,7 @@ ANALYSIS = {
         "the strongest final lengthening of the five sentences.",
         "<b>Pitch (model).</b> The model ends this statement on its highest pitch: the last vowel of <i>unexpectedly</i> is 269 Hz, a "
         "question-like rise, while <i>rhythm</i> and <i>of</i> carry 244–248 Hz.",
-        "<b>Energy (model).</b> Vowels median 68, nasals 52, other consonants 16 a.u.; the /r/ of <i>rhythm</i> is the energy maximum (108), as an "
+        "<b>Energy (model).</b> Vowels median 68, nasals 52, other consonants 16 a.u.; the /r/ of <i>orchestra</i> is the energy maximum (108), as an "
         "approximant with vowel-like energy.",
         "<b>Options.</b> The terminal-fall rule lowers the last two vowels from 201 and 269 Hz to 185 Hz, turning the rise into a statement fall; "
         "<i>unexpectedly</i> 1,149 → 1,544 ms (long word); the stress rule adds energy to the first vowel of <i>orchestra</i> (× 1.5).",
@@ -164,8 +164,10 @@ TEXT = {
             "10.45), which the CER counts as errors, drops the opening <span class=\"te\">ఈ సమావేశం</span>, merges "
             "<span class=\"te\">నవంబర్ పన్నెండవ తేదీ</span> across word boundaries (the syllables are present) and hears "
             "<span class=\"te\">ప్రారంభ</span> without aspiration; the final <span class=\"te\">ఉంచండి</span> is exact.</p>"
-            "<p>Across all 23 Telugu sentences scored (§5.5, §7.3, §7.4) the same confusions recur: శ → స in every word that "
-            "contains శ, ణ → న, and lost aspiration (<span class=\"te\">కథ → కద</span>, <span class=\"te\">పాఠకులు → పాదకులు</span>). "
+            "<p>Across the 22 distinct Telugu sentences scored (§5.5, §7.3, §7.4; XT01 repeats T1) the same confusions recur: శ appears "
+            "in the transcripts for only 2 of its 16 occurrences (mostly written స), ణ for 1 of 6 (written న), and 16 of 26 aspirated "
+            "consonants are kept (<span class=\"te\">కథ → కద</span>, <span class=\"te\">పాఠకులు → పాదకులు</span>); some losses are "
+            "words the ASR dropped entirely. "
             "The frontend keeps all these phones distinct, so the merger is in the acoustic model, in Whisper, or both; with this "
             "ASR the two cannot be separated <span class=\"tag est\">estimated</span>.</p>"),
         "te_asr": None,
@@ -206,7 +208,9 @@ BS = chr(92)  # line continuation in the shell commands below
 TEXT.update({
     "CLARITY_DECISION": (
         "<p><b>Which combination.</b> Every configuration was rendered on Kaggle and scored with Whisper large-v3 on the five test "
-        "sentences and 18 further sentences (§7.3–7.4); the table is <code>Evaluation/English/variants_summary.json</code>:</p>"
+        "sentences and 18 further sentences (§7.3–7.4: 8 stress and 10 extended; XE01 is E1 verbatim, so E1 counts twice in \"all 23\"); "
+        "CER after Whisper's English normaliser; the five test sentences total 335 reference characters, so one character is 0.3 points. "
+        "The table is <code>Evaluation/English/variants_summary.json</code>:</p>"
         "<table><tr><th>English configuration (same checkpoint and voice)</th><th class=\"n\">CER, 5 test sentences</th>"
         "<th class=\"n\">CER, all 23</th><th class=\"n\">E4</th></tr>"
         "<tr><td>model + GV post-filter †</td><td class=\"n\">2.7 %</td><td class=\"n\">2.9 %</td><td class=\"n\">2.9 %</td></tr>"
@@ -220,7 +224,8 @@ TEXT.update({
         "<p class=\"small\">† Earlier frontend (before the citation forms, the \"the\" rule, the compound split and the acronym rules), so "
         "these two rows are not strictly comparable with the others. Kaggle jobs: <code>fs2-12-prosody-en</code>, <code>fs2-14-extended</code>, "
         "<code>fs2-16-clarity</code>, <code>fs2-17-final-en</code>, <code>fs2-21-final-en-nostress</code>.</p>"
-        "<p>The final configuration has the lowest error over all 23 sentences, and it was preferred on listening over the earlier configurations. "
+        "<p>The final configuration has the lowest error over all 23 sentences (differences of under one point are a few characters and not "
+        "significant), and the author preferred it on listening over the earlier configurations. "
         "Removing the stress rule changes little (2.28 → 2.34 %); the rule is kept because it puts the homograph contrast of E2a/E2b into "
         "pitch (§6.1). One sentence is worse than with the plain model: the last clause of E4 (\"so andaroo should arrive on time\") is "
         "garbled for the ASR in every configuration with the current frontend (15.7–17.1 %), with or without the stress rule, whereas "

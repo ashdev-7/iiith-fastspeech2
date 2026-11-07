@@ -1,0 +1,294 @@
+{
+ "job": "diagnose",
+ "code_commit": "2dd5d51ec9ea2897e70314b556afb81a90e4b3b4",
+ "stages": {
+  "pip_install": {
+   "ok": true,
+   "minutes": 1.03
+  },
+  "environment": {
+   "ok": true,
+   "python": "3.13.18",
+   "torch": "2.11.0+cpu",
+   "cuda_available": false,
+   "gpus": [],
+   "minutes": 0.07
+  },
+  "pip_parselmouth": {
+   "ok": true,
+   "minutes": 0.05
+  },
+  "pytest_gate": {
+   "ok": true,
+   "summary": [
+    "79 passed, 1 deselected, 5 warnings in 58.03s"
+   ],
+   "observations": [
+    "1 passed, 79 deselected, 1 warning in 8.71s"
+   ],
+   "minutes": 1.29
+  },
+  "en_diagnose": {
+   "ok": true,
+   "speaker": "svarah_71f88d2a",
+   "clarity_top": [
+    "svarah_dd158f69",
+    "svarah_8a8e2655",
+    "svarah_628a28ca",
+    "svarah_07da09a1",
+    "svarah_39174ebc"
+   ],
+   "summary": {
+    "natural": {
+     "hnr_db": 16.3,
+     "hf_share_db": -26.35,
+     "cog_hz": 260.0,
+     "jitter_pct": 1.38,
+     "shimmer_pct": 11.44,
+     "f0_range_st": 7.1,
+     "voiced_frac": 0.6,
+     "intensity_db": 78.7,
+     "bands_db": [
+      -0.39,
+      -13.21,
+      -26.2,
+      -30.64,
+      -28.91,
+      -32.24,
+      -91.27
+     ]
+    },
+    "copy": {
+     "hnr_db": 16.65,
+     "hf_share_db": -25.15,
+     "cog_hz": 273.5,
+     "jitter_pct": 1.46,
+     "shimmer_pct": 10.27,
+     "f0_range_st": 6.85,
+     "voiced_frac": 0.59,
+     "intensity_db": 77.25,
+     "bands_db": [
+      -0.46,
+      -12.55,
+      -25.71,
+      -29.83,
+      -27.89,
+      -31.19,
+      -44.87
+     ],
+     "bands_minus_natural_db": [
+      -0.07,
+      0.66,
+      0.49,
+      0.81,
+      1.02,
+      1.05,
+      46.4
+     ]
+    },
+    "oracle": {
+     "hnr_db": 15.05,
+     "hf_share_db": -24.45,
+     "cog_hz": 319.0,
+     "jitter_pct": 1.34,
+     "shimmer_pct": 11.07,
+     "f0_range_st": 8.5,
+     "voiced_frac": 0.56,
+     "intensity_db": 76.15,
+     "bands_db": [
+      -0.6,
+      -10.86,
+      -27.99,
+      -28.96,
+      -25.54,
+      -31.02,
+      -43.83
+     ],
+     "bands_minus_natural_db": [
+      -0.21,
+      2.35,
+      -1.79,
+      1.68,
+      3.37,
+      1.22,
+      47.44
+     ]
+    },
+    "free": {
+     "hnr_db": 14.9,
+     "hf_share_db": -23.35,
+     "cog_hz": 326.5,
+     "jitter_pct": 1.1,
+     "shimmer_pct": 11.16,
+     "f0_range_st": 9.1,
+     "voiced_frac": 0.67,
+     "intensity_db": 76.75,
+     "bands_db": [
+      -0.68,
+      -10.08,
+      -26.19,
+      -27.58,
+      -25.01,
+      -30.36,
+      -44.69
+     ],
+     "bands_minus_natural_db": [
+      -0.29,
+      3.13,
+      0.01,
+      3.06,
+      3.9,
+      1.88,
+      46.58
+     ]
+    }
+   },
+   "minutes": 26.76
+  },
+  "en_voice_svarah_dd158f69": {
+   "ok": true,
+   "minutes": 0.65
+  },
+  "en_voice_svarah_8a8e2655": {
+   "ok": true,
+   "minutes": 0.63
+  },
+  "en_voice_svarah_628a28ca": {
+   "ok": true,
+   "minutes": 0.59
+  },
+  "en_voice_svarah_07da09a1": {
+   "ok": true,
+   "minutes": 0.58
+  },
+  "te_diagnose": {
+   "ok": true,
+   "speaker": "te_female",
+   "clarity_top": [
+    "te_female",
+    "te_male"
+   ],
+   "summary": {
+    "natural": {
+     "hnr_db": 17.5,
+     "hf_share_db": -25.95,
+     "cog_hz": 464.0,
+     "jitter_pct": 1.06,
+     "shimmer_pct": 7.71,
+     "f0_range_st": 11.2,
+     "voiced_frac": 0.67,
+     "intensity_db": 77.15,
+     "bands_db": [
+      -1.27,
+      -8.57,
+      -11.02,
+      -19.73,
+      -26.39,
+      -35.64,
+      -90.49
+     ]
+    },
+    "copy": {
+     "hnr_db": 17.2,
+     "hf_share_db": -25.6,
+     "cog_hz": 460.5,
+     "jitter_pct": 1.03,
+     "shimmer_pct": 8.11,
+     "f0_range_st": 11.05,
+     "voiced_frac": 0.67,
+     "intensity_db": 76.05,
+     "bands_db": [
+      -1.25,
+      -8.13,
+      -11.74,
+      -19.6,
+      -26.18,
+      -35.65,
+      -74.61
+     ],
+     "bands_minus_natural_db": [
+      0.02,
+      0.44,
+      -0.72,
+      0.13,
+      0.21,
+      -0.01,
+      15.88
+     ]
+    },
+    "oracle": {
+     "hnr_db": 17.65,
+     "hf_share_db": -26.3,
+     "cog_hz": 441.5,
+     "jitter_pct": 1.0,
+     "shimmer_pct": 7.88,
+     "f0_range_st": 10.8,
+     "voiced_frac": 0.67,
+     "intensity_db": 76.3,
+     "bands_db": [
+      -1.13,
+      -8.64,
+      -12.11,
+      -20.36,
+      -26.81,
+      -35.93,
+      -75.57
+     ],
+     "bands_minus_natural_db": [
+      0.14,
+      -0.07,
+      -1.09,
+      -0.63,
+      -0.42,
+      -0.29,
+      14.92
+     ]
+    },
+    "free": {
+     "hnr_db": 17.9,
+     "hf_share_db": -26.95,
+     "cog_hz": 407.5,
+     "jitter_pct": 1.04,
+     "shimmer_pct": 7.82,
+     "f0_range_st": 9.75,
+     "voiced_frac": 0.66,
+     "intensity_db": 76.3,
+     "bands_db": [
+      -0.97,
+      -8.88,
+      -13.38,
+      -21.58,
+      -27.49,
+      -35.81,
+      -76.16
+     ],
+     "bands_minus_natural_db": [
+      0.3,
+      -0.31,
+      -2.36,
+      -1.85,
+      -1.1,
+      -0.17,
+      14.33
+     ]
+    }
+   },
+   "minutes": 9.44
+  }
+ },
+ "started": "2026-11-02 21:18:14",
+ "outputs": [
+  "clarity_en.json",
+  "clarity_te.json",
+  "code_commit.txt",
+  "diag_en.json",
+  "diag_te.json",
+  "diag_wavs.tar",
+  "en_voices.tar",
+  "environment.txt",
+  "pytest.txt",
+  "status.json"
+ ],
+ "failed_stages": [],
+ "all_ok": true
+}

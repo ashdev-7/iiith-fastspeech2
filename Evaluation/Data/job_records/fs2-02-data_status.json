@@ -1,0 +1,193 @@
+{
+ "job": "data",
+ "code_commit": "50a32932516276f1ddef338a55148b3e0c13a89a",
+ "stages": {
+  "pip_install": {
+   "ok": true,
+   "minutes": 1.32
+  },
+  "environment": {
+   "ok": true,
+   "python": "3.13.15",
+   "torch": "2.11.0+cpu",
+   "cuda_available": false,
+   "gpus": [],
+   "minutes": 0.13
+  },
+  "pytest_gate": {
+   "ok": true,
+   "summary": [
+    "61 passed, 1 deselected, 5 warnings in 54.94s"
+   ],
+   "observations": [
+    "1 passed, 61 deselected, 1 warning in 8.57s"
+   ],
+   "minutes": 1.34
+  },
+  "install_mfa": {
+   "ok": true,
+   "version": "3.4.3",
+   "runs_as": "mfa",
+   "minutes": 0.89
+  },
+  "te_stage_inputs": {
+   "ok": true,
+   "minutes": 0.49
+  },
+  "te_align": {
+   "ok": true,
+   "dictionary_words": 11947,
+   "words_without_pronunciation": 0,
+   "expected": 2614,
+   "aligned": 2586,
+   "missing": 28,
+   "missing_examples": [
+    "te_female/te_00111",
+    "te_female/te_00141",
+    "te_female/te_00162",
+    "te_female/te_00191",
+    "te_female/te_00915",
+    "te_female/te_00918",
+    "te_female/te_00920",
+    "te_female/te_00921",
+    "te_female/te_00927",
+    "te_female/te_00929",
+    "te_female/te_01062",
+    "te_female/te_01066",
+    "te_female/te_01072",
+    "te_female/te_02330",
+    "te_female/te_02331",
+    "te_female/te_02332",
+    "te_female/te_02333",
+    "te_female/te_02638",
+    "te_female/te_02640",
+    "te_female/te_02641"
+   ],
+   "minutes": 119.6
+  },
+  "te_preprocess": {
+   "ok": true,
+   "frames": 1575535,
+   "hours": 5.081090450995213,
+   "utterances": {
+    "train": 2140,
+    "val": 446
+   },
+   "skipped_counts": {
+    "no_textgrid": 28,
+    "rejected": 0
+   },
+   "minutes": 3.74
+  },
+  "te_copy_synthesis": {
+   "ok": true,
+   "ranked": [
+    "te_female",
+    "te_male"
+   ],
+   "per_speaker": {
+    "te_female": {
+     "utterances": 20,
+     "mel_l1_mean": 0.37842424809932707,
+     "mel_l1_std": 0.012206535437065376
+    },
+    "te_male": {
+     "utterances": 20,
+     "mel_l1_mean": 0.3942552894353867,
+     "mel_l1_std": 0.014390080163640939
+    }
+   },
+   "minutes": 2.12
+  },
+  "te_test_voice": {
+   "ok": true,
+   "speaker": "te_female",
+   "minutes": 0.0
+  },
+  "en_stage_inputs": {
+   "ok": true,
+   "minutes": 0.33
+  },
+  "en_align": {
+   "ok": true,
+   "dictionary_words": 6388,
+   "words_without_pronunciation": 0,
+   "expected": 3821,
+   "aligned": 3821,
+   "missing": 0,
+   "missing_examples": [],
+   "minutes": 9.36
+  },
+  "en_preprocess": {
+   "ok": true,
+   "frames": 1689072,
+   "hours": 5.447246560846561,
+   "utterances": {
+    "train": 3077,
+    "val": 742
+   },
+   "skipped_counts": {
+    "no_textgrid": 0,
+    "rejected": 2
+   },
+   "minutes": 4.25
+  },
+  "en_copy_synthesis": {
+   "ok": true,
+   "ranked": [
+    "svarah_c57f9616",
+    "svarah_61fc0158",
+    "svarah_cf803cf9",
+    "svarah_4c0dc540",
+    "svarah_67ab0891"
+   ],
+   "per_speaker": {
+    "svarah_c57f9616": {
+     "utterances": 3,
+     "mel_l1_mean": 0.2937123278776805,
+     "mel_l1_std": 0.0030319194274501383
+    },
+    "svarah_61fc0158": {
+     "utterances": 3,
+     "mel_l1_mean": 0.2964584430058797,
+     "mel_l1_std": 0.008709458956170275
+    },
+    "svarah_cf803cf9": {
+     "utterances": 1,
+     "mel_l1_mean": 0.2979368269443512,
+     "mel_l1_std": 0.0
+    },
+    "svarah_4c0dc540": {
+     "utterances": 3,
+     "mel_l1_mean": 0.29925371209780377,
+     "mel_l1_std": 0.011633141218384197
+    },
+    "svarah_67ab0891": {
+     "utterances": 3,
+     "mel_l1_mean": 0.3009033203125,
+     "mel_l1_std": 0.0049404319130754
+    }
+   },
+   "minutes": 9.49
+  },
+  "en_test_voice": {
+   "ok": true,
+   "speaker": "svarah_71f88d2a",
+   "minutes": 0.0
+  }
+ },
+ "started": "2026-10-31 19:34:26",
+ "outputs": [
+  "TextGrid_en.tar",
+  "TextGrid_te.tar",
+  "code_commit.txt",
+  "details.tar",
+  "environment.txt",
+  "preprocessed_en.tar",
+  "preprocessed_te.tar",
+  "pytest.txt",
+  "status.json"
+ ],
+ "failed_stages": [],
+ "all_ok": true
+}

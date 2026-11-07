@@ -1,0 +1,70 @@
+{
+ "code_commit": "bfe44954aeb1f613b0bf493fc2958f89822fcadd",
+ "hf_token_secret": true,
+ "languages": {
+  "te": {
+   "ok": true,
+   "splits": {
+    "train": {
+     "utterances": 2164,
+     "hours": 4.96,
+     "speakers": 2,
+     "hours_per_speaker_min_max": [
+      2.4101,
+      2.5499
+     ]
+    },
+    "val": {
+     "utterances": 450,
+     "hours": 1.02,
+     "speakers": 2,
+     "hours_per_speaker_min_max": [
+      0.51,
+      0.51
+     ]
+    },
+    "not_selected": {
+     "utterances": 2714,
+     "hours": 5.8565,
+     "speakers": 2,
+     "hours_per_speaker_min_max": [
+      0.8465,
+      5.01
+     ]
+    }
+   }
+  },
+  "en": {
+   "ok": true,
+   "splits": {
+    "train": {
+     "utterances": 3079,
+     "hours": 4.8716,
+     "speakers": 110,
+     "hours_per_speaker_min_max": [
+      0.0028,
+      0.2281
+     ]
+    },
+    "val": {
+     "utterances": 742,
+     "hours": 0.9825,
+     "speakers": 109,
+     "hours_per_speaker_min_max": [
+      0.0007,
+      0.0455
+     ]
+    },
+    "not_selected": {
+     "utterances": 1359,
+     "hours": 2.1122,
+     "speakers": 110,
+     "hours_per_speaker_min_max": [
+      0.0022,
+      0.0844
+     ]
+    }
+   }
+  }
+ }
+}

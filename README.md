@@ -6,7 +6,7 @@ HiFi-GAN (universal) as the vocoder:
 
 | | English | Telugu |
 |---|---|---|
-| Data | [Svarah](https://huggingface.co/datasets/ai4bharat/Svarah) (Indian-accented English, 110 train speakers) | [IndicTTS Telugu](https://huggingface.co/datasets/SPRINGLab/IndicTTS_Telugu) (2 speakers) |
+| Data | [Svarah](https://huggingface.co/datasets/ai4bharat/Svarah) (Indian-accented English; 110 speaker profiles, as Svarah has no speaker ids) | [IndicTTS Telugu](https://huggingface.co/datasets/SPRINGLab/IndicTTS_Telugu) (2 speakers) |
 | Train / validation | 4.87 h / 0.98 h (3077 / 742 utterances) | 4.90 h / 1.01 h (2140 / 446 utterances; 4.96 h / 1.02 h selected, 28 clips not aligned) |
 | Text front end | lexicon + g2p_en, homograph POS rule, time/number normalisation | rule-based Telugu G2P, Telugu numbers/ordinals/times, English loanwords in Latin script |
 | Training | 17,949 steps, 1 × T4, 3.5 h | 55,524 steps, 2 × T4, 8 h |
@@ -49,8 +49,8 @@ duration, pitch and energy metrics.
 | Phone-level energy r | 0.78 | 0.90 |
 | Mel-cepstral distortion\*, ground-truth variances → predicted variances (DTW) | 36.6 → 39.0 | 26.1 → 30.9 |
 | Whisper large-v3 CER, our synthesis vs. copy-synthesis ceiling (150 utterances) | 15.7 % vs 11.6 % | 35.8 % vs 33.1 %† |
-| Real-time factor, T4 GPU (acoustic + vocoder, batch 1) | 0.027 (37× faster than real time) | 0.025 (39×) |
-| Real-time factor, CPU 4 threads | 0.35 (2.9×) | 0.38 (2.6×) |
+| Real-time factor, T4 GPU (acoustic + vocoder, batch 1) | 0.027 (37× faster than real time) | 0.026 (39×) |
+| Real-time factor, CPU 4 threads | 0.35 (2.9×) | 0.37 (2.7×) |
 
 \* Computed from the 80-band log-mel (DCT, c1–c24). Not comparable with WORLD/SPTK MCD values
 reported in papers; comparable only between rows and languages here.
@@ -60,9 +60,9 @@ ASR model can do; the gap is what the acoustic model loses.
 figure bounds the gap (2.7 points) rather than measuring pronunciation; it also writes some Telugu speech in
 Kannada script, which the report scores after mapping it back to Telugu (§5.5, §7.4).
 
-Further sentences beyond the assignment: 16 stress sentences (numbers, questions, homographs, names,
+Further sentences beyond the assignment (not part of it): 16 stress sentences written for this project (numbers, questions, homographs, names,
 abbreviations, long sentences, Telugu–English code-mixing; [`Evaluation/stress_sentences.json`](Evaluation/stress_sentences.json))
-and 20 extended sentences ([`Evaluation/Extended/extended_sentences.json`](Evaluation/Extended/extended_sentences.json)),
+and 20 extended sentences supplied by the author ([`Evaluation/Extended/extended_sentences.json`](Evaluation/Extended/extended_sentences.json); XE01 and XT01 repeat E1 and T1 verbatim),
 scored in the report (§7.3–7.4). `Evaluation/English/model_only/` holds the English test sentences from the
 model alone (no inference-time options), for comparison with `Results/English/`.
 
@@ -111,7 +111,7 @@ lists them. The same steps run anywhere with Python ≥ 3.10, `pip install -r re
 #    then a deterministic, leakage-checked 5 h / 1 h split
 cd fastspeech2
 python -m data.ingest --lang te --cache /tmp/hf --out D        # likewise --lang en
-python -m data.select_split --manifest_dir D/manifests/te --train_hours 5 --val_hours 1
+python -m data.select_split --manifest_dir D/manifests/te --train_hours 5 --val_hours 1 --balance equal   # English: proportional (default)
 
 # 2. Alignment (MFA): pronunciation dictionary from the project front ends, then
 python data/mfa_prepare.py --lang te --ingest_dir D --corpus /tmp/corpus_te --dict_out D/mfa_te/dictionary.txt

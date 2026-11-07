@@ -1,0 +1,40 @@
+{
+ "what": "Choice of the English test voice (report 5.1): Praat measures (tools/acoustic_analysis.py) of the five English test sentences rendered with the same checkpoint in the old voice (Results/English at commit 8f5ae5f) and in the four clearest training voices (Kaggle fs2-07-diagnose renders). Means over E1, E2a, E2b, E3, E4.",
+ "voices": {
+  "svarah_71f88d2a (old voice, commit 8f5ae5f)": {
+   "cog_hz": 298.2,
+   "jitter_pct": 1.18,
+   "shimmer_pct": 11.07,
+   "hnr_db": 15.5,
+   "hf_share_db": -23.42
+  },
+  "svarah_dd158f69": {
+   "cog_hz": 864.4,
+   "jitter_pct": 1.11,
+   "shimmer_pct": 12.9,
+   "hnr_db": 10.42,
+   "hf_share_db": -22.58
+  },
+  "svarah_8a8e2655 (chosen)": {
+   "cog_hz": 623.2,
+   "jitter_pct": 0.51,
+   "shimmer_pct": 8.91,
+   "hnr_db": 16.22,
+   "hf_share_db": -24.72
+  },
+  "svarah_628a28ca": {
+   "cog_hz": 353.6,
+   "jitter_pct": 0.66,
+   "shimmer_pct": 10.04,
+   "hnr_db": 16.8,
+   "hf_share_db": -25.08
+  },
+  "svarah_07da09a1": {
+   "cog_hz": 385.8,
+   "jitter_pct": 1.48,
+   "shimmer_pct": 11.39,
+   "hnr_db": 15.46,
+   "hf_share_db": -32.38
+  }
+ }
+}

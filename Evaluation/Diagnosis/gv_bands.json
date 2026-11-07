@@ -1,0 +1,47 @@
+{
+ "what": "Global variance (per log-mel bin, over time) and frame-to-frame flux, relative to the natural recording, on the 6 held-out clips per language whose audio fs2-07-diagnose saved (diag_wavs.tar; English voice svarah_71f88d2a, Telugu te_female). Mel bins grouped 0-19 / 20-49 / 50-79. Measured locally with the script that produced report 5.2 (numpy STFT, 1024/256, 80 mel bands 0-8 kHz).",
+ "en": {
+  "copy": [
+   1.01,
+   0.97,
+   0.97
+  ],
+  "oracle": [
+   0.91,
+   0.73,
+   0.89
+  ],
+  "free": [
+   0.86,
+   0.8,
+   0.88
+  ],
+  "flux_ratio": {
+   "copy": 0.98,
+   "oracle": 0.79,
+   "free": 0.8
+  }
+ },
+ "te": {
+  "copy": [
+   0.97,
+   0.95,
+   0.96
+  ],
+  "oracle": [
+   1.02,
+   0.97,
+   0.95
+  ],
+  "free": [
+   0.98,
+   0.93,
+   0.94
+  ],
+  "flux_ratio": {
+   "copy": 0.97,
+   "oracle": 0.94,
+   "free": 0.93
+  }
+ }
+}

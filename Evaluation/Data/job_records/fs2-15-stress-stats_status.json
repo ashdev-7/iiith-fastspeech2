@@ -1,0 +1,125 @@
+{
+ "job": "stress_stats",
+ "code_commit": "e9a43305631753552d4e37cc899a6d0054939668",
+ "lang": "en",
+ "stages": {
+  "pip_install": {
+   "ok": true,
+   "minutes": 1.12
+  },
+  "environment": {
+   "ok": true,
+   "python": "3.13.18",
+   "torch": "2.11.0+cpu",
+   "cuda_available": false,
+   "gpus": [],
+   "minutes": 0.09
+  },
+  "pytest_gate": {
+   "ok": true,
+   "summary": [
+    "100 passed, 1 skipped, 1 deselected, 7 warnings in 74.88s (0:01:14)"
+   ],
+   "observations": [
+    "1 passed, 1 skipped, 100 deselected, 1 warning in 8.89s"
+   ],
+   "minutes": 1.61
+  },
+  "stage_inputs": {
+   "ok": true,
+   "minutes": 0.08
+  },
+  "stress_stats": {
+   "ok": true,
+   "skipped": {
+    "train": 2649,
+    "val": 601
+   },
+   "rates": {
+    "train_gt_all": {
+     "words": 1074,
+     "rate": 0.436,
+     "chance_rate": 0.407,
+     "pitch_rate": 0.341,
+     "duration_rate": 0.437,
+     "energy_rate": 0.574
+    },
+    "train_gt_others": {
+     "words": 1067,
+     "rate": 0.434,
+     "chance_rate": 0.406,
+     "pitch_rate": 0.34,
+     "duration_rate": 0.436,
+     "energy_rate": 0.572
+    },
+    "train_gt_voice": {
+     "words": 7,
+     "rate": 0.714,
+     "chance_rate": 0.5,
+     "pitch_rate": 0.429,
+     "duration_rate": 0.571,
+     "energy_rate": 0.857
+    },
+    "val_gt_all": {
+     "words": 340,
+     "rate": 0.444,
+     "chance_rate": 0.422,
+     "pitch_rate": 0.356,
+     "duration_rate": 0.406,
+     "energy_rate": 0.615
+    },
+    "val_gt_others": {
+     "words": 338,
+     "rate": 0.444,
+     "chance_rate": 0.421,
+     "pitch_rate": 0.358,
+     "duration_rate": 0.405,
+     "energy_rate": 0.612
+    },
+    "val_pred_all": {
+     "words": 340,
+     "rate": 0.456,
+     "chance_rate": 0.422,
+     "pitch_rate": 0.353,
+     "duration_rate": 0.456,
+     "energy_rate": 0.624
+    },
+    "val_pred_others": {
+     "words": 338,
+     "rate": 0.453,
+     "chance_rate": 0.421,
+     "pitch_rate": 0.352,
+     "duration_rate": 0.456,
+     "energy_rate": 0.621
+    },
+    "val_gt_voice": {
+     "words": 2,
+     "rate": 0.5,
+     "chance_rate": 0.5,
+     "pitch_rate": 0.0,
+     "duration_rate": 0.5,
+     "energy_rate": 1.0
+    },
+    "val_pred_voice": {
+     "words": 2,
+     "rate": 1.0,
+     "chance_rate": 0.5,
+     "pitch_rate": 0.5,
+     "duration_rate": 0.5,
+     "energy_rate": 1.0
+    }
+   },
+   "minutes": 0.59
+  }
+ },
+ "started": "2026-11-04 10:20:37",
+ "outputs": [
+  "code_commit.txt",
+  "environment.txt",
+  "pytest.txt",
+  "status.json",
+  "stress_stats.tar"
+ ],
+ "failed_stages": [],
+ "all_ok": true
+}

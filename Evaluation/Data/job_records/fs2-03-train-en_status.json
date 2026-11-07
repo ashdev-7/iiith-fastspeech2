@@ -1,0 +1,193 @@
+{
+ "job": "train_en",
+ "code_commit": "142557dc18889707b9146af379b72bac939169f7",
+ "lang": "en",
+ "stages": {
+  "pip_install": {
+   "ok": true,
+   "minutes": 0.85
+  },
+  "environment": {
+   "ok": true,
+   "python": "3.13.15",
+   "torch": "2.11.0+cu128",
+   "cuda_available": true,
+   "gpus": [
+    "Tesla T4"
+   ],
+   "cuda_matmul_ok": true,
+   "cuda_arch_list": [
+    "sm_75",
+    "sm_80",
+    "sm_86",
+    "sm_90",
+    "sm_100",
+    "sm_120"
+   ],
+   "minutes": 0.15
+  },
+  "pytest_gate": {
+   "ok": true,
+   "summary": [
+    "73 passed, 1 deselected, 5 warnings in 49.61s"
+   ],
+   "observations": [
+    "1 passed, 73 deselected, 1 warning in 7.37s"
+   ],
+   "minutes": 1.15
+  },
+  "telugu_font": {
+   "ok": true,
+   "font_dir": "/kaggle/temp/fonts",
+   "minutes": 0.01
+  },
+  "stage_inputs": {
+   "ok": true,
+   "test_voice": "svarah_71f88d2a",
+   "minutes": 0.07
+  },
+  "throughput_probe": {
+   "ok": true,
+   "start_step": 0,
+   "end_step": 300,
+   "stop_reason": "total_step reached",
+   "minutes": 4.0,
+   "gpus": 1,
+   "num_params": 35443521,
+   "steps_per_s": 1.449,
+   "train_total_loss_first_last": [
+    15.832139,
+    5.327717
+   ],
+   "plan": {
+    "total_step": 20000,
+    "anneal_steps": [
+     6000,
+     8000,
+     11000
+    ],
+    "val_step": 1000,
+    "save_step": 5000,
+    "log_step": 100
+   }
+  },
+  "post_training_dry_run": {
+   "ok": true,
+   "wavs": 5,
+   "plots": 15,
+   "telugu_font": "Noto Sans Telugu",
+   "title_rendering": "Latin text only",
+   "device": "cuda (Tesla T4)",
+   "timing_summary": {
+    "items": 5,
+    "audio_s": 16.894,
+    "rtf_acoustic": 0.00957,
+    "rtf_total": 0.03744,
+    "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
+   },
+   "seconds": {
+    "E1": 4.226,
+    "E2a": 2.868,
+    "E2b": 3.17,
+    "E3": 2.09,
+    "E4": 4.54
+   },
+   "zero_duration_phones": {
+    "E1": 0,
+    "E2a": 0,
+    "E2b": 0,
+    "E3": 0,
+    "E4": 0
+   },
+   "minutes": 0.37
+  },
+  "train": {
+   "ok": true,
+   "start_step": 0,
+   "end_step": 17949,
+   "stop_reason": "time budget (210.0 min) reached at step 17949",
+   "minutes": 211.0,
+   "gpus": 1,
+   "num_params": 35443521,
+   "steps_per_s": 1.425,
+   "train_total_loss_first_last": [
+    13.141385,
+    1.049135
+   ],
+   "val_total_loss_last": 2.685776,
+   "checkpoint": "17949.pth.tar"
+  },
+  "checkpoints": {
+   "ok": true,
+   "minutes": 0.01
+  },
+  "loss_plot": {
+   "ok": true,
+   "png": [
+    "/kaggle/working/Results/English/training_loss.png",
+    "/kaggle/working/Results/English/validation_loss.png",
+    "/kaggle/working/Results/English/loss_curves.png"
+   ],
+   "minutes": 0.04
+  },
+  "inference": {
+   "ok": true,
+   "speaker": "svarah_71f88d2a",
+   "wavs": 5,
+   "plots": 15,
+   "telugu_font": "Noto Sans Telugu",
+   "title_rendering": "Latin text only",
+   "device": "cuda (Tesla T4)",
+   "timing_summary": {
+    "items": 5,
+    "audio_s": 21.547,
+    "rtf_acoustic": 0.00932,
+    "rtf_total": 0.03378,
+    "note": "batch 1, warm (one untimed warm-up call), excludes text frontend, wav writing and plotting"
+   },
+   "seconds": {
+    "E1": 5.224,
+    "E2a": 3.611,
+    "E2b": 3.796,
+    "E3": 2.496,
+    "E4": 6.42
+   },
+   "zero_duration_phones": {
+    "E1": 0,
+    "E2a": 0,
+    "E2b": 0,
+    "E3": 0,
+    "E4": 0
+   },
+   "minutes": 0.33
+  },
+  "package": {
+   "ok": true,
+   "files": [
+    "code_commit.txt",
+    "en_full.pth.tar",
+    "en_model.pth.tar",
+    "environment.txt",
+    "pytest.txt",
+    "results_en.tar",
+    "status.json",
+    "train_en_final.yaml.log",
+    "train_en_probe.yaml.log"
+   ],
+   "minutes": 0.0
+  }
+ },
+ "started": "2026-11-01 19:52:49",
+ "outputs": [
+  "code_commit.txt",
+  "details.tar",
+  "en_full.pth.tar",
+  "en_model.pth.tar",
+  "environment.txt",
+  "pytest.txt",
+  "results_en.tar",
+  "status.json"
+ ],
+ "failed_stages": [],
+ "all_ok": true
+}
