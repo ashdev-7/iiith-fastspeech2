@@ -133,14 +133,14 @@ TEXT = {
     # "whisper": Whisper large-v3 only (Evaluation/Telugu/metrics.json, metrics_extended_whisper.json);
     # "te_asr": with the Telugu ASR of Kaggle job fs2-20-asr-te-cpu (Evaluation/Telugu/asr_telugu/).
     "TE_ASR_BOX": {
-        "whisper": "Whisper large-v3 for both languages; for Telugu, transcripts that Whisper wrote in Kannada script are also "
+        "whisper": "Whisper large-v3 [8] for both languages; for Telugu, transcripts that Whisper wrote in Kannada script are also "
                    "scored after mapping them back to Telugu, §5.5",
         "te_asr": "Whisper large-v3 for English; for Telugu also a Telugu Whisper model not trained on IndicTTS, §7",
     },
     "TE_ASR_NOTE": {
         "whisper": "Whisper large-v3 is weak on Telugu: its CER on copy-synthesis of real Telugu validation recordings is 33.1 %, "
                    "against 11.6 % for English, so Telugu CERs bound pronunciation errors from above rather than measure them. "
-                   "A Telugu ASR model (<code>vasista22/whisper-telugu-large-v2</code>, not trained on IndicTTS; pinned in "
+                   "A Telugu ASR model (<code>vasista22/whisper-telugu-large-v2</code> [17], not trained on IndicTTS; pinned in "
                    "<code>evaluate_val.ASR_REVISIONS</code>) was prepared for this evaluation (Kaggle <code>fs2-20-asr-te-cpu</code>), "
                    "but it runs on CPU (the weekly GPU quota was used up) and had not finished when this report was built.",
         "te_asr": "Telugu ASR: <code>vasista22/whisper-telugu-large-v2</code> (Whisper large-v2 fine-tuned on Telugu; its model card "
